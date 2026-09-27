@@ -16,9 +16,8 @@ body {
     font-family: 'Inter', sans-serif; 
     color: var(--text-main); 
     
-    /* --- GAMBAR LATAR BELAKANG HUTAN KALIMANTAN (MAHAKAM ULU) --- */
+    /* --- GAMBAR LATAR BELAKANG HUTAN KALIMANTAN --- */
     background-color: var(--bg-dark);
-    /* Overlay gelap transparan dipadukan dengan gambar tutupan hutan Kalimantan */
     background-image: linear-gradient(rgba(15, 10, 10, 0.65), rgba(10, 10, 10, 0.75)), url('Foto-Udara-tutupan-hutan-di-wilayah-Mahakam-Ulu-Kalimantan-Timur_2017.jpg');
     background-size: cover;
     background-position: center;
@@ -30,7 +29,7 @@ body {
 /* Sidebar */
 .sidebar { 
     width: 250px; 
-    background-color: rgba(15, 10, 10, 0.90); /* Warna gelap asap */
+    background-color: rgba(15, 10, 10, 0.90);
     padding: 20px; 
     border-right: 1px solid rgba(255, 100, 100, 0.2); 
     backdrop-filter: blur(8px);
@@ -68,11 +67,11 @@ body {
 .map-section { background-color: var(--panel-dark); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 100, 100, 0.15); backdrop-filter: blur(10px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 .leaflet-container { background-color: #111; }
 
-/* Bottom Grid (Grafik & Tabel) */
+/* Bottom Grid */
 .bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
 .chart-section, .log-section { background-color: var(--panel-dark); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 100, 100, 0.15); backdrop-filter: blur(10px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 .chart-section h3, .log-section h3 { font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 100, 100, 0.2); padding-bottom: 10px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-.chart-section canvas { max-height: 250px; } /* Membatasi tinggi grafik agar tidak terlalu memakan layar */
+.chart-section canvas { max-height: 250px; } 
 
 /* Tabel */
 .table-responsive { max-height: 250px; overflow-y: auto; }
@@ -81,7 +80,7 @@ th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(255, 100
 th { color: #ffab91; font-weight: bold; }
 .hash-text { font-family: monospace; color: #90caf9; }
 
-/* --- SISTEM TAB & HALAMAN DUMMY --- */
+/* --- SISTEM TAB --- */
 .tab-content { display: none; animation: fadeIn 0.4s ease-in-out; }
 .tab-content.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
