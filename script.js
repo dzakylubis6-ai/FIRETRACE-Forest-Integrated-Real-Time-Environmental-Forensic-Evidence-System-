@@ -1,10 +1,10 @@
-// Konfigurasi Deskripsi Status (Skala Regional Kalimantan)
+// Konfigurasi Deskripsi Status 
 const statusConfig = {
-    "NORMAL": { class: "normal", desc: "Pemantauan regional rutin. Distribusi sensor di seluruh titik pantau Kalimantan menunjukkan data baseline normal.", t: 27, h: 82, s: 400, uv: 0, color: "#4caf50" },
-    "WASPADA": { class: "waspada", desc: "Peningkatan frekuensi sampling di sektor tertentu. Tren anomali awal terdeteksi.", t: 29, h: 70, s: 850, uv: 0, color: "#f9a825" },
-    "SIAGA": { class: "siaga", desc: "Sinyal peringatan dikirim. Drone verifikasi siaga untuk memantau area anomali di Kalimantan.", t: 31, h: 60, s: 1500, uv: 50, color: "#ef6c00" },
-    "BAHAYA": { class: "bahaya", desc: "Perekaman krisis dimulai. Otoritas penanggulangan bencana daerah disiagakan.", t: 33, h: 50, s: 3500, uv: 150, color: "#c62828" },
-    "AWAS": { class: "awas", desc: "Penguncian hash aktif. Draf Laporan Forensik Regional disusun secara real-time.", t: 35, h: 45, s: 6000, uv: 250, color: "#b71c1c" }
+    "NORMAL": { class: "normal", desc: "Pemantauan regional rutin. Data cuaca ditarik langsung secara real-time dari satelit wilayah Kalimantan.", s: 400, uv: 0, color: "#4caf50" },
+    "WASPADA": { class: "waspada", desc: "Peningkatan frekuensi sampling di sektor tertentu. Tren anomali awal terdeteksi.", s: 850, uv: 0, color: "#f9a825" },
+    "SIAGA": { class: "siaga", desc: "Sinyal peringatan dikirim. Drone verifikasi siaga untuk memantau area anomali.", s: 1500, uv: 50, color: "#ef6c00" },
+    "BAHAYA": { class: "bahaya", desc: "Perekaman krisis dimulai. Otoritas penanggulangan bencana daerah disiagakan.", s: 3500, uv: 150, color: "#c62828" },
+    "AWAS": { class: "awas", desc: "Penguncian hash aktif. Draf Laporan Forensik Regional disusun secara real-time.", s: 6000, uv: 250, color: "#b71c1c" }
 };
 
 let fireChart; 
@@ -13,6 +13,7 @@ let currentTargetHum = 82;
 let petaKalimantan;
 let anomalyMarker;
 
+// Simulasi Hash
 function generateFakeHash() {
     const chars = 'abcdef0123456789';
     let hash = '';
@@ -20,13 +21,40 @@ function generateFakeHash() {
     return hash.substring(0, 16) + '...';
 }
 
+// Inisialisasi Saat Halaman Dimuat
 document.addEventListener("DOMContentLoaded", function() {
     initMap();
     initChart();
-    ubahStatus('NORMAL');
+    fetchRealTimeWeather(); // Ambil data cuaca asli dari API
+    
+    // Perbarui data cuaca asli setiap 5 menit otomatis
+    setInterval(fetchRealTimeWeather, 300000); 
 });
 
-// INISIALISASI PETA GOOGLE MAPS SATELLITE
+// FUNGSI MENARIK DATA CUACA NYATA DARI API (Open-Meteo)
+async function fetchRealTimeWeather() {
+    try {
+        // Koordinat tengah hutan Kalimantan (Contoh: wilayah Kalimantan Tengah)
+        const lat = -2.3;
+        const lon = 113.9;
+        
+        const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m`);
+        const data = await response.json();
+        
+        if(data && data.current) {
+            currentTargetTemp = Math.round(data.current.temperature_2m);
+            currentTargetHum = Math.round(data.current.relative_humidity_2m);
+            
+            // Perbarui tampilan angka di kartu sensor
+            document.getElementById('val-suhu').innerText = currentTargetTemp;
+            document.getElementById('val-lembab').innerText = currentTargetHum;
+        }
+    } catch (error) {
+        console.log("Gagal mengambil data cuaca real-time, menggunakan data lokal.", error);
+    }
+}
+
+// 1. INISIALISASI PETA KALIMANTAN (Google Maps Satellite)
 function initMap() {
     petaKalimantan = L.map('kalimantan-map').setView([-0.5, 114.5], 5);
     
@@ -54,9 +82,11 @@ function initMap() {
     }).addTo(petaKalimantan).bindPopup(`<b>Titik Pantau Hutan Kalimantan</b><br>Status: Menyesuaikan...`);
 }
 
+// 2. INISIALISASI GRAFIK BERJALAN (Chart.js)
 function initChart() {
     const ctx = document.getElementById('fireChart').getContext('2d');
     let initialLabels = [], initialTemp = [], initialHum = [];
+    
     let now = new Date();
     for(let i = 12; i >= 0; i--) {
         let pastTime = new Date(now.getTime() - i * 2000);
@@ -71,8 +101,8 @@ function initChart() {
         data: {
             labels: initialLabels,
             datasets: [
-                { label: 'Suhu (°C)', data: initialTemp, borderColor: '#ef5350', backgroundColor: 'rgba(239, 83, 80, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2 },
-                { label: 'Kelembapan (%)', data: initialHum, borderColor: '#42a5f5', backgroundColor: 'rgba(66, 165, 245, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2 }
+                { label: 'Suhu Asli (°C)', data: initialTemp, borderColor: '#ef5350', backgroundColor: 'rgba(239, 83, 80, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2 },
+                { label: 'Kelembapan Asli (%)', data: initialHum, borderColor: '#42a5f5', backgroundColor: 'rgba(66, 165, 245, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2 }
             ]
         },
         options: {
@@ -85,44 +115,69 @@ function initChart() {
         }
     });
 
+    // Interval Animasi Grafik Berjalan Berdasarkan Data API
     setInterval(() => {
         const currentTime = new Date();
         const timeStr = currentTime.getHours().toString().padStart(2, '0') + ":" + currentTime.getMinutes().toString().padStart(2, '0') + ":" + currentTime.getSeconds().toString().padStart(2, '0');
+
+        let newTemp = currentTargetTemp + (Math.random() * 0.6 - 0.3); // Fluktuasi kecil dari suhu asli
+        let newHum = currentTargetHum + (Math.random() * 1 - 0.5);
+
         fireChart.data.labels.push(timeStr);
-        fireChart.data.datasets[0].data.push(currentTargetTemp + (Math.random() * 1.5 - 0.75));
-        fireChart.data.datasets[1].data.push(currentTargetHum + (Math.random() * 2 - 1));
+        fireChart.data.datasets[0].data.push(newTemp);
+        fireChart.data.datasets[1].data.push(newHum);
+
         if (fireChart.data.labels.length > 15) {
-            fireChart.data.labels.shift(); fireChart.data.datasets[0].data.shift(); fireChart.data.datasets[1].data.shift();
+            fireChart.data.labels.shift();
+            fireChart.data.datasets[0].data.shift();
+            fireChart.data.datasets[1].data.shift();
         }
         fireChart.update(); 
     }, 2000); 
 }
 
+// 3. FUNGSI UBAH STATUS
 function ubahStatus(level) {
     const config = statusConfig[level];
+    
     document.getElementById('status-banner').className = 'status-header ' + config.class;
     document.getElementById('status-text').innerText = level;
     document.getElementById('status-desc').innerText = config.desc;
-    currentTargetTemp = config.t; currentTargetHum = config.h;
-    document.getElementById('val-suhu').innerText = config.t;
-    document.getElementById('val-lembab').innerText = config.h;
+
+    // Jika level dinaikkan ke BAHAYA / AWAS, kita simulasikan lonjakan suhu di atas suhu asli cuaca
+    if(level === 'BAHAYA') currentTargetTemp += 6;
+    if(level === 'AWAS') currentTargetTemp += 10;
+
+    document.getElementById('val-suhu').innerText = currentTargetTemp;
+    document.getElementById('val-lembab').innerText = currentTargetHum;
     document.getElementById('val-asap').innerText = config.s;
     document.getElementById('val-api').innerText = config.uv;
-    
-    if(anomalyMarker) anomalyMarker.setStyle({ fillColor: config.color });
+
+    if(anomalyMarker) {
+        anomalyMarker.setStyle({ fillColor: config.color });
+        anomalyMarker.setPopupContent(`<b>Titik Pantau Hutan Kalimantan</b><br>Status: <strong>${level}</strong>`);
+    }
 
     const logBody = document.getElementById('log-body');
     const now = new Date();
     const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0');
-    logBody.insertAdjacentHTML('afterbegin', `<tr><td>${timeStr}</td><td>${level}</td><td class="hash-text">${generateFakeHash()}</td></tr>`);
+    
+    const newRow = `<tr><td>${timeStr}</td><td>${level}</td><td class="hash-text">${generateFakeHash()}</td></tr>`;
+    logBody.insertAdjacentHTML('afterbegin', newRow);
 
-    if (level === 'AWAS') alert("PERINGATAN REGIONAL: Indikasi api tingkat AWAS di wilayah Kalimantan. Penguncian Chain of Custody diaktifkan!");
+    if (level === 'AWAS') {
+        alert("PERINGATAN REGIONAL: Indikasi api tingkat AWAS di wilayah Kalimantan. Penguncian Chain of Custody diaktifkan!");
+    }
 }
 
+// --- FUNGSI PINDAH TAB MENU ---
 function bukaTab(namaTab, elemenMenu) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(menu => menu.classList.remove('active'));
     document.getElementById(namaTab).classList.add('active');
     elemenMenu.classList.add('active');
-    if(namaTab === 'monitoring' && petaKalimantan) setTimeout(() => petaKalimantan.invalidateSize(), 100);
+    
+    if(namaTab === 'monitoring' && petaKalimantan) {
+        setTimeout(() => petaKalimantan.invalidateSize(), 100);
+    }
 }
