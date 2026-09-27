@@ -13,7 +13,6 @@ let currentTargetHum = 82;
 let petaKalimantan;
 let anomalyMarker;
 
-// Simulasi Hash
 function generateFakeHash() {
     const chars = 'abcdef0123456789';
     let hash = '';
@@ -21,26 +20,22 @@ function generateFakeHash() {
     return hash.substring(0, 16) + '...';
 }
 
-// Inisialisasi Saat Halaman Dimuat
 document.addEventListener("DOMContentLoaded", function() {
     initMap();
     initChart();
     ubahStatus('NORMAL');
 });
 
-// 1. INISIALISASI PETA KALIMANTAN (MENGGUNAKAN CITRA SATELIT GOOGLE)
+// INISIALISASI PETA GOOGLE MAPS SATELLITE
 function initMap() {
-    // Kordinat tengah Pulau Kalimantan
     petaKalimantan = L.map('kalimantan-map').setView([-0.5, 114.5], 5);
     
-    // Basemap menggunakan Citra Satelit Google Maps (Hybrid)
-    L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+    L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3'],
         attribution: '&copy; Google Maps'
     }).addTo(petaKalimantan);
 
-    // Titik Sensor Lain (Status selalu Hijau/Normal)
     const normalNodes = [
         { name: "Sektor Pantau Kalimantan Timur", coords: [0.5, 116.4] },
         { name: "Sektor Pantau Kalimantan Barat", coords: [-0.1, 111.0] },
@@ -50,33 +45,18 @@ function initMap() {
 
     normalNodes.forEach(node => {
         L.circleMarker(node.coords, {
-            radius: 6,
-            fillColor: "#4caf50",
-            color: "#fff",
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.8
+            radius: 6, fillColor: "#4caf50", color: "#fff", weight: 1, opacity: 1, fillOpacity: 0.8
         }).addTo(petaKalimantan).bindPopup(`<b>${node.name}</b><br>Status: NORMAL`);
     });
 
-    // Titik Sensor Utama (Yang akan berubah warna saat status diubah)
     anomalyMarker = L.circleMarker([-2.3, 113.9], {
-        radius: 10,
-        fillColor: "#4caf50",
-        color: "#fff",
-        weight: 2,
-        opacity: 1,
-        fillOpacity: 0.9
+        radius: 10, fillColor: "#4caf50", color: "#fff", weight: 2, opacity: 1, fillOpacity: 0.9
     }).addTo(petaKalimantan).bindPopup(`<b>Titik Pantau Hutan Kalimantan</b><br>Status: Menyesuaikan...`);
 }
 
-// 2. INISIALISASI GRAFIK BERJALAN (Chart.js)
 function initChart() {
     const ctx = document.getElementById('fireChart').getContext('2d');
-    let initialLabels = [];
-    let initialTemp = [];
-    let initialHum = [];
-    
+    let initialLabels = [], initialTemp = [], initialHum = [];
     let now = new Date();
     for(let i = 12; i >= 0; i--) {
         let pastTime = new Date(now.getTime() - i * 2000);
@@ -91,14 +71,12 @@ function initChart() {
         data: {
             labels: initialLabels,
             datasets: [
-                { label: 'Suhu (°C)', data: initialTemp, borderColor: '#ef5350', backgroundColor: 'rgba(239, 83, 80, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2, pointBackgroundColor: '#ef5350' },
-                { label: 'Kelembapan (%)', data: initialHum, borderColor: '#42a5f5', backgroundColor: 'rgba(66, 165, 245, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2, pointBackgroundColor: '#42a5f5' }
+                { label: 'Suhu (°C)', data: initialTemp, borderColor: '#ef5350', backgroundColor: 'rgba(239, 83, 80, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2 },
+                { label: 'Kelembapan (%)', data: initialHum, borderColor: '#42a5f5', backgroundColor: 'rgba(66, 165, 245, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2 }
             ]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            animation: { duration: 600, easing: 'linear' },
+            responsive: true, maintainAspectRatio: false, animation: { duration: 600, easing: 'linear' },
             plugins: { legend: { labels: { color: '#e0e0e0' } } },
             scales: {
                 x: { ticks: { color: '#9e9e9e', maxTicksLimit: 7 }, grid: { color: 'rgba(255,255,255,0.05)' } },
@@ -107,75 +85,44 @@ function initChart() {
         }
     });
 
-    // Interval Animasi Berjalan (Setiap 2 detik)
     setInterval(() => {
         const currentTime = new Date();
         const timeStr = currentTime.getHours().toString().padStart(2, '0') + ":" + currentTime.getMinutes().toString().padStart(2, '0') + ":" + currentTime.getSeconds().toString().padStart(2, '0');
-
-        let newTemp = currentTargetTemp + (Math.random() * 1.5 - 0.75);
-        let newHum = currentTargetHum + (Math.random() * 2 - 1);
-
         fireChart.data.labels.push(timeStr);
-        fireChart.data.datasets[0].data.push(newTemp);
-        fireChart.data.datasets[1].data.push(newHum);
-
+        fireChart.data.datasets[0].data.push(currentTargetTemp + (Math.random() * 1.5 - 0.75));
+        fireChart.data.datasets[1].data.push(currentTargetHum + (Math.random() * 2 - 1));
         if (fireChart.data.labels.length > 15) {
-            fireChart.data.labels.shift();
-            fireChart.data.datasets[0].data.shift();
-            fireChart.data.datasets[1].data.shift();
+            fireChart.data.labels.shift(); fireChart.data.datasets[0].data.shift(); fireChart.data.datasets[1].data.shift();
         }
         fireChart.update(); 
     }, 2000); 
 }
 
-// 3. FUNGSI UBAH STATUS (Berpengaruh ke Peta, Grafik, dan Tabel)
 function ubahStatus(level) {
     const config = statusConfig[level];
-    
     document.getElementById('status-banner').className = 'status-header ' + config.class;
     document.getElementById('status-text').innerText = level;
     document.getElementById('status-desc').innerText = config.desc;
-
-    currentTargetTemp = config.t;
-    currentTargetHum = config.h;
-
+    currentTargetTemp = config.t; currentTargetHum = config.h;
     document.getElementById('val-suhu').innerText = config.t;
     document.getElementById('val-lembab').innerText = config.h;
     document.getElementById('val-asap').innerText = config.s;
     document.getElementById('val-api').innerText = config.uv;
-
-    // Ubah Warna Titik Peta Kalimantan (Node Fokus)
-    if(anomalyMarker) {
-        anomalyMarker.setStyle({ fillColor: config.color });
-    }
+    
+    if(anomalyMarker) anomalyMarker.setStyle({ fillColor: config.color });
 
     const logBody = document.getElementById('log-body');
     const now = new Date();
     const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0');
-    
-    const newRow = `<tr><td>${timeStr}</td><td>${level}</td><td class="hash-text">${generateFakeHash()}</td></tr>`;
-    logBody.insertAdjacentHTML('afterbegin', newRow);
+    logBody.insertAdjacentHTML('afterbegin', `<tr><td>${timeStr}</td><td>${level}</td><td class="hash-text">${generateFakeHash()}</td></tr>`);
 
-    if (level === 'AWAS') {
-        alert("PERINGATAN REGIONAL: Indikasi api tingkat AWAS di wilayah Kalimantan. Penguncian Chain of Custody diaktifkan!");
-    }
+    if (level === 'AWAS') alert("PERINGATAN REGIONAL: Indikasi api tingkat AWAS di wilayah Kalimantan. Penguncian Chain of Custody diaktifkan!");
 }
 
-// --- FUNGSI PINDAH TAB MENU ---
 function bukaTab(namaTab, elemenMenu) {
-    const semuaTab = document.querySelectorAll('.tab-content');
-    semuaTab.forEach(tab => { tab.classList.remove('active'); });
-
-    const semuaMenu = document.querySelectorAll('.nav-item');
-    semuaMenu.forEach(menu => { menu.classList.remove('active'); });
-
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(menu => menu.classList.remove('active'));
     document.getElementById(namaTab).classList.add('active');
     elemenMenu.classList.add('active');
-    
-    // Perbaikan Bug Peta Leaflet saat pindah tab (memaksa render ulang ukuran)
-    if(namaTab === 'monitoring' && petaKalimantan) {
-        setTimeout(() => {
-            petaKalimantan.invalidateSize();
-        }, 100);
-    }
+    if(namaTab === 'monitoring' && petaKalimantan) setTimeout(() => petaKalimantan.invalidateSize(), 100);
 }
