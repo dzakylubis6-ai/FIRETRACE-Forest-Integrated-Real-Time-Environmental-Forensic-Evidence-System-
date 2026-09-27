@@ -4,10 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FIRETRACE - Forensic Dashboard</title>
-    <!-- Cache busting v=4 agar langsung memuat tampilan baru -->
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?v=6">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- JURUS PAMUNGKAS: Paksa Background Langsung di HTML -->
+    <style>
+        body {
+            background-color: #121212 !important;
+            background-image: linear-gradient(rgba(25, 10, 10, 0.75), rgba(20, 10, 10, 0.85)), url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=2000&auto=format&fit=crop') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard-container">
@@ -98,7 +108,7 @@
                 </div>
             </div>
 
-            <!-- TAB 2: Fire Event Profile (DUMMY DATA KALIMANTAN) -->
+            <!-- TAB 2: Fire Event Profile -->
             <div id="profile" class="tab-content">
                 <div class="header-halaman">
                     <h2>Analisis Profil Kejadian (Event Profile)</h2>
@@ -145,7 +155,7 @@
                 </div>
             </div>
 
-            <!-- TAB 3: Audit Trail & Hash (DUMMY DATA KALIMANTAN) -->
+            <!-- TAB 3: Audit Trail & Hash -->
             <div id="audit" class="tab-content">
                 <div class="header-halaman">
                     <h2>Digital Chain of Custody (Log Terkunci)</h2>
@@ -203,7 +213,7 @@
                 </div>
             </div>
 
-            <!-- TAB 4: Forensic Report (DUMMY DATA KALIMANTAN) -->
+            <!-- TAB 4: Forensic Report -->
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
