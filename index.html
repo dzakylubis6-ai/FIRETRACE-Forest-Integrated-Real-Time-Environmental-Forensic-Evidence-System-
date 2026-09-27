@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FIRETRACE - Forensic Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Mengimpor Chart.js untuk grafik Fire Event Profile -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -18,83 +17,118 @@
                 <p>Forensic Evidence System</p>
             </div>
             <ul class="nav-menu">
-                <li class="active">Real-Time Monitoring</li>
-                <li>Fire Event Profile</li>
-                <li>Audit Trail & Hash</li>
-                <li>Forensic Report</li>
+                <li class="nav-item active" onclick="bukaTab('monitoring', this)">Real-Time Monitoring</li>
+                <li class="nav-item" onclick="bukaTab('profile', this)">Fire Event Profile</li>
+                <li class="nav-item" onclick="bukaTab('audit', this)">Audit Trail & Hash</li>
+                <li class="nav-item" onclick="bukaTab('report', this)">Forensic Report</li>
             </ul>
         </aside>
 
         <!-- Konten Utama -->
         <main class="main-content">
-            <!-- Header Status Ancaman -->
-            <header class="status-header normal" id="status-banner">
-                <div class="status-info">
-                    <h3>STATUS SAAT INI: <span id="status-text">NORMAL</span></h3>
-                    <p id="status-desc">Pemantauan rutin dan perekaman data baseline berkala.</p>
-                </div>
-                <div class="status-controls">
-                    <label>Simulasi Logika Fuzzy:</label>
-                    <select id="simulasi-status" onchange="ubahStatus(this.value)">
-                        <option value="NORMAL">NORMAL</option>
-                        <option value="WASPADA">WASPADA</option>
-                        <option value="SIAGA">SIAGA</option>
-                        <option value="BAHAYA">BAHAYA</option>
-                        <option value="AWAS">AWAS</option>
-                    </select>
-                </div>
-            </header>
+            
+            <!-- TAB 1: Real-Time Monitoring -->
+            <div id="monitoring" class="tab-content active">
+                <header class="status-header normal" id="status-banner">
+                    <div class="status-info">
+                        <h3>STATUS SAAT INI: <span id="status-text">NORMAL</span></h3>
+                        <p id="status-desc">Pemantauan rutin dan perekaman data baseline berkala.</p>
+                    </div>
+                    <div class="status-controls">
+                        <label>Simulasi Logika Fuzzy:</label>
+                        <select id="simulasi-status" onchange="ubahStatus(this.value)">
+                            <option value="NORMAL">NORMAL</option>
+                            <option value="WASPADA">WASPADA</option>
+                            <option value="SIAGA">SIAGA</option>
+                            <option value="BAHAYA">BAHAYA</option>
+                            <option value="AWAS">AWAS</option>
+                        </select>
+                    </div>
+                </header>
 
-            <!-- Panel Pembacaan Sensor -->
-            <section class="sensor-grid">
-                <div class="sensor-card">
-                    <h4>Suhu (DS18B20)</h4>
-                    <div class="sensor-value"><span id="val-suhu">27</span> °C</div>
-                </div>
-                <div class="sensor-card">
-                    <h4>Kelembapan (BME280)</h4>
-                    <div class="sensor-value"><span id="val-lembab">82</span> %</div>
-                </div>
-                <div class="sensor-card">
-                    <h4>Asap/Gas (MQ135)</h4>
-                    <div class="sensor-value"><span id="val-asap">400</span> ppm</div>
-                </div>
-                <div class="sensor-card">
-                    <h4>Radiasi UV (UVTRON)</h4>
-                    <div class="sensor-value"><span id="val-api">0</span> pulsa</div>
-                </div>
-                <div class="sensor-card">
-                    <h4>Arah & Kecepatan Angin</h4>
-                    <div class="sensor-value">SE / <span id="val-angin">1.5</span> m/s</div>
-                </div>
-            </section>
-
-            <div class="bottom-grid">
-                <!-- Grafik Fire Event Profile -->
-                <section class="chart-section">
-                    <h3>Environmental Fire Event Profile</h3>
-                    <canvas id="fireChart"></canvas>
-                </section>
-
-                <!-- Tabel Data Integrity & Chain of Custody -->
-                <section class="log-section">
-                    <h3>Data Integrity & Audit Trail Log</h3>
-                    <div class="table-responsive">
-                        <table id="log-table">
-                            <thead>
-                                <tr>
-                                    <th>Waktu (Timestamp)</th>
-                                    <th>Status</th>
-                                    <th>Hash (SHA-256)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="log-body">
-                                <!-- Log akan ditambahkan oleh JavaScript -->
-                            </tbody>
-                        </table>
+                <section class="sensor-grid">
+                    <div class="sensor-card">
+                        <h4>Suhu (DS18B20)</h4>
+                        <div class="sensor-value"><span id="val-suhu">27</span> °C</div>
+                    </div>
+                    <div class="sensor-card">
+                        <h4>Kelembapan (BME280)</h4>
+                        <div class="sensor-value"><span id="val-lembab">82</span> %</div>
+                    </div>
+                    <div class="sensor-card">
+                        <h4>Asap/Gas (MQ135)</h4>
+                        <div class="sensor-value"><span id="val-asap">400</span> ppm</div>
+                    </div>
+                    <div class="sensor-card">
+                        <h4>Radiasi UV (UVTRON)</h4>
+                        <div class="sensor-value"><span id="val-api">0</span> pulsa</div>
+                    </div>
+                    <div class="sensor-card">
+                        <h4>Arah & Kecepatan Angin</h4>
+                        <div class="sensor-value">SE / <span id="val-angin">1.5</span> m/s</div>
                     </div>
                 </section>
+
+                <div class="bottom-grid">
+                    <section class="chart-section">
+                        <h3>Environmental Fire Event Profile</h3>
+                        <canvas id="fireChart"></canvas>
+                    </section>
+                    <section class="log-section">
+                        <h3>Data Integrity & Audit Trail Log</h3>
+                        <div class="table-responsive">
+                            <table id="log-table">
+                                <thead>
+                                    <tr>
+                                        <th>Waktu (Timestamp)</th>
+                                        <th>Status</th>
+                                        <th>Hash (SHA-256)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="log-body"></tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
             </div>
+
+            <!-- TAB 2: Fire Event Profile -->
+            <div id="profile" class="tab-content">
+                <div class="header-halaman">
+                    <h2>Analisis Fire Event Profile</h2>
+                    <p>Rekonstruksi kronologis anomali parameter lingkungan.</p>
+                </div>
+                <div class="placeholder-box">
+                    <h3>🚧 Dalam Pengembangan</h3>
+                    <p>Halaman ini nantinya akan memuat analisis laju perubahan suhu dan gas secara spesifik untuk membedakan kebakaran alami dan aktivitas manusia.</p>
+                </div>
+            </div>
+
+            <!-- TAB 3: Audit Trail & Hash -->
+            <div id="audit" class="tab-content">
+                <div class="header-halaman">
+                    <h2>Pemeriksaan Digital Chain of Custody</h2>
+                    <p>Verifikasi integritas data sensor menggunakan enkripsi kriptografis.</p>
+                </div>
+                <div class="placeholder-box">
+                    <h3>🚧 Dalam Pengembangan</h3>
+                    <p>Modul verifikasi kecocokan HASH SHA-256 untuk mendeteksi manipulasi data barang bukti elektronik.</p>
+                </div>
+            </div>
+
+            <!-- TAB 4: Forensic Report -->
+            <div id="report" class="tab-content">
+                <div class="header-halaman">
+                    <h2>Environmental Forensic Report Generator</h2>
+                    <p>Eksport data kronologi kejadian menjadi laporan forensik pendukung persidangan.</p>
+                </div>
+                <div class="placeholder-box">
+                    <h3>Dokumen Siap Cetak</h3>
+                    <p>Pilih rentang waktu kejadian untuk menyusun laporan:</p>
+                    <button class="btn-download" onclick="alert('Fitur eksport PDF sedang dikembangkan!')">Unduh Draf Laporan (PDF)</button>
+                </div>
+            </div>
+
         </main>
     </div>
     <script src="script.js"></script>
