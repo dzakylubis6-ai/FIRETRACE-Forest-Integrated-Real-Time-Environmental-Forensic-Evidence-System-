@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIRETRACE - Forensic Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Mengimpor Chart.js untuk grafik Fire Event Profile -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigasi -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <h2>FIRETRACE</h2>
+                <p>Forensic Evidence System</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="active">Real-Time Monitoring</li>
+                <li>Fire Event Profile</li>
+                <li>Audit Trail & Hash</li>
+                <li>Forensic Report</li>
+            </ul>
+        </aside>
+
+        <!-- Konten Utama -->
+        <main class="main-content">
+            <!-- Header Status Ancaman -->
+            <header class="status-header normal" id="status-banner">
+                <div class="status-info">
+                    <h3>STATUS SAAT INI: <span id="status-text">NORMAL</span></h3>
+                    <p id="status-desc">Pemantauan rutin dan perekaman data baseline berkala.</p>
+                </div>
+                <div class="status-controls">
+                    <label>Simulasi Logika Fuzzy:</label>
+                    <select id="simulasi-status" onchange="ubahStatus(this.value)">
+                        <option value="NORMAL">NORMAL</option>
+                        <option value="WASPADA">WASPADA</option>
+                        <option value="SIAGA">SIAGA</option>
+                        <option value="BAHAYA">BAHAYA</option>
+                        <option value="AWAS">AWAS</option>
+                    </select>
+                </div>
+            </header>
+
+            <!-- Panel Pembacaan Sensor -->
+            <section class="sensor-grid">
+                <div class="sensor-card">
+                    <h4>Suhu (DS18B20)</h4>
+                    <div class="sensor-value"><span id="val-suhu">27</span> °C</div>
+                </div>
+                <div class="sensor-card">
+                    <h4>Kelembapan (BME280)</h4>
+                    <div class="sensor-value"><span id="val-lembab">82</span> %</div>
+                </div>
+                <div class="sensor-card">
+                    <h4>Asap/Gas (MQ135)</h4>
+                    <div class="sensor-value"><span id="val-asap">400</span> ppm</div>
+                </div>
+                <div class="sensor-card">
+                    <h4>Radiasi UV (UVTRON)</h4>
+                    <div class="sensor-value"><span id="val-api">0</span> pulsa</div>
+                </div>
+                <div class="sensor-card">
+                    <h4>Arah & Kecepatan Angin</h4>
+                    <div class="sensor-value">SE / <span id="val-angin">1.5</span> m/s</div>
+                </div>
+            </section>
+
+            <div class="bottom-grid">
+                <!-- Grafik Fire Event Profile -->
+                <section class="chart-section">
+                    <h3>Environmental Fire Event Profile</h3>
+                    <canvas id="fireChart"></canvas>
+                </section>
+
+                <!-- Tabel Data Integrity & Chain of Custody -->
+                <section class="log-section">
+                    <h3>Data Integrity & Audit Trail Log</h3>
+                    <div class="table-responsive">
+                        <table id="log-table">
+                            <thead>
+                                <tr>
+                                    <th>Waktu (Timestamp)</th>
+                                    <th>Status</th>
+                                    <th>Hash (SHA-256)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="log-body">
+                                <!-- Log akan ditambahkan oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
