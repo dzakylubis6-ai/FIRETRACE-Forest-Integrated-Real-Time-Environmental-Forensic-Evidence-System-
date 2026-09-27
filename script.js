@@ -41,10 +41,10 @@ function initMap() {
 
     // Titik Sensor Lain (Status selalu Hijau/Normal)
     const normalNodes = [
-        { name: "Node KALTIM-M01 (Mahakam Ulu)", coords: [0.5, 116.4] },
-        { name: "Node KALBAR-K01 (Kapuas Hulu)", coords: [-0.1, 111.0] },
-        { name: "Node KALSEL-B01 (Banjar)", coords: [-3.2, 115.2] },
-        { name: "Node KALTARA-T01 (Malinau)", coords: [3.0, 116.0] }
+        { name: "Sektor Pantau Kalimantan Timur", coords: [0.5, 116.4] },
+        { name: "Sektor Pantau Kalimantan Barat", coords: [-0.1, 111.0] },
+        { name: "Sektor Pantau Kalimantan Selatan", coords: [-3.2, 115.2] },
+        { name: "Sektor Pantau Kalimantan Utara", coords: [3.0, 116.0] }
     ];
 
     normalNodes.forEach(node => {
@@ -59,14 +59,14 @@ function initMap() {
     });
 
     // Titik Sensor Utama (Yang akan berubah warna saat status diubah)
-    anomalyMarker = L.circleMarker([-2.3, 113.9], { // Kordinat TN Sebangau, Kalteng
+    anomalyMarker = L.circleMarker([-2.3, 113.9], {
         radius: 10,
         fillColor: "#4caf50",
         color: "#fff",
         weight: 2,
         opacity: 1,
         fillOpacity: 0.9
-    }).addTo(petaKalimantan).bindPopup(`<b>Node KALTENG-S01 (Fokus Pantau)</b><br>Status: Menyesuaikan...`);
+    }).addTo(petaKalimantan).bindPopup(`<b>Titik Pantau Hutan Kalimantan</b><br>Status: Menyesuaikan...`);
 }
 
 // 2. INISIALISASI GRAFIK BERJALAN (Chart.js)
@@ -156,7 +156,7 @@ function ubahStatus(level) {
     logBody.insertAdjacentHTML('afterbegin', newRow);
 
     if (level === 'AWAS') {
-        alert("PERINGATAN REGIONAL: Indikasi api tingkat AWAS di sektor Kalteng. Penguncian Chain of Custody diaktifkan!");
+        alert("PERINGATAN REGIONAL: Indikasi api tingkat AWAS di wilayah Kalimantan. Penguncian Chain of Custody diaktifkan!");
     }
 }
 
