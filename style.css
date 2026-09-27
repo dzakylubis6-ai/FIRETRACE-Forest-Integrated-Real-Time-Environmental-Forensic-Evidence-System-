@@ -64,13 +64,18 @@ body {
 .sensor-card h4 { font-size: 13px; color: #ffab91; margin-bottom: 10px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 .sensor-value { font-size: 22px; font-weight: 700; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 
-/* Bottom Grid */
+/* Bagian Peta */
+.map-section { background-color: var(--panel-dark); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 100, 100, 0.15); backdrop-filter: blur(10px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+.leaflet-container { background-color: #111; }
+
+/* Bottom Grid (Grafik & Tabel) */
 .bottom-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
 .chart-section, .log-section { background-color: var(--panel-dark); padding: 20px; border-radius: 8px; border: 1px solid rgba(255, 100, 100, 0.15); backdrop-filter: blur(10px); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
 .chart-section h3, .log-section h3 { font-size: 16px; margin-bottom: 15px; border-bottom: 1px solid rgba(255, 100, 100, 0.2); padding-bottom: 10px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+.chart-section canvas { max-height: 250px; } /* Membatasi tinggi grafik agar tidak terlalu memakan layar */
 
 /* Tabel */
-.table-responsive { max-height: 300px; overflow-y: auto; }
+.table-responsive { max-height: 250px; overflow-y: auto; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(255, 100, 100, 0.1); }
 th { color: #ffab91; font-weight: bold; }
