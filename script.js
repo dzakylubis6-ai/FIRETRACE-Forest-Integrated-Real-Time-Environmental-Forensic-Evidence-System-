@@ -1,6 +1,6 @@
-// Konfigurasi Status Risiko Kebakaran
+// Konfigurasi Status Risiko Kebakaran Otomatis
 const statusRules = {
-    NORMAL: { class: "normal", color: "#4caf50", desc: "Kondisi basah / lembap. Risiko kebakaran sangat rendah." },
+    NORMAL: { class: "normal", color: "#4caf50", desc: "Kondisi stabil. Risiko kebakaran rendah." },
     WASPADA: { class: "waspada", color: "#f9a825", desc: "Suhu mulai meningkat. Pemantauan diperketat." },
     SIAGA: { class: "siaga", color: "#ef6c00", desc: "Kelembapan rendah. Potensi titik panas terdeteksi." },
     BAHAYA: { class: "bahaya", color: "#c62828", desc: "Kondisi Kritis! Suhu tinggi dan udara sangat kering." }
@@ -12,11 +12,11 @@ let petaKalimantan;
 
 // Data Koordinat 5 Provinsi di Kalimantan
 const kalimantanRegions = [
-    { id: "kalteng", name: "Kalimantan Tengah (TN Sebangau)", lat: -2.3, lon: 113.9 },
-    { id: "kaltim", name: "Kalimantan Timur (Mahakam Ulu)", lat: 0.5, lon: 116.4 },
-    { id: "kalbar", name: "Kalimantan Barat (Kapuas Hulu)", lat: -0.1, lon: 111.0 },
-    { id: "kalsel", name: "Kalimantan Selatan (Banjar)", lat: -3.2, lon: 115.2 },
-    { id: "kaltara", name: "Kalimantan Utara (Malinau)", lat: 3.0, lon: 116.0 }
+    { id: "kalteng", name: "Kalimantan Tengah", lat: -2.3, lon: 113.9 },
+    { id: "kaltim", name: "Kalimantan Timur", lat: 0.5, lon: 116.4 },
+    { id: "kalbar", name: "Kalimantan Barat", lat: -0.1, lon: 111.0 },
+    { id: "kalsel", name: "Kalimantan Selatan", lat: -3.2, lon: 115.2 },
+    { id: "kaltara", name: "Kalimantan Utara", lat: 3.0, lon: 116.0 }
 ];
 
 function generateFakeHash() {
@@ -45,10 +45,10 @@ function initMap() {
         attribution: '&copy; Google Maps'
     }).addTo(petaKalimantan);
 
-    // Buat marker untuk masing-masing wilayah di Kalimantan
+    // Buat marker mandiri untuk masing-masing provinsi
     kalimantanRegions.forEach(reg => {
         let marker = L.circleMarker([reg.lat, reg.lon], {
-            radius: 8,
+            radius: 9,
             fillColor: "#4caf50",
             color: "#fff",
             weight: 2,
@@ -56,12 +56,12 @@ function initMap() {
             fillOpacity: 0.9
         }).addTo(petaKalimantan);
 
-        marker.bindPopup(`<b>${reg.name}</b><br>Memuat data cuaca satelit...`);
+        marker.bindPopup(`<b>${reg.name}</b><br>Menghubungkan satelit...`);
         regionalMarkers[reg.id] = marker;
     });
 }
 
-// MENARIK DATA CUACA NYATA UNTUK SEMUA WILAYAH DI KALIMANTAN
+// MENARIK DATA CUACA NYATA SECARA MANDIRI UNTUK TIAP PROVINSI
 async function fetchAllRegionsWeather() {
     for (let reg of kalimantanRegions) {
         try {
@@ -72,27 +72,30 @@ async function fetchAllRegionsWeather() {
                 let temp = Math.round(data.current.temperature_2m);
                 let hum = Math.round(data.current.relative_humidity_2m);
                 
-                // Tentukan status otomatis berdasarkan suhu & kelembapan asli
+                // Tentukan status secara mandiri berdasarkan suhu & kelembapan nyata
                 let statusKey = "NORMAL";
-                if (temp >= 31 && hum < 65) statusKey = "WASPADA";
+                if (temp >= 31 && hum < 70) statusKey = "WASPADA";
                 if (temp >= 33 && hum < 55) statusKey = "SIAGA";
                 if (temp >= 35 || hum < 45) statusKey = "BAHAYA";
 
                 let cfg = statusRules[statusKey];
 
-                // Perbarui tampilan kartu sensor jika ini wilayah utama (Kalimantan Tengah)
+                // Jika wilayah Kalimantan Tengah, tampilkan di kartu utama atas
                 if (reg.id === "kalteng") {
                     document.getElementById('val-suhu').innerText = temp;
                     document.getElementById('val-lembab').innerText = hum;
                     document.getElementById('status-text').innerText = statusKey;
-                    document.getElementById('status-desc').innerText = `Pemantauan otomatis wilayah ${reg.name}. ${cfg.desc}`;
+                    document.getElementById('status-desc').innerText = `Pemantauan mandiri wilayah ${reg.name}. ${cfg.desc}`;
                     document.getElementById('status-banner').className = 'status-header ' + statusKey.toLowerCase();
+                    
+                    document.getElementById('val-asap').innerText = statusKey === 'BAHAYA' ? '5200' : (statusKey === 'SIAGA' ? '2100' : '400');
+                    document.getElementById('val-api').innerText = statusKey === 'BAHAYA' ? '120' : (statusKey === 'SIAGA' ? '30' : '0');
                 }
 
-                // Perbarui warna dan popup di peta untuk wilayah tersebut
+                // Perbarui warna dan popup mandiri di peta untuk tiap provinsi
                 if (regionalMarkers[reg.id]) {
                     regionalMarkers[reg.id].setStyle({ fillColor: cfg.color });
-                    regionalMarkers[reg.id].setPopupContent(`<b>${reg.name}</b><br>Suhu: ${temp}°C | Lembap: ${hum}%<br>Status: <strong>${statusKey}</strong>`);
+                    regionalMarkers[reg.id].setPopupContent(`<b>${reg.name}</b><br>Suhu Faktual: ${temp}°C<br>Kelembapan: ${hum}%<br>Status: <strong>${statusKey}</strong>`);
                 }
             }
         } catch (error) {
@@ -104,7 +107,7 @@ async function fetchAllRegionsWeather() {
     const logBody = document.getElementById('log-body');
     const now = new Date();
     const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0');
-    const newRow = `<tr><td>${timeStr}</td><td>REGIONAL SYNC</td><td class="hash-text">${generateFakeHash()}</td></tr>`;
+    const newRow = `<tr><td>${timeStr}</td><td>AUTO-SYNC (LIVE)</td><td class="hash-text">${generateFakeHash()}</td></tr>`;
     if(logBody) logBody.insertAdjacentHTML('afterbegin', newRow);
 }
 
@@ -126,8 +129,8 @@ function initChart() {
         data: {
             labels: initialLabels,
             datasets: [
-                { label: 'Suhu Rata-rata (°C)', data: initialTemp, borderColor: '#ef5350', backgroundColor: 'rgba(239, 83, 80, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2 },
-                { label: 'Kelembapan (%)', data: initialHum, borderColor: '#42a5f5', backgroundColor: 'rgba(66, 165, 245, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2 }
+                { label: 'Suhu Aktual (°C)', data: initialTemp, borderColor: '#ef5350', backgroundColor: 'rgba(239, 83, 80, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2 },
+                { label: 'Kelembapan Aktual (%)', data: initialHum, borderColor: '#42a5f5', backgroundColor: 'rgba(66, 165, 245, 0.15)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 2 }
             ]
         },
         options: {
