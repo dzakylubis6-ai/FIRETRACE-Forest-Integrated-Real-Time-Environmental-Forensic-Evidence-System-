@@ -28,15 +28,16 @@ document.addEventListener("DOMContentLoaded", function() {
     ubahStatus('NORMAL');
 });
 
-// 1. INISIALISASI PETA KALIMANTAN (Leaflet.js)
+// 1. INISIALISASI PETA KALIMANTAN (MENGGUNAKAN CITRA SATELIT GOOGLE)
 function initMap() {
     // Kordinat tengah Pulau Kalimantan
     petaKalimantan = L.map('kalimantan-map').setView([-0.5, 114.5], 5);
     
-   // Basemap Esri bernuansa gelap yang percuma tanpa API Key
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-        maxZoom: 16
+    // Basemap menggunakan Citra Satelit Google Maps (Hybrid)
+    L.tileLayer('http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3'],
+        attribution: '&copy; Google Maps'
     }).addTo(petaKalimantan);
 
     // Titik Sensor Lain (Status selalu Hijau/Normal)
