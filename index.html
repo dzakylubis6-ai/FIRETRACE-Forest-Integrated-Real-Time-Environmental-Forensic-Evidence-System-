@@ -4,8 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FIRETRACE - Forensic Dashboard</title>
-    <link rel="stylesheet" href="style.css?v=7">
+    
+    <!-- CSS Leaflet untuk Peta -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="style.css?v=9">
+    
+    <!-- Script Chart.js & Leaflet.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -16,9 +24,9 @@
                 <h2>FIRETRACE</h2>
                 <p>Forensic Evidence System</p>
                 <div style="margin-top: 15px; padding: 10px; background: #2a2a2a; border-radius: 6px; font-size: 12px; border-left: 3px solid #f9a825;">
-                    <strong style="color: #fff;">NODE AKTIF:</strong><br>
-                    <span style="color: #9e9e9e;">ID: KALTENG-S01</span><br>
-                    <span style="color: #9e9e9e;">Loc: TN Sebangau, Kalimantan Tengah</span>
+                    <strong style="color: #fff;">AREA PANTAU AKTIF:</strong><br>
+                    <span style="color: #9e9e9e;">REG-KALIMANTAN</span><br>
+                    <span style="color: #9e9e9e;">Cakupan: Seluruh Pulau Kalimantan (Hutan Lindung & Konsesi)</span>
                 </div>
             </div>
             <ul class="nav-menu">
@@ -37,7 +45,7 @@
                 <header class="status-header normal" id="status-banner">
                     <div class="status-info">
                         <h3>STATUS SAAT INI: <span id="status-text">NORMAL</span></h3>
-                        <p id="status-desc">Pemantauan rutin area TN Sebangau. Data baseline normal.</p>
+                        <p id="status-desc">Pemantauan regional rutin. Distribusi sensor di seluruh titik pantau Kalimantan menunjukkan data baseline normal.</p>
                     </div>
                     <div class="status-controls">
                         <label>Simulasi Logika Fuzzy:</label>
@@ -53,7 +61,7 @@
 
                 <section class="sensor-grid">
                     <div class="sensor-card">
-                        <h4>Suhu (DS18B20)</h4>
+                        <h4>Suhu Rata-rata (DS18B20)</h4>
                         <div class="sensor-value"><span id="val-suhu">27</span> °C</div>
                     </div>
                     <div class="sensor-card">
@@ -65,13 +73,19 @@
                         <div class="sensor-value"><span id="val-asap">400</span> ppm</div>
                     </div>
                     <div class="sensor-card">
-                        <h4>Radiasi UV (UVTRON)</h4>
-                        <div class="sensor-value"><span id="val-api">0</span> pulsa</div>
+                        <h4>Deteksi Api (UVTRON)</h4>
+                        <div class="sensor-value"><span id="val-api">0</span> titik</div>
                     </div>
                     <div class="sensor-card">
                         <h4>Arah & Kecepatan Angin</h4>
-                        <div class="sensor-value">SE / <span id="val-angin">1.5</span> m/s</div>
+                        <div class="sensor-value">Variabel / <span id="val-angin">1.5</span> m/s</div>
                     </div>
+                </section>
+
+                <!-- SECTION PETA KALIMANTAN -->
+                <section class="map-section" style="margin-bottom: 20px;">
+                    <h3 style="color: #fff; margin-bottom: 10px; font-size: 16px; border-bottom: 1px solid rgba(255, 100, 100, 0.2); padding-bottom: 10px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">Peta Titik Sensor Regional Kalimantan</h3>
+                    <div id="kalimantan-map" style="height: 300px; width: 100%; border-radius: 8px; border: 1px solid rgba(255, 100, 100, 0.15); box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 1;"></div>
                 </section>
 
                 <div class="bottom-grid">
@@ -86,7 +100,7 @@
                                 <thead>
                                     <tr>
                                         <th>Waktu (WIB)</th>
-                                        <th>Status</th>
+                                        <th>Status Regional</th>
                                         <th>Hash (SHA-256)</th>
                                     </tr>
                                 </thead>
@@ -101,43 +115,43 @@
             <div id="profile" class="tab-content">
                 <div class="header-halaman">
                     <h2>Analisis Profil Kejadian (Event Profile)</h2>
-                    <p>Rekonstruksi anomali lingkungan berdasarkan insiden terakhir di Node KALTENG-S01.</p>
+                    <p>Rekonstruksi anomali lingkungan berdasarkan insiden terakhir di wilayah pantau Kalimantan.</p>
                 </div>
                 
                 <div class="sensor-grid">
                     <div class="sensor-card" style="grid-column: span 2; text-align: left;">
-                        <h4 style="color: #ef5350;">Indikasi: Pembakaran Ilegal (Disengaja)</h4>
-                        <p style="font-size: 13px; color: #ccc; margin-top: 10px;">Laju kenaikan suhu (Rate of Rise) mencapai <strong>18°C dalam 3 menit</strong>. Pola eksponensial ini sangat tidak wajar untuk kebakaran alami (gesekan ranting/kemarau), mengindikasikan adanya penggunaan cairan akseleran (bensin/minyak tanah) pada lahan gambut.</p>
+                        <h4 style="color: #ef5350;">Indikasi: Pembakaran Ilegal Terdeteksi (Disengaja)</h4>
+                        <p style="font-size: 13px; color: #ccc; margin-top: 10px;">Laju kenaikan suhu (Rate of Rise) di Sektor TN Sebangau mencapai <strong>18°C dalam 3 menit</strong>. Pola eksponensial ini mengindikasikan kuat penggunaan cairan akseleran pada lahan gambut.</p>
                     </div>
                     <div class="sensor-card">
-                        <h4>Titik Koordinat</h4>
-                        <div class="sensor-value" style="font-size: 16px; margin-top: 5px;">2°18'22"S<br>113°54'10"E</div>
+                        <h4>Titik Anomali Terakhir</h4>
+                        <div class="sensor-value" style="font-size: 16px; margin-top: 5px;">2°18'22"S, 113°54'10"E<br>Sektor Kalteng-01</div>
                     </div>
                     <div class="sensor-card">
-                        <h4>Waktu Eskalasi</h4>
+                        <h4>Waktu Eskalasi (Puncak)</h4>
                         <div class="sensor-value" style="font-size: 18px; margin-top: 5px;">14:22 WIB</div>
                         <p style="font-size: 11px; color: var(--text-muted);">25 September 2026</p>
                     </div>
                 </div>
 
                 <div class="chart-section" style="margin-top: 20px;">
-                    <h3>Kronologi Anomali Sensor Utama</h3>
+                    <h3>Kronologi Eskalasi Anomali Regional</h3>
                     <div class="table-responsive">
                         <table>
                             <thead>
                                 <tr>
                                     <th>Timeline (WIB)</th>
-                                    <th>Suhu</th>
-                                    <th>Gas Karbon (CO)</th>
-                                    <th>UV Api</th>
+                                    <th>Tren Suhu</th>
+                                    <th>Akumulasi Gas (CO)</th>
+                                    <th>Deteksi Anomali</th>
                                     <th>Analisis Sistem Forensik</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>14:00:00</td><td>30 °C</td><td>450 ppm</td><td>0 pulsa</td><td style="color: #a5d6a7;">Kondisi Gambut Normal. Cuaca cerah.</td></tr>
-                                <tr><td>14:15:30</td><td>32 °C</td><td>1200 ppm</td><td>0 pulsa</td><td style="color: #ffe082;">Anomali Asap Bawah Permukaan. (Indikasi awal manusia).</td></tr>
-                                <tr><td>14:20:00</td><td>35 °C</td><td>3800 ppm</td><td>20 pulsa</td><td style="color: #ffb74d;">Titik api kecil terdeteksi. Sinyal drone verifikasi dikirim.</td></tr>
-                                <tr style="background-color: rgba(229, 57, 53, 0.2);"><td>14:22:15</td><td>53 °C</td><td>8500 ppm</td><td>350 pulsa</td><td style="color: #ef5350;"><strong>Lonjakan Ekstrem!</strong> Suhu naik 18°C seketika. Pola akseleran terdeteksi.</td></tr>
+                                <tr><td>14:00:00</td><td>Normal (30°C)</td><td>Batas Aman</td><td>Nihil</td><td style="color: #a5d6a7;">Kondisi regional terpantau kondusif.</td></tr>
+                                <tr><td>14:15:30</td><td>Naik (32°C)</td><td>Meningkat</td><td>Asap Bawah Permukaan</td><td style="color: #ffe082;">Anomali emisi terdeteksi di satu klaster.</td></tr>
+                                <tr><td>14:20:00</td><td>Siaga (35°C)</td><td>Kritis (3800 ppm)</td><td>Potensi Titik Api</td><td style="color: #ffb74d;">Fokus pantauan ditingkatkan. Sinyal drone dikirim.</td></tr>
+                                <tr style="background-color: rgba(229, 57, 53, 0.2);"><td>14:22:15</td><td>Bahaya (53°C)</td><td>Ekstrem (8500 ppm)</td><td>Konfirmasi Api Terbuka</td><td style="color: #ef5350;"><strong>Lonjakan Ekstrem!</strong> Pola akseleran terdeteksi. Bukti dikunci.</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -148,20 +162,20 @@
             <div id="audit" class="tab-content">
                 <div class="header-halaman">
                     <h2>Digital Chain of Custody (Log Terkunci)</h2>
-                    <p>Catatan tak terubahkan (immutable) dari node KALTENG-S01 untuk barang bukti elektronik persidangan.</p>
+                    <p>Catatan tak terubahkan (immutable) dari node sensor seluruh Kalimantan untuk integritas bukti.</p>
                 </div>
                 
                 <div class="log-section">
                     <div style="margin-bottom: 15px; padding: 10px; background: #333; border-radius: 5px; font-size: 13px;">
-                        <strong style="color: #64b5f6;">Status Enkripsi:</strong> Terverifikasi & Terkunci (SHA-256) | <strong style="color: #64b5f6;">ID Kasus:</strong> KLT-202609-001
+                        <strong style="color: #64b5f6;">Status Enkripsi:</strong> Terverifikasi & Terkunci (SHA-256) | <strong style="color: #64b5f6;">ID Jaringan:</strong> KAL-REGNET-01
                     </div>
                     <div class="table-responsive" style="max-height: 400px;">
                         <table>
                             <thead>
                                 <tr>
                                     <th>Timestamp Eviden (WIB)</th>
-                                    <th>Raw Sensor Data (S, K, G, UV)</th>
-                                    <th>Status Trigger</th>
+                                    <th>Agregat Sensor Data (S, K, G, UV)</th>
+                                    <th>Status Regional Trigger</th>
                                     <th>Digital Hash (SHA-256)</th>
                                 </tr>
                             </thead>
@@ -169,7 +183,7 @@
                                 <tr style="color: #ef5350; font-weight: bold;">
                                     <td>2026-09-25 14:22:15</td>
                                     <td>T:53, H:45, G:8500, UV:350</td>
-                                    <td>AWAS (LOCK)</td>
+                                    <td>AWAS (LOCK MODE)</td>
                                     <td class="hash-text">9c35795c7831c892f3a4e9bdc02...</td>
                                 </tr>
                                 <tr>
@@ -206,33 +220,33 @@
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
-                    <p>Sistem penyusunan otomatis Berita Acara Pemeriksaan (BAP) Lingkungan Digital.</p>
+                    <p>Sistem penyusunan otomatis Berita Acara Pemeriksaan (BAP) Lingkungan Digital Regional.</p>
                 </div>
                 
                 <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); max-width: 800px; margin: 0 auto; font-family: 'Times New Roman', Times, serif;">
                     <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
                         <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN</h2>
-                        <p style="margin: 5px 0 0 0; font-size: 14px;">HASIL ANALISIS SISTEM FIRETRACE (PRO-JUSTITIA)</p>
+                        <p style="margin: 5px 0 0 0; font-size: 14px;">HASIL ANALISIS SISTEM FIRETRACE REGIONAL (PRO-JUSTITIA)</p>
                     </div>
                     
-                    <p><strong>Nomor Registrasi:</strong> KLT-202609-001/FT</p>
-                    <p><strong>Lokasi Deteksi:</strong> Sektor 4, Taman Nasional Sebangau, Provinsi Kalimantan Tengah.</p>
-                    <p><strong>Waktu Insiden:</strong> Jumat, 25 September 2026 (Pukul 14.15 - 14.25 WIB)</p>
+                    <p><strong>Nomor Registrasi:</strong> KAL-REG-2026/09/FT-01</p>
+                    <p><strong>Lokasi Deteksi Anomali:</strong> Jaringan Pemantauan Hutan Gambut, Wilayah Kalimantan (Sektor Tengah).</p>
+                    <p><strong>Waktu Insiden Terkait:</strong> Jumat, 25 September 2026 (Pukul 14.15 - 14.25 WIB)</p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">RINGKASAN KEJADIAN:</h4>
-                    <p style="text-align: justify; line-height: 1.6;">Berdasarkan integritas data sensor yang telah diamankan melalui enkripsi <em>Hash SHA-256</em>, sistem FIRETRACE mendeteksi adanya aktivitas <strong>pembakaran lahan yang disengaja</strong>. Hal ini dibuktikan dengan lonjakan ekstrem pada variabel suhu (DS18B20) dari 35°C menuju 53°C hanya dalam interval waktu 135 detik. Pola perpindahan kalor (Rate of Rise) eksponensial ini melampaui ambang batas kebakaran biomassa gambut alami, yang secara saintifik membuktikan kuat dugaan penggunaan bahan bakar cair/akseleran di titik koordinat 2°18'22"S, 113°54'10"E.</p>
+                    <h4 style="margin-top: 20px; text-decoration: underline;">RINGKASAN ANALISIS:</h4>
+                    <p style="text-align: justify; line-height: 1.6;">Berdasarkan agregasi data sensor dari jaringan regional Kalimantan yang telah diamankan dengan enkripsi <em>Hash SHA-256</em>, sistem FIRETRACE mendeteksi pola yang tidak wajar pada salah satu sektor pantau, yang mengindikasikan <strong>aktivitas pembakaran yang disengaja</strong>. Hal ini dibuktikan dengan lonjakan ekstrem laju perpindahan kalor (Rate of Rise), di mana suhu melonjak dari 35°C menjadi 53°C hanya dalam 135 detik. Pola eksponensial ini tidak konsisten dengan profil kebakaran hutan alami, memperkuat dugaan adanya intervensi akseleran.</p>
                     
                     <h4 style="margin-top: 20px; text-decoration: underline;">STATUS DIGITAL CHAIN OF CUSTODY:</h4>
-                    <p>TERVERIFIKASI SAH TANDA BUKTI ELEKTRONIK (Sesuai UU ITE).</p>
+                    <p>TERVERIFIKASI. BUKTI ELEKTRONIK SAH (Sesuai UU ITE).</p>
                     
                     <div style="margin-top: 30px; text-align: right;">
-                        <button class="btn-download" onclick="window.print()" style="background-color: #1a237e;">🖨️ Cetak Laporan (PDF)</button>
+                        <button class="btn-download" onclick="window.print()" style="background-color: #1a237e;">🖨️ Cetak Laporan Regional (PDF)</button>
                     </div>
                 </div>
             </div>
 
         </main>
     </div>
-    <script src="script.js?v=4"></script>
+    <script src="script.js?v=6"></script>
 </body>
 </html>
