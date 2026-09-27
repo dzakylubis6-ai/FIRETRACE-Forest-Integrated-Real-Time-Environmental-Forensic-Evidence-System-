@@ -33,10 +33,10 @@ function initMap() {
     // Kordinat tengah Pulau Kalimantan
     petaKalimantan = L.map('kalimantan-map').setView([-0.5, 114.5], 5);
     
-    // Basemap bernuansa gelap agar cocok dengan dashboard
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap contributors & CARTO',
-        maxZoom: 18
+   // Basemap Esri bernuansa gelap yang percuma tanpa API Key
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+        maxZoom: 16
     }).addTo(petaKalimantan);
 
     // Titik Sensor Lain (Status selalu Hijau/Normal)
