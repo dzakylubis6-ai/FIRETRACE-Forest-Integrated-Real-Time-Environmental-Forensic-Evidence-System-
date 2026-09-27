@@ -16,10 +16,10 @@ body {
     font-family: 'Inter', sans-serif; 
     color: var(--text-main); 
     
-    /* --- GAMBAR LATAR BELAKANG HUTAN TERBAKAR --- */
+    /* --- GAMBAR LATAR BELAKANG HUTAN KALIMANTAN (MAHAKAM ULU) --- */
     background-color: var(--bg-dark);
-    /* Overlay gelap kemerahan dipadukan dengan foto kebakaran hutan gambut */
-    background-image: linear-gradient(rgba(25, 10, 10, 0.75), rgba(20, 10, 10, 0.85)), url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=2000&auto=format&fit=crop');
+    /* Overlay gelap transparan dipadukan dengan gambar tutupan hutan Kalimantan */
+    background-image: linear-gradient(rgba(15, 10, 10, 0.65), rgba(10, 10, 10, 0.75)), url('Foto-Udara-tutupan-hutan-di-wilayah-Mahakam-Ulu-Kalimantan-Timur_2017.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
