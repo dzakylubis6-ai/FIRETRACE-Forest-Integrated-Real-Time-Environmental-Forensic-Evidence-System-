@@ -51,11 +51,14 @@ function initMap() {
             radius: 8, fillColor: "#4caf50", color: "#fff", weight: 2, opacity: 1, fillOpacity: 0.9
         }).addTo(petaKalimantan);
 
+        // Tooltip sederhana
         marker.bindTooltip(`<b>${reg.name}</b><br>Klik untuk fokus ke area ini`, {permanent: false, direction: "top"});
         
         // INTERAKTIF KLIK TITIK PETA
         marker.on('click', function() {
             ubahFokusWilayah(reg.id);
+            // Perbarui pop-up saat diklik dengan data terakhir
+            this.bindPopup(`<b>${reg.name}</b><br>Suhu: ${reg.baseTemp.toFixed(2)}°C<br>Lembap: ${reg.baseHum.toFixed(2)}%`).openPopup();
         });
         regionalMarkers[reg.id] = marker;
     });
@@ -66,10 +69,11 @@ function ubahFokusWilayah(id) {
     activeRegionId = id;
     const reg = kalimantanRegions.find(r => r.id === id);
     
+    // Pastikan ID ini sama persis dengan yang ada di HTML
     document.getElementById('sidebar-wilayah').innerText = reg.name;
     document.getElementById('nama-wilayah-status').innerText = reg.short;
-    document.getElementById('nama-wilayah-suhu').innerText = reg.name;
-    document.getElementById('nama-wilayah-lembab').innerText = reg.name;
+    document.getElementById('nama-wilayah-suhu').innerText = reg.name; // Berubah menjadi misal "Kalimantan Selatan"
+    document.getElementById('nama-wilayah-lembab').innerText = reg.name; // Berubah menjadi misal "Kalimantan Selatan"
     document.getElementById('grafik-wilayah').innerText = reg.name;
     document.getElementById('profile-nama-wilayah').innerText = reg.name;
     
@@ -77,7 +81,8 @@ function ubahFokusWilayah(id) {
     document.getElementById('bap-lokasi').innerText = `${reg.name} (Fokus Titik)`;
 
     resetGrafik();
-    alert(`MENGALIHKAN FOKUS: Dashboard dan Laporan Forensik kini mengunci data real-time untuk ${reg.name}.`);
+    // Hilangkan alert agar tidak mengganggu, atau biarkan jika diinginkan
+    // alert(`MENGALIHKAN FOKUS: Dashboard dan Laporan Forensik kini mengunci data real-time untuk ${reg.name}.`);
 }
 
 // 2. FUNGSI KEMBALI KE SELURUH KALIMANTAN (TOMBOL BIRU)
@@ -85,8 +90,8 @@ function resetKeSemuaProvinsi() {
     activeRegionId = "all";
     document.getElementById('sidebar-wilayah').innerText = "Seluruh Kalimantan";
     document.getElementById('nama-wilayah-status').innerText = "SELURUH KALIMANTAN";
-    document.getElementById('nama-wilayah-suhu').innerText = "Rata-Rata Kalimantan";
-    document.getElementById('nama-wilayah-lembab').innerText = "Rata-Rata Kalimantan";
+    document.getElementById('nama-wilayah-suhu').innerText = "Rata-rata Kalimantan";
+    document.getElementById('nama-wilayah-lembab').innerText = "Rata-rata Kalimantan";
     document.getElementById('grafik-wilayah').innerText = "Seluruh Kalimantan";
     document.getElementById('profile-nama-wilayah').innerText = "Seluruh Kalimantan";
 
