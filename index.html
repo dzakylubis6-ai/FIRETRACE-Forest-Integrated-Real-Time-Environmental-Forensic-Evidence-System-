@@ -6,7 +6,7 @@
     <title>FIRETRACE - Forensic Dashboard</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css?v=22">
+    <link rel="stylesheet" href="style.css?v=999">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -51,14 +51,14 @@
 
                 <section class="sensor-grid">
                     <div class="sensor-card">
-                        <!-- ID disiapkan di sini -->
-                        <h4>Suhu <span id="nama-wilayah-suhu">Rata-rata Kalimantan</span></h4>
+                        <!-- INI BAGIAN YANG DIPERBAIKI -->
+                        <h4 id="judul-suhu">Suhu: Seluruh Kalimantan</h4>
                         <div class="sensor-value"><span id="val-suhu">28.00</span> °C</div>
                         <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Pergantian per detik: <strong id="delta-suhu" style="color: #fff;">0.00 °C/dtk</strong></div>
                     </div>
                     <div class="sensor-card">
-                        <!-- ID disiapkan di sini -->
-                        <h4>Kelembapan <span id="nama-wilayah-lembab">Rata-rata Kalimantan</span></h4>
+                        <!-- INI BAGIAN YANG DIPERBAIKI -->
+                        <h4 id="judul-lembab">Kelembapan: Seluruh Kalimantan</h4>
                         <div class="sensor-value"><span id="val-lembab">78.00</span> %</div>
                         <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Pergantian per detik: <strong id="delta-lembab" style="color: #fff;">0.00 %/dtk</strong></div>
                     </div>
@@ -177,6 +177,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=22"></script>
+    <script src="script.js?v=999"></script>
 </body>
 </html>
