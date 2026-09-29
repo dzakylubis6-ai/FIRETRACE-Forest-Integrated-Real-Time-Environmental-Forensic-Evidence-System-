@@ -6,14 +6,14 @@
     <title>FIRETRACE - Forensic Dashboard</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css?v=35">
+    <link rel="stylesheet" href="style.css?v=38">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar Original -->
+        <!-- Sidebar Asli (4 Menu Utama) -->
         <aside class="sidebar">
             <div class="logo-area">
                 <h2>FIRETRACE</h2>
@@ -33,7 +33,7 @@
         </aside>
 
         <main class="main-content">
-            <!-- TAB 1: Monitoring -->
+            <!-- TAB 1: Real-Time Monitoring (Bersih Sesuai Asal) -->
             <div id="monitoring" class="tab-content active">
                 <header class="status-header normal" id="status-banner">
                     <div class="status-info">
@@ -99,24 +99,24 @@
                 </div>
             </div>
 
-            <!-- TAB 2: Fire Event Profile -->
+            <!-- TAB 2: Fire Event Profile (Dilengkapi Analisis Alamiah vs Ulah Manusia) -->
             <div id="profile" class="tab-content">
                 <div class="header-halaman">
-                    <h2>Analisis Profil Kejadian & Prediktif</h2>
-                    <p>Rekonstruksi anomali lingkungan berdasarkan tren faktual area pantau.</p>
+                    <h2>Analisis Profil Kejadian & Atribusi Pemicu</h2>
+                    <p>Rekonstruksi anomali lingkungan berdasarkan pembandingan parameter alami dan indikasi aktivitas manusia.</p>
                 </div>
                 <div class="sensor-grid">
                     <div class="sensor-card" style="grid-column: span 2; text-align: left;">
-                        <h4 style="color: #ef5350;">Pemodelan AI: Area <span id="profile-nama-wilayah">Seluruh Kalimantan</span></h4>
+                        <h4 style="color: #ef5350;">Pemodelan AI Atribusi: Area <span id="profile-nama-wilayah">Seluruh Kalimantan</span></h4>
                         <p style="font-size: 13px; color: #ccc; margin-top: 10px; line-height: 1.5;" id="profile-prediksi-teks">Mengambil data validasi awal...</p>
                     </div>
                     <div class="sensor-card">
-                        <h4>Tingkat Ancaman</h4>
-                        <div class="sensor-value" style="font-size: 16px; margin-top: 5px; color: #4caf50;" id="profile-tingkat-ancaman">RENDAH</div>
+                        <h4>Status Pemicu Dominan</h4>
+                        <div class="sensor-value" style="font-size: 15px; margin-top: 5px; color: #4caf50;" id="profile-tingkat-ancaman">ALAMI / NORMAL</div>
                     </div>
                     <div class="sensor-card">
-                        <h4>Waktu Proyeksi</h4>
-                        <div class="sensor-value" style="font-size: 18px; margin-top: 5px;">+3 Jam Kedepan</div>
+                        <h4>Metodologi Validasi</h4>
+                        <div class="sensor-value" style="font-size: 14px; margin-top: 5px; color: #81d4fa;">7 Parameter Tertimbang</div>
                     </div>
                 </div>
             </div>
@@ -139,32 +139,108 @@
                 </div>
             </div>
 
-            <!-- TAB 4: Forensic Report -->
+            <!-- TAB 4: Forensic Report (Dilengkapi Tabel Matriks Resmi Alami vs Manusia) -->
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
                     <p>Berita Acara Pemeriksaan (BAP) Lingkungan Digital (Update Resmi Per 1 Menit).</p>
                 </div>
-                <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 800px; margin: 0 auto; font-family: 'Times New Roman', serif;">
+                <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 850px; margin: 0 auto; font-family: 'Times New Roman', serif;">
                     <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
                         <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN (OFFICIAL)</h2>
-                        <p style="margin: 5px 0 0 0; font-size: 14px;">HASIL ANALISIS FAKTUAL (PRO-JUSTITIA)</p>
+                        <p style="margin: 5px 0 0 0; font-size: 14px;">BERITA ACARA PEMERIKSAAN ATRIBUSI PENYEBAB (PRO-JUSTITIA)</p>
                     </div>
                     
                     <p><strong>Nomor Registrasi BAP:</strong> KAL-REG-<span id="bap-reg-wilayah">ALL</span>-<span id="bap-menit">00</span></p>
                     <p><strong>Waktu Penerbitan Laporan:</strong> <span id="bap-waktu" style="color: #1a237e; font-weight: bold;">Mengekstrak data valid...</span></p>
                     <p><strong>Lokasi Objek Pemantauan:</strong> Wilayah <span id="bap-lokasi" style="font-weight: bold; text-decoration: underline;">Seluruh Kalimantan (Agregat 5 Provinsi)</span></p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">KONDISI FAKTUAL DAN RUJUKAN STANDAR (BMKG & KLHK):</h4>
+                    <h4 style="margin-top: 20px; text-decoration: underline;">1. Kondisi Faktual & Parameter Lapangan:</h4>
                     <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">Memproses data telemetri satelit...</p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">PROYEKSI AI DAN ANALISIS RISIKO:</h4>
+                    <h4 style="margin-top: 20px; text-decoration: underline;">2. Matriks Indikator Atribusi (Alami vs Aktivitas Manusia / Antropogenik):</h4>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 10px; margin-bottom: 15px;">
+                        <thead>
+                            <tr style="background: #f0f0f0; border-bottom: 2px solid #000;">
+                                <th style="border: 1px solid #999; padding: 5px; text-align: center;">No</th>
+                                <th style="border: 1px solid #999; padding: 5px; text-align: left;">Indikator</th>
+                                <th style="border: 1px solid #999; padding: 5px; text-align: left;">Sumber Data</th>
+                                <th style="border: 1px solid #999; padding: 5px; text-align: left;">Indikasi Ulah Manusia</th>
+                                <th style="border: 1px solid #999; padding: 5px; text-align: left;">Indikasi Alami (Penyanggah)</th>
+                                <th style="border: 1px solid #999; padding: 5px; text-align: center;">Bobot</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center;">1</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Jumlah node terpicu</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">UVTRON, MQ135</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Beberapa node terpicu berdekatan/berjajar (pola pembakaran)</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Satu node terpicu, lalu menyebar bertahap secara alami</td>
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-weight: bold;">20</td>
+                            </tr>
+                            <tr style="background: #f9f9f9;">
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center;">2</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Aktivitas petir sebelum T0</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">BMKG</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Tidak ada sambaran petir di sekitar titik awal sebelum T0</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Ada sambaran petir tercatat di dekat titik awal</td>
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-weight: bold;">20</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center;">3</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Laju kenaikan asap</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">MQ135 (Rate of change)</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Kenaikan konsentrasi asap sangat cepat dalam waktu singkat</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Kenaikan lambat dan bertahap mengikuti titik panas</td>
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-weight: bold;">15</td>
+                            </tr>
+                            <tr style="background: #f9f9f9;">
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center;">4</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Curah hujan</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">BMKG</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Tidak ada hujan, vegetasi kering siap bakar oleh sulutan</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Kondisi cuaca ekstrem tanpa faktor pemicu luar</td>
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-weight: bold;">10</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center;">5</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Kesesuaian arah sebaran</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Anemometer & Visual</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Pola sebaran tidak selaras dengan arah angin / titik terpisah</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Sebaran api/asap searah dengan angin dari satu titik</td>
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-weight: bold;">15</td>
+                            </tr>
+                            <tr style="background: #f9f9f9;">
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center;">6</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Waktu T0</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">UVTRON</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">T0 pada jam khas aktivitas manusia, bukan puncak panas</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">T0 pada puncak suhu dan kekeringan harian</td>
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-weight: bold;">10</td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center;">7</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Tren pengeringan/pemanasan</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">DS18B20, BME280</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Suhu & RH wajar, tanpa pemanasan ekstrem bertahap</td>
+                                <td style="border: 1px solid #ccc; padding: 4px;">Suhu naik dan RH turun ekstrem selama beberapa hari</td>
+                                <td style="border: 1px solid #ccc; padding: 4px; text-align: center; font-weight: bold;">10</td>
+                            </tr>
+                            <tr style="font-weight: bold; background: #eaeaea;">
+                                <td colspan="5" style="border: 1px solid #999; padding: 5px; text-align: right;">TOTAL BOBOT PENILAIAN ATRIBUSI:</td>
+                                <td style="border: 1px solid #999; padding: 5px; text-align: center;">100</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 style="margin-top: 15px; text-decoration: underline;">3. Kesimpulan Atribusi & Proyeksi Hukum (Pro-Justitia):</h4>
                     <p style="text-align: justify; line-height: 1.6;" id="bap-prediksi">Menyusun proyeksi hukum lingkungan...</p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">STATUS DIGITAL CHAIN OF CUSTODY (DCoC):</h4>
+                    <h4 style="margin-top: 15px; text-decoration: underline;">STATUS DIGITAL CHAIN OF CUSTODY (DCoC):</h4>
                     <p>Laporan ini diekstrak secara otomatis, sah secara elektronik, dan dilindungi enkripsi kriptografi. <br>Hash Verifikasi: <strong id="bap-hash" style="font-family: monospace; color: #1a237e;">-</strong></p>
                     
-                    <div style="margin-top: 30px; text-align: right;">
+                    <div style="margin-top: 25px; text-align: right;">
                         <button onclick="window.print()" style="background-color: #1a237e; color: white; padding: 10px 20px; cursor: pointer; border:none; border-radius:4px; font-weight:bold;">🖨️ Cetak BAP Forensik (PDF)</button>
                     </div>
                 </div>
@@ -173,6 +249,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=35"></script>
+    <script src="script.js?v=38"></script>
 </body>
 </html>
