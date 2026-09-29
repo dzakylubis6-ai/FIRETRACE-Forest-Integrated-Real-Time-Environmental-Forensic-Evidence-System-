@@ -214,7 +214,6 @@ function perSecondDashboardUpdate() {
     document.getElementById('val-suhu').innerText = liveTemp.toFixed(2);
     document.getElementById('val-lembab').innerText = liveHum.toFixed(2);
     
-    // Indikator Status Suhu Berdasarkan Ambang Batas Karhutla
     let deltaSuhuEl = document.getElementById('delta-suhu');
     if(liveTemp >= 35) {
         deltaSuhuEl.innerHTML = "🔥 BAHAYA KRITIS (>35°C)";
@@ -227,7 +226,6 @@ function perSecondDashboardUpdate() {
         deltaSuhuEl.style.color = "#69f0ae";
     }
 
-    // Indikator Status Kelembapan Berdasarkan Ambang Batas Karhutla
     let deltaLembabEl = document.getElementById('delta-lembab');
     if(liveHum <= 45) {
         deltaLembabEl.innerHTML = "🔥 BAHAYA KERING (≤45%)";
