@@ -6,14 +6,14 @@
     <title>FIRETRACE - Forensic Dashboard</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css?v=23">
+    <link rel="stylesheet" href="style.css?v=24">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar -->
+        <!-- Sidebar Navigasi -->
         <aside class="sidebar">
             <div class="logo-area">
                 <h2>FIRETRACE</h2>
@@ -125,7 +125,7 @@
             <div id="audit" class="tab-content">
                 <div class="header-halaman">
                     <h2>Digital Chain of Custody (Log Terkunci)</h2>
-                    <p>Catatan forensik tervalidasi yang dienkripsi per menit.</p>
+                    <p>Catatan forensik tervalidasi yang dienkripsi per siklus.</p>
                 </div>
                 <div class="log-section">
                     <div class="table-responsive" style="max-height: 400px;">
@@ -139,7 +139,7 @@
                 </div>
             </div>
 
-            <!-- TAB 4: FORENSIC REPORT (DIUBAH MENJADI 1 MENIT) -->
+            <!-- TAB 4: FORENSIC REPORT (UPDATE PER 1 MENIT) -->
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
@@ -147,16 +147,16 @@
                 </div>
                 <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 800px; margin: 0 auto; font-family: 'Times New Roman', serif;">
                     <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
-                        <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN</h2>
+                        <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN (OFFICIAL)</h2>
                         <p style="margin: 5px 0 0 0; font-size: 14px;">HASIL ANALISIS PREDIKTIF (PRO-JUSTITIA)</p>
                     </div>
                     
                     <p><strong>Nomor Registrasi BAP:</strong> KAL-REG-<span id="bap-reg-wilayah">ALL</span>-<span id="bap-menit">00</span></p>
-                    <p><strong>Waktu Penerbitan Laporan:</strong> <span id="bap-waktu" style="color: #1a237e; font-weight: bold;">Menunggu siklus 1 menit...</span></p>
+                    <p><strong>Waktu Penerbitan Laporan:</strong> <span id="bap-waktu" style="color: #1a237e; font-weight: bold;">Menunggu sinkronisasi...</span></p>
                     <p><strong>Lokasi Objek Pemantauan:</strong> Wilayah <span id="bap-lokasi" style="font-weight: bold; text-decoration: underline;">Seluruh Kalimantan (Agregat 5 Provinsi)</span></p>
                     
                     <h4 style="margin-top: 20px; text-decoration: underline;">KONDISI FAKTUAL DAN RUJUKAN STANDAR (KLHK & WMO):</h4>
-                    <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">Mengumpulkan data telemetri validasi...</p>
+                    <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">Memuat data faktual...</p>
                     
                     <h4 style="margin-top: 20px; text-decoration: underline;">PROYEKSI AI DAN ANALISIS RISIKO:</h4>
                     <p style="text-align: justify; line-height: 1.6;" id="bap-prediksi">Menyusun proyeksi hukum lingkungan...</p>
@@ -173,6 +173,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=23"></script>
+    <script src="script.js?v=24"></script>
 </body>
 </html>
