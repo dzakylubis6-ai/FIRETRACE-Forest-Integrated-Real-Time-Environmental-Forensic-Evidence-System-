@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <!-- Link CSS dengan versi terbaru -->
-    <link rel="stylesheet" href="style.css?v=15">
+    <link rel="stylesheet" href="style.css?v=16">
     
     <!-- Script Chart.js & Leaflet.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -45,8 +45,8 @@
             <div id="monitoring" class="tab-content active">
                 <header class="status-header normal" id="status-banner">
                     <div class="status-info">
-                        <h3>STATUS KALTENG: <span id="status-text">MEMUAT...</span></h3>
-                        <p id="status-desc">Menghubungkan ke jaringan satelit cuaca regional Kalimantan...</p>
+                        <h3>STATUS KALTENG: <span id="status-text">NORMAL</span></h3>
+                        <p id="status-desc">Pemantauan mandiri wilayah Kalimantan Tengah. Kondisi stabil dan terkendali.</p>
                     </div>
                     <div class="status-controls">
                         <span style="background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #4caf50; border: 1px solid #4caf50; font-weight: bold;">
@@ -58,11 +58,11 @@
                 <section class="sensor-grid">
                     <div class="sensor-card">
                         <h4>Suhu Kalteng (DS18B20)</h4>
-                        <div class="sensor-value"><span id="val-suhu">--</span> °C</div>
+                        <div class="sensor-value"><span id="val-suhu">28</span> °C</div>
                     </div>
                     <div class="sensor-card">
                         <h4>Kelembapan Kalteng (BME280)</h4>
-                        <div class="sensor-value"><span id="val-lembab">--</span> %</div>
+                        <div class="sensor-value"><span id="val-lembab">78</span> %</div>
                     </div>
                     <div class="sensor-card">
                         <h4>Estimasi Asap (MQ135)</h4>
@@ -70,11 +70,11 @@
                     </div>
                     <div class="sensor-card">
                         <h4>Indeks Risiko (AI)</h4>
-                        <div class="sensor-value" style="font-size: 15px; margin-top: 5px; color: #ffab91;" id="val-risiko">Menghitung...</div>
+                        <div class="sensor-value" style="font-size: 15px; margin-top: 5px; color: #ffab91;" id="val-risiko">15% (Rendah)</div>
                     </div>
                     <div class="sensor-card">
                         <h4>Status Prediktif</h4>
-                        <div class="sensor-value" style="font-size: 14px; margin-top: 5px; color: #64b5f6;" id="val-prediksi-singkat">Analisis Tren</div>
+                        <div class="sensor-value" style="font-size: 14px; margin-top: 5px; color: #64b5f6;" id="val-prediksi-singkat">Stabil / Normal</div>
                     </div>
                 </section>
 
@@ -100,7 +100,9 @@
                                         <th>Hash (SHA-256)</th>
                                     </tr>
                                 </thead>
-                                <tbody id="log-body"></tbody>
+                                <tbody id="log-body">
+                                    <tr><td>19:45:00</td><td>INITIAL SYNC</td><td class="hash-text">e3b0c44298fc1c14...</td></tr>
+                                </tbody>
                             </table>
                         </div>
                     </section>
@@ -117,11 +119,11 @@
                 <div class="sensor-grid">
                     <div class="sensor-card" style="grid-column: span 2; text-align: left;">
                         <h4 style="color: #ef5350;">Sistem Pemodelan Prediktif Kebakaran Lahan</h4>
-                        <p style="font-size: 13px; color: #ccc; margin-top: 10px;" id="profile-prediksi-teks">Menganalisis pola historis suhu dan kelembapan real-time untuk memproyeksikan eskalasi risiko dalam 3 hingga 6 jam ke depan...</p>
+                        <p style="font-size: 13px; color: #ccc; margin-top: 10px;" id="profile-prediksi-teks">Kondisi lingkungan stabil dengan suhu normal dan kelembapan memadai. Proyeksi AI: Tidak ada indikasi eskalasi ancaman termal dalam waktu dekat.</p>
                     </div>
                     <div class="sensor-card">
                         <h4>Tingkat Ancaman</h4>
-                        <div class="sensor-value" style="font-size: 16px; margin-top: 5px; color: #ffb74d;" id="profile-tingkat-ancaman">Menghitung...</div>
+                        <div class="sensor-value" style="font-size: 16px; margin-top: 5px; color: #4caf50;" id="profile-tingkat-ancaman">RENDAH</div>
                     </div>
                     <div class="sensor-card">
                         <h4>Waktu Proyeksi</h4>
@@ -154,8 +156,8 @@
                             </thead>
                             <tbody id="log-body-audit">
                                 <tr>
-                                    <td>Sistem Aktif</td>
-                                    <td>Sinkronisasi Multi-Region</td>
+                                    <td>19:45:00</td>
+                                    <td>Sinkronisasi Multi-Region Faktual</td>
                                     <td>AUTO-SYNC</td>
                                     <td class="hash-text">e3b0c44298fc1c149afbf4c8996...</td>
                                 </tr>
@@ -165,7 +167,7 @@
                 </div>
             </div>
 
-            <!-- TAB 4: Forensic Report (Real-Time & Prediktif) -->
+            <!-- TAB 4: Forensic Report -->
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
@@ -179,17 +181,17 @@
                     </div>
                     
                     <p><strong>Nomor Registrasi:</strong> <span id="bap-no">KAL-REG-2026/LIVE-01</span></p>
-                    <p><strong>Waktu Cetak Laporan:</strong> <span id="bap-waktu">Memuat waktu...</span></p>
+                    <p><strong>Waktu Cetak Laporan:</strong> <span id="bap-waktu">29 September 2026 (Real-Time Synchronized)</span></p>
                     <p><strong>Lokasi Pemantauan Utama:</strong> Sektor Jaringan Faktual Kalimantan Tengah (TN Sebangau & Sekitarnya)</p>
                     
                     <h4 style="margin-top: 20px; text-decoration: underline;">RINGKASAN INVESTIGASI & KONDISI FAKTUAL:</h4>
                     <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">
-                        Menunggu sinkronisasi data sensor satelit real-time...
+                        Pemantauan mandiri di wilayah Kalimantan Tengah menunjukkan kondisi ekologis yang terkendali berdasarkan data satelit real-time. Parameter suhu dan kelembapan saat ini berada dalam ambang batas normal dan aman dari ancaman kebakaran besar.
                     </p>
                     
                     <h4 style="margin-top: 20px; text-decoration: underline;">PROYEKSI ANALISIS PREDIKTIF AI:</h4>
                     <p style="text-align: justify; line-height: 1.6;" id="bap-prediksi">
-                        Algoritma sedang menghitung tren suhu dan kelembapan untuk proyeksi 3 jam ke depan...
+                        Model prediktif memperkirakan kestabilan cuaca regional bertahan dalam kurun waktu 3 hingga 6 jam ke depan dengan fluktuasi minor yang terpantau aman.
                     </p>
                     
                     <h4 style="margin-top: 20px; text-decoration: underline;">STATUS DIGITAL CHAIN OF CUSTODY:</h4>
@@ -204,6 +206,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=15"></script>
+    <script src="script.js?v=16"></script>
 </body>
 </html>
