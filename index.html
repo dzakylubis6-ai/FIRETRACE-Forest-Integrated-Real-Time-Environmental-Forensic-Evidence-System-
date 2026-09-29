@@ -6,13 +6,15 @@
     <title>FIRETRACE - Forest Integrated Real-Time Environmental & Forensic Evidence System</title>
     <style>
         :root {
-            --primary-color: #c0392b;
-            --secondary-color: #2c3e50;
-            --accent-color: #e67e22;
-            --bg-color: #f8f9fa;
+            --primary-color: #b71c1c;
+            --secondary-color: #0f172a;
+            --accent-color: #d97706;
+            --success-color: #16a34a;
+            --info-color: #2563eb;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --text-color: #333333;
-            --border-color: #e0e0e0;
+            --text-color: #1e293b;
+            --border-color: #cbd5e1;
         }
 
         * {
@@ -22,7 +24,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             line-height: 1.7;
             color: var(--text-color);
             background-color: var(--bg-color);
@@ -31,20 +33,24 @@
         header {
             background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
             color: #ffffff;
-            padding: 3rem 1rem;
+            padding: 3.5rem 1.5rem;
             text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         header h1 {
             font-size: 2.5rem;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             margin-bottom: 0.5rem;
+            font-weight: 800;
         }
 
         header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            font-style: italic;
+            font-size: 1.15rem;
+            opacity: 0.95;
+            font-weight: 300;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
         nav {
@@ -52,7 +58,7 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
 
         nav ul {
@@ -63,62 +69,69 @@
         }
 
         nav a {
-            color: #ffffff;
+            color: #f8fafc;
             text-decoration: none;
-            padding: 1rem 1.5rem;
+            padding: 1rem 1.2rem;
             display: block;
             font-weight: 600;
-            transition: background 0.3s;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
         nav a:hover {
             background-color: var(--primary-color);
+            color: #ffffff;
         }
 
         .container {
-            max-width: 1100px;
-            margin: 2rem auto;
+            max-width: 1150px;
+            margin: 2.5rem auto;
             padding: 0 1.5rem;
         }
 
         section {
             background: var(--card-bg);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid #e2e8f0;
         }
 
         h2 {
             color: var(--primary-color);
             border-bottom: 3px solid var(--primary-color);
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
+            padding-bottom: 0.6rem;
+            margin-bottom: 1.8rem;
             font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         h3 {
             color: var(--secondary-color);
-            margin: 1.5rem 0 1rem;
+            margin: 1.8rem 0 1rem;
+            font-size: 1.3rem;
         }
 
         p {
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
             text-align: justify;
         }
 
         ul, ol {
-            margin-left: 1.5rem;
-            margin-bottom: 1rem;
+            margin-left: 1.8rem;
+            margin-bottom: 1.2rem;
         }
 
         li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 1.5rem;
             margin: 1.5rem 0;
         }
@@ -126,72 +139,109 @@
         .card {
             border: 1px solid var(--border-color);
             padding: 1.5rem;
-            border-radius: 6px;
-            border-top: 4px solid var(--accent-color);
-            background-color: #fafafa;
+            border-radius: 8px;
+            border-top: 5px solid var(--accent-color);
+            background-color: #f8fafc;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
         }
 
         .card h4 {
             color: var(--secondary-color);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.6rem;
+            font-size: 1.1rem;
         }
 
         .table-wrapper {
             overflow-x: auto;
             margin: 1.5rem 0;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
+            background-color: #ffffff;
         }
 
         th, td {
             border: 1px solid var(--border-color);
-            padding: 0.75rem 1rem;
+            padding: 0.85rem 1rem;
             text-align: left;
         }
 
         th {
             background-color: var(--secondary-color);
             color: #ffffff;
+            font-weight: 600;
         }
 
         tr:nth-child(even) {
-            background-color: #f8f9fa;
+            background-color: #f1f5f9;
         }
 
         .highlight-box {
-            background-color: #eef7fc;
-            border-left: 5px solid #2980b9;
-            padding: 1rem 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 0 4px 4px 0;
+            background-color: #eff6ff;
+            border-left: 5px solid var(--info-color);
+            padding: 1.2rem 1.5rem;
+            margin: 1.8rem 0;
+            border-radius: 0 8px 8px 0;
         }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .bg-normal { background-color: var(--success-color); }
+        .bg-waspada { background-color: #eab308; }
+        .bg-siaga { background-color: var(--accent-color); }
+        .bg-bahaya { background-color: #e11d48; }
+        .bg-awas { background-color: var(--primary-color); }
 
         .weight-badge {
             background-color: var(--primary-color);
             color: white;
-            padding: 2px 8px;
+            padding: 3px 10px;
             border-radius: 12px;
             font-weight: bold;
             font-size: 0.85rem;
             display: inline-block;
         }
 
+        .formula-box {
+            background-color: #0f172a;
+            color: #38bdf8;
+            padding: 1.2rem;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
         footer {
             background-color: var(--secondary-color);
             color: #ffffff;
             text-align: center;
-            padding: 1.5rem;
+            padding: 2rem;
             margin-top: 3rem;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
             header h1 { font-size: 1.8rem; }
             nav ul { flex-direction: column; text-align: center; }
-            nav a { padding: 0.75rem; }
+            nav a { padding: 0.8rem; }
+            section { padding: 1.5rem; }
         }
     </style>
 </head>
@@ -205,11 +255,12 @@
     <nav>
         <ul>
             <li><a href="#pendahuluan">Pendahuluan</a></li>
-            <li><a href="#arsitektur">Sistem & Arsitektur</a></li>
-            <li><a href="#komponen">Komponen Hardware</a></li>
-            <li><a href="#indikator-manusia">Indikator Aktivitas Manusia</a></li>
-            <li><a href="#forensik">Inovasi Forensik</a></li>
-            <li><a href="#penutup">Penutup</a></li>
+            <li><a href="#arsitektur">Arsitektur & Operasional</a></li>
+            <li><a href="#sensor">Sensor & Metode</a></li>
+            <li><a href="#fuzzy">Fuzzy Logic</a></li>
+            <li><a href="#indikator-manusia">Indikator Antropogenik</a></li>
+            <li><a href="#forensik">Integritas & Chain of Custody</a></li>
+            <li><a href="#evaluasi">Evaluasi & Penutup</a></li>
         </ul>
     </nav>
 
@@ -217,91 +268,189 @@
 
         <!-- PENDAHULUAN -->
         <section id="pendahuluan">
-            <h2>Pendahuluan</h2>
-            <p>Berdasarkan Pasal 1 ayat (3) UUD 1945, Indonesia adalah negara hukum yang membutuhkan proses penemuan kebenaran berbasis fakta yang dapat dipertanggungjawabkan[cite: 1]. Penegakan hukum modern memanfaatkan <i>scientific evidence</i> (bukti ilmiah) yang diperoleh melalui metode ilmiah dan dapat diuji kembali[cite: 1]. Pendekatan ini sangat krusial dalam penanganan Kebakaran Hutan dan Lahan (Karhutla)[cite: 1].</p>
-            
-            <p>Karhutla menyebabkan hilangnya tutupan vegetasi, kerusakan ekosistem, gangguan kesehatan, hingga pencemaran udara lintas batas[cite: 1]. Kebutuhan utama dalam penanganan karhutla adalah menjembatani jarak antara terjadinya peristiwa, tersedianya data, dan terbentuknya pembuktian[cite: 1].</p>
+            <h2>Pendahuluan & Dasar Hukum</h2>
+            <p>Berdasarkan Pasal 1 ayat (3) UUD 1945, Indonesia adalah negara hukum yang mensyaratkan proses penemuan kebenaran berdasarkan fakta yang dapat dipertanggungjawabkan[cite: 1]. Pembuktian modern mengandalkan <i>scientific evidence</i> yang dapat diuji kembali[cite: 1]. Hal ini krusial dalam Kebakaran Hutan dan Lahan (Karhutla) karena bukti fisik di ruang terbuka cepat berubah dan hilang[cite: 1].</p>
+
+            <p>Landasan hukum sistem ini mencakup Pasal 28D ayat (1) dan Pasal 28H ayat (1) UUD 1945, Pasal 184 KUHAP (UU No. 8/1981 & UU No. 20/2025), Pasal 96 UU No. 32/2009 tentang Perlindungan dan Pengelolaan Lingkungan Hidup, UU No. 11/2008 jo. UU No. 1/2024 (ITE), PP No. 71/2019, PERMA No. 1/2023, serta standar teknis SNI ISO/IEC 27037[cite: 1].</p>
 
             <div class="highlight-box">
-                <strong>Gagasan Utama FIRETRACE:</strong> FIRETRACE dikembangkan bukan untuk menggantikan sistem deteksi dini yang ada, melainkan memberikan fungsi rekonstruksi ilmiah[cite: 1]. Sistem ini mengubah rekaman kondisi lingkungan menjadi dasar rekonstruksi peristiwa melalui penggabungan multisensor, <i>fuzzy logic</i>, serta lapisan <i>Environmental Forensic Recording</i>[cite: 1].
+                <strong>Gagasan Utama FIRETRACE:</strong> FIRETRACE dikembangkan untuk menggeser orientasi sistem dari sekadar peringatan dini (<i>early warning</i>) menjadi <i>evidence-oriented environmental intelligence</i>[cite: 1]. Sistem merekam kondisi lingkungan kontinu (sebelum, saat, dan sesudah kejadian) untuk membentuk <i>Fire Event Profile</i> guna rekonstruksi ilmiah[cite: 1].
             </div>
         </section>
 
-        <!-- ARSITEKTUR & SISTEM -->
+        <!-- ARSITEKTUR & STATUS OPERASIONAL -->
         <section id="arsitektur">
-            <h2>Arsitektur Lapangan & Kerja Sistem</h2>
-            <p>FIRETRACE mengusulkan arsitektur 4 lapisan utama untuk mendukung sistem inteligensi lingkungan yang berorientasi pembuktian[cite: 1]:</p>
-            
+            <h2>Arsitektur 4-Lapisan & Tindakan Operasional</h2>
+            <p>FIRETRACE membangun keterpaduan sistem dari pemantauan lapangan hingga laporan forensik digital melalui 4 lapisan utama[cite: 1]:</p>
+
             <div class="grid">
                 <div class="card">
                     <h4>1. Detection Layer</h4>
-                    <p>Sistem multisensor & Fuzzy Logic Mamdani untuk klasifikasi kondisi (AMAN, WASPADA, BAHAYA, & ANOMALI)[cite: 1].</p>
+                    <p>Sensor multisensor (Suhu, Kelembapan, UV, Asap, Angin) diolah melalui Fuzzy Logic Mamdani pada mikrokontroler Arduino Mega[cite: 1].</p>
                 </div>
                 <div class="card">
                     <h4>2. Environmental Recording Layer</h4>
-                    <p>Perekaman data lingkungan kontinu untuk membangun <i>Fire Event Profile</i> dan <i>Environmental Forensic Record</i>[cite: 1].</p>
+                    <p>Perekaman data lingkungan kontinu sebelum, selama, dan setelah kejadian untuk membentuk <i>Fire Event Profile</i>[cite: 1].</p>
                 </div>
                 <div class="card">
                     <h4>3. Data Integrity Layer</h4>
-                    <p>Menjamin keabsahan data melalui Timestamp, Metadata, Hash Kriptografi (SHA-256), dan Audit Trail[cite: 1].</p>
+                    <p>Pengamanan bukti digital menggunakan Timestamp, Metadata, Hash Berantai (SHA-256), HMAC, dan Audit Trail[cite: 1].</p>
                 </div>
                 <div class="card">
                     <h4>4. Investigative Support Layer</h4>
-                    <p>Mendukung proses hukum melalui <i>Digital Chain of Custody</i> dan pembuatan <i>Forensic Report</i>[cite: 1].</p>
+                    <p>Mendukung proses hukum melalui kerangka <i>Digital Chain of Custody</i> dan penyusunan otomatis <i>Environmental Forensic Report</i>[cite: 1].</p>
                 </div>
             </div>
-        </section>
 
-        <!-- KOMPONEN SENSOR -->
-        <section id="komponen">
-            <h2>Spesifikasi & Komponen Sensor</h2>
-            <p>Sistem menggunakan kombinasi sensor presisi tinggi untuk mengumpulkan parameter lingkungan secara <i>real-time</i>[cite: 1]:</p>
-            
+            <h3>Respon Operasional Berdasarkan Tingkat Status</h3>
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
-                            <th>Sensor</th>
-                            <th>Parameter</th>
-                            <th>Fungsi Utama & Catatan Forensik</th>
+                            <th>Status</th>
+                            <th>Kondisi Lingkungan</th>
+                            <th>Tindakan Sistem & Operasional</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><strong>DS18B20</strong></td>
-                            <td>Suhu Udara (°C)</td>
-                            <td>Indikator tren pemanasan lingkungan sebelum kejadian[cite: 1].</td>
+                            <td><span class="status-badge bg-normal">NORMAL</span></td>
+                            <td>Kondisi aman, risiko kebakaran rendah[cite: 1].</td>
+                            <td>Pemantauan rutin & perekaman data baseline berkala[cite: 1].</td>
                         </tr>
                         <tr>
-                            <td><strong>BME280</strong></td>
-                            <td>Kelembapan Udara (RH %)</td>
-                            <td>Indikator tren pengeringan vegetasi & lingkungan[cite: 1].</td>
+                            <td><span class="status-badge bg-waspada">WASPADA</span></td>
+                            <td>Peningkatan laju perubahan parameter[cite: 1].</td>
+                            <td>Meningkatkan frekuensi sampling sensor & notifikasi dashboard[cite: 1].</td>
                         </tr>
                         <tr>
-                            <td><strong>UVTRON R2868</strong></td>
-                            <td>Radiasi UV / Api</td>
-                            <td>Penanda waktu pasti (T0) munculnya indikasi api[cite: 1].</td>
+                            <td><span class="status-badge bg-siaga">SIAGA</span></td>
+                            <td>Indikasi tren anomali terdeteksi[cite: 1].</td>
+                            <td>Mengaktifkan verifikasi visual otomatis/drone & sinyal tim lapangan[cite: 1].</td>
                         </tr>
                         <tr>
-                            <td><strong>MQ135</strong></td>
-                            <td>Asap & Gas (ppm)</td>
-                            <td>Indikator awal anomali sebelum status BAHAYA tercapai[cite: 1].</td>
+                            <td><span class="status-badge bg-bahaya">BAHAYA</span></td>
+                            <td>Ancaman kebakaran tinggi[cite: 1].</td>
+                            <td>Menyalakan buzzer lokal, kirim alert darurat, & perekaman krisis[cite: 1].</td>
                         </tr>
                         <tr>
-                            <td><strong>Anemometer & Vane</strong></td>
-                            <td>Kecepatan & Arah Angin</td>
-                            <td>Data non-fuzzy pendukung rekonstruksi arah dan pola penyebaran api[cite: 1].</td>
+                            <td><span class="status-badge bg-awas">AWAS</span></td>
+                            <td>Terjadi kebakaran aktif[cite: 1].</td>
+                            <td>Penguncian hash integritas data, snapshot Chain of Custody, & penyusunan Forensic Report[cite: 1].</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- INDIKATOR AKTIVITAS MANUSIA -->
+        <!-- SENSOR & METODE PENGUKURAN -->
+        <section id="sensor">
+            <h2>Spesifikasi Sensor & Metode Pengukuran</h2>
+            <p>Parameter lingkungan diukur menggunakan komponen multisensor berbasis riset terverifikasi[cite: 1]:</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sensor</th>
+                            <th>Parameter</th>
+                            <th>Fungsi ForensikTambahan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>DS18B20</strong></td>
+                            <td>Suhu Udara (°C)</td>
+                            <td>Indikator tren pemanasan sebelum kejadian & kronologi Fire Event Profile[cite: 1].</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BME280</strong></td>
+                            <td>Kelembapan Udara (RH %)</td>
+                            <td>Indikator tren pengeringan lingkungan & vegetasi[cite: 1].</td>
+                        </tr>
+                        <tr>
+                            <td><strong>UVTRON R2868</strong></td>
+                            <td>Radiasi UV / Api</td>
+                            <td>Penanda waktu pasti (T0) awal munculnya indikasi api[cite: 1].</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MQ135</strong></td>
+                            <td>Asap & Gas (ppm)</td>
+                            <td>Indikator awal anomali & pemicu pencatatan log frekuensi tinggi[cite: 1].</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Anemometer</strong></td>
+                            <td>Kecepatan Angin (m/s)</td>
+                            <td>Data non-fuzzy pendukung analisis pola penyebaran api[cite: 1].</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Wind Vane</strong></td>
+                            <td>Arah Angin (Mata Angin)</td>
+                            <td>Data non-fuzzy pendukung rekonstruksi arah sebaran kebakaran[cite: 1].</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Metode Pengukuran Parameter</h3>
+            <div class="formula-box">
+• Kecepatan Angin (v) = d / t  (d = jarak tempuh udara, t = waktu tempuh)
+• Sensor Asap MQ135 = Rasio Rs/R0 sebagai acuan konsentrasi gas
+• Sensor UVTRON = Jumlah pulsa radiasi UV per satuan waktu (Penanda T0)
+• Hash Berantai = H_n = SHA-256(Data_n || H_(n-1))
+            </div>
+        </section>
+
+        <!-- FUZZY LOGIC -->
+        <section id="fuzzy">
+            <h2>Rentang Parameter Fuzzy Logic Mamdani</h2>
+            <p>Sistem menggunakan <i>Fuzzy Logic Mamdani</i> dengan fungsi keanggotaan segitiga (triangular membership function) untuk mengolah 4 parameter utama[cite: 1]:</p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter Sensor</th>
+                            <th>Kategori Rendah / Dekat</th>
+                            <th>Kategori Sedang</th>
+                            <th>Kategori Tinggi / Jauh</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Asap MQ135 (ppm)</strong></td>
+                            <td>Low (≤700–3000 ppm)[cite: 1]</td>
+                            <td>Medium (700–5500 ppm)[cite: 1]</td>
+                            <td>High (3000–≥5500 ppm)[cite: 1]</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Api UVTRON (cm)</strong></td>
+                            <td>Dekat (0–250 cm)[cite: 1]</td>
+                            <td>Sedang (90–400 cm)[cite: 1]</td>
+                            <td>Jauh (250–≥400 cm)[cite: 1]</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Suhu DS18B20 (°C)</strong></td>
+                            <td>Rendah (≤10–20°C)[cite: 1]</td>
+                            <td>Sedang (10–30°C)[cite: 1]</td>
+                            <td>Tinggi (20–≥30°C)[cite: 1]</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kelembapan BME280 (RH%)</strong></td>
+                            <td>Rendah (≤20–60 RH)[cite: 1]</td>
+                            <td>Sedang (20–70 RH)[cite: 1]</td>
+                            <td>Tinggi (50–≥80 RH)[cite: 1]</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- INDIKATOR AKTIVITAS MANUSIA (ANTROPOGENIK) -->
         <section id="indikator-manusia">
             <h2>Indikator Indikasi Aktivitas Manusia (Antropogenik)</h2>
-            <p>FIRETRACE menghitung <strong>Indeks Indikasi Aktivitas Manusia (skala 0–100)</strong>[cite: 1] berdasarkan perbandingan data parameter sensorik dengan kondisi alami, guna membedakan pemicu kebakaran antropogenik dari pemicu alami[cite: 1]:</p>
-            
+            <p>FIRETRACE menghitung <strong>Indeks Indikasi Aktivitas Manusia (skala 0–100)</strong>[cite: 1] untuk memberi indikasi terukur seberapa konsisten suatu pemicu dengan perbuatan manusia dibandingkan faktor alami[cite: 1]:</p>
+
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -372,7 +521,7 @@
                             <td><span class="weight-badge">10</span></td>
                         </tr>
                         <tr>
-                            <td colspan="5" style="text-align: right; font-weight: bold;">TOTAL BOBOT SCORE</td>
+                            <td colspan="5" style="text-align: right; font-weight: bold;">TOTAL BOBOT SKOR</td>
                             <td><span class="weight-badge" style="background-color: var(--secondary-color);">100</span></td>
                         </tr>
                     </tbody>
@@ -382,26 +531,36 @@
 
         <!-- INTEGRITAS DATA & FORENSIK -->
         <section id="forensik">
-            <h2>Integritas Data & Rantai Jelajah Bukti Digital</h2>
-            <p>FIRETRACE menerapkan prinsip <i>Digital Chain of Custody</i> untuk memastikan data sensor memenuhi kriteria bukti ilmiah yang valid[cite: 1]:</p>
-            
+            <h2>Integritas Data & Digital Chain of Custody</h2>
+            <p>Untuk menjamin keabsahan data digital dalam proses hukum, FIRETRACE menyusun rantai bukti digital (Chain of Custody)[cite: 1]:</p>
+
             <ol>
-                <li><strong>Collection:</strong> Data direkam otomatis oleh node sensor saat terjadi perubahan status[cite: 1].</li>
-                <li><strong>Authentication & Integrity:</strong> Setiap paket data diberi timestamp, Node ID, serta nilai Hash Berantai (SHA-256) & HMAC[cite: 1].</li>
-                <li><strong>Secure Storage:</strong> Penyimpanan berbasis cloud terenkripsi dengan kontrol akses terotorisasi[cite: 1].</li>
-                <li><strong>Access Logging (Audit Trail):</strong> Setiap aktivitas akses, pengunduhan, atau verifikasi data dicatat secara otomatis[cite: 1].</li>
-                <li><strong>Forensic Report:</strong> Penyusunan laporan kronologis dan Indeks Antropogenik sebagai data pendukung ilmiah bagi penyidik[cite: 1].</li>
+                <li><strong>Akuisisi & Perekaman:</strong> Data direkam otomatis oleh node sensor ke dalam Environmental Event Log[cite: 1].</li>
+                <li><strong>Autentikasi Kriptografis:</strong> Setiap paket data diberi timestamp RTC/NTP, Node ID, koordinat GPS, HMAC, dan Hash Berantai SHA-256 ($H_n = \text{SHA-256}(Data_n \parallel H_{n-1})$)[cite: 1].</li>
+                <li><strong>Audit Trail:</strong> Mencatat seluruh log riwayat siapa yang mengakses, mengunduh, atau memverifikasi data[cite: 1].</li>
+                <li><strong>Penyimpanan Aman:</strong> Cloud database terenkripsi guna mencegah penyuntingan tanpa otoritas[cite: 1].</li>
+                <li><strong>Forensic Report:</strong> Otomatisasi penyusunan draf Laporan Forensik Lingkungan sebagai petunjuk ilmiah bagi penyidik[cite: 1].</li>
             </ol>
-            
+
             <div class="highlight-box">
-                <small>* Catatan Hukum: Data FIRETRACE bersifat sebagai bukti/data ilmiah pendukung investigasi, bukan alat bukti otomatis yang menetapkan kelakuan atau niat tindak pidana[cite: 1]. Penetapan status hukum tetap berada di bawah kewenangan penyidik dan majelis hakim[cite: 1].</small>
+                <small>* Catatan Posisi Hukum: Data FIRETRACE berkedudukan sebagai data/bukti ilmiah pendukung investigasi (petunjuk ilmiah), bukan alat bukti yang otomatis menetapkan pelaku atau niat tindak pidana[cite: 1]. Keputusan hukum tetap berada di bawah wewenang penyidik, ahli, dan majelis hakim[cite: 1].</small>
             </div>
         </section>
 
-        <!-- PENUTUP -->
-        <section id="penutup">
-            <h2>Kesimpulan & Penutup</h2>
-            <p>FIRETRACE menawarkan pembaruan paradigma dari sekadar peringatan dini (<i>early warning</i>) menjadi <i>evidence-oriented environmental intelligence</i>[cite: 1]. Dengan mempertahankan integritas rekaman lingkungan sejak sebelum kejadian serta menyajikan analisis korelasi pemicu alami vs manusia, sistem ini membantu merekonstruksi peristiwa Karhutla secara obyektif dan akurat guna mendukung penegakan hukum lingkungan di Indonesia[cite: 1].</p>
+        <!-- EVALUASI SISTEM & PENUTUP -->
+        <section id="evaluasi">
+            <h2>Metode Evaluasi Sistem & Penutup</h2>
+            <p>Kinerja deteksi dan klasifikasi sistem dievaluasi menggunakan matriks performa baku[cite: 1]:</p>
+
+            <div class="formula-box">
+• Accuracy  = (TP + TN) / (TP + TN + FP + FN) × 100%
+• Precision = TP / (TP + FP)
+• Recall    = TP / (TP + FN)
+• F1 Score  = 2 × (Precision × Recall) / (Precision + Recall)
+            </div>
+
+            <h3>Kesimpulan</h3>
+            <p>FIRETRACE berhasil mengintegrasikan teknologi multisensor IoT dan Fuzzy Logic Mamdani dengan lapisan forensik lingkungan[cite: 1]. Sistem ini memindahkan paradigm dari sekadar alarm kebakaran menjadi platform rekonstruksi ilmiah yang mampu membedakan pemicu antropogenik serta menjaga integritas data secara kriptografis[cite: 1].</p>
         </section>
 
     </div>
