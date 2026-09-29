@@ -9,12 +9,10 @@ let fireChart;
 let petaKalimantan;
 let regionalMarkers = {};
 
-// Variabel Kontrol
-let activeRegionId = "all"; // "all" berarti rata-rata seluruh Kalimantan
+let activeRegionId = "all"; 
 let prevTemp = 28.0; 
 let prevHum = 75.0;
 
-// Data Base Wilayah
 const kalimantanRegions = [
     { id: "kalteng", name: "Kalimantan Tengah", short: "KALTENG", lat: -2.3, lon: 113.9, baseTemp: 28, baseHum: 78 },
     { id: "kaltim", name: "Kalimantan Timur", short: "KALTIM", lat: 0.5, lon: 116.4, baseTemp: 28, baseHum: 78 },
@@ -36,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function() {
     fetchWeatherAllRegions();
     
     setInterval(fetchWeatherAllRegions, 60000); 
-    // MENGHITUNG SETIAP 1 DETIK
     setInterval(perSecondUpdate, 1000);
 });
 
@@ -51,47 +48,50 @@ function initMap() {
             radius: 8, fillColor: "#4caf50", color: "#fff", weight: 2, opacity: 1, fillOpacity: 0.9
         }).addTo(petaKalimantan);
 
-        // Tooltip sederhana
-        marker.bindTooltip(`<b>${reg.name}</b><br>Klik untuk fokus ke area ini`, {permanent: false, direction: "top"});
+        marker.bindTooltip(`<b>${reg.name}</b><br>Klik untuk memantau khusus area ini`, {permanent: false, direction: "top"});
         
-        // INTERAKTIF KLIK TITIK PETA
+        // INTERAKTIF: SAAT TITIK DIKLIK
         marker.on('click', function() {
             ubahFokusWilayah(reg.id);
-            // Perbarui pop-up saat diklik dengan data terakhir
-            this.bindPopup(`<b>${reg.name}</b><br>Suhu: ${reg.baseTemp.toFixed(2)}°C<br>Lembap: ${reg.baseHum.toFixed(2)}%`).openPopup();
+            // Ubah teks popup saat diklik
+            this.bindPopup(`<b>PEMANTAUAN AKTIF: ${reg.name}</b><br>Sensor dikunci pada wilayah ini.`).openPopup();
         });
         regionalMarkers[reg.id] = marker;
     });
 }
 
-// 1. FUNGSI KLIK PROVINSI TERTENTU
+// 1. FUNGSI KLIK PROVINSI: GANTI JUDUL SENSOR SECARA EKSPLISIT
 function ubahFokusWilayah(id) {
     activeRegionId = id;
     const reg = kalimantanRegions.find(r => r.id === id);
     
-    // Pastikan ID ini sama persis dengan yang ada di HTML
+    // GANTI TEKS JUDUL SENSOR DENGAN NAMA PROVINSI
+    document.getElementById('judul-suhu').innerText = "Suhu: " + reg.name;
+    document.getElementById('judul-lembab').innerText = "Kelembapan: " + reg.name;
+    
+    // Ganti Teks Lainnya
     document.getElementById('sidebar-wilayah').innerText = reg.name;
     document.getElementById('nama-wilayah-status').innerText = reg.short;
-    document.getElementById('nama-wilayah-suhu').innerText = reg.name; // Berubah menjadi misal "Kalimantan Selatan"
-    document.getElementById('nama-wilayah-lembab').innerText = reg.name; // Berubah menjadi misal "Kalimantan Selatan"
     document.getElementById('grafik-wilayah').innerText = reg.name;
     document.getElementById('profile-nama-wilayah').innerText = reg.name;
     
+    // Ganti Laporan Forensik
     document.getElementById('bap-reg-wilayah').innerText = reg.short;
-    document.getElementById('bap-lokasi').innerText = `${reg.name} (Fokus Titik)`;
+    document.getElementById('bap-lokasi').innerText = `${reg.name} (Fokus Sensor Area Tunggal)`;
 
     resetGrafik();
-    // Hilangkan alert agar tidak mengganggu, atau biarkan jika diinginkan
-    // alert(`MENGALIHKAN FOKUS: Dashboard dan Laporan Forensik kini mengunci data real-time untuk ${reg.name}.`);
 }
 
 // 2. FUNGSI KEMBALI KE SELURUH KALIMANTAN (TOMBOL BIRU)
 function resetKeSemuaProvinsi() {
     activeRegionId = "all";
+    
+    // KEMBALIKAN TEKS JUDUL SENSOR KE RATA-RATA
+    document.getElementById('judul-suhu').innerText = "Suhu: Seluruh Kalimantan";
+    document.getElementById('judul-lembab').innerText = "Kelembapan: Seluruh Kalimantan";
+    
     document.getElementById('sidebar-wilayah').innerText = "Seluruh Kalimantan";
     document.getElementById('nama-wilayah-status').innerText = "SELURUH KALIMANTAN";
-    document.getElementById('nama-wilayah-suhu').innerText = "Rata-rata Kalimantan";
-    document.getElementById('nama-wilayah-lembab').innerText = "Rata-rata Kalimantan";
     document.getElementById('grafik-wilayah').innerText = "Seluruh Kalimantan";
     document.getElementById('profile-nama-wilayah').innerText = "Seluruh Kalimantan";
 
@@ -149,7 +149,6 @@ function initChart() {
     });
 }
 
-// 3. MESIN UTAMA: PERHITUNGAN PER DETIK & PERGANTIAN SUHU (DELTA)
 function perSecondUpdate() {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('id-ID'); 
@@ -158,7 +157,6 @@ function perSecondUpdate() {
 
     let liveTemp = 0, liveHum = 0, targetName = "";
 
-    // Tentukan apakah baca data Rata-rata atau Provinsi spesifik
     if (activeRegionId === "all") {
         targetName = "Seluruh wilayah Kalimantan (Agregat 5 Provinsi)";
         let totalTemp = 0, totalHum = 0;
@@ -176,7 +174,7 @@ function perSecondUpdate() {
     liveTemp += (Math.random() * 0.4 - 0.2);
     liveHum += (Math.random() * 0.6 - 0.3);
 
-    // HITUNG PERGANTIAN/SELISIH PER DETIK (DELTA)
+    // HITUNG DELTA
     let deltaTemp = liveTemp - prevTemp;
     let deltaHum = liveHum - prevHum;
     prevTemp = liveTemp;
@@ -188,11 +186,10 @@ function perSecondUpdate() {
     if (liveTemp >= 35 || liveHum < 45) currentStatus = "BAHAYA";
     let cfg = statusRules[currentStatus];
 
-    // --- PERBARUI UI DASBOARD ---
+    // UI
     document.getElementById('val-suhu').innerText = liveTemp.toFixed(2);
     document.getElementById('val-lembab').innerText = liveHum.toFixed(2);
     
-    // Tampilkan selisih pergantian per detik (Warna merah jika naik, hijau jika turun)
     let deltaSuhuEl = document.getElementById('delta-suhu');
     deltaSuhuEl.innerText = (deltaTemp > 0 ? "+" : "") + deltaTemp.toFixed(2) + " °C/dtk";
     deltaSuhuEl.style.color = deltaTemp > 0 ? "#ff5252" : "#69f0ae";
@@ -213,7 +210,7 @@ function perSecondUpdate() {
     document.getElementById('live-indicator').innerText = `● LIVE PER-SECOND (${timeStr})`;
     document.getElementById('live-indicator').style.color = currentSecond % 2 === 0 ? "#4caf50" : "#fff";
 
-    // --- PERBARUI GRAFIK ---
+    // GRAFIK
     fireChart.data.labels.push(timeStr);
     fireChart.data.datasets[0].data.push(liveTemp);
     fireChart.data.datasets[1].data.push(liveHum);
@@ -222,7 +219,7 @@ function perSecondUpdate() {
     }
     fireChart.update();
 
-    // --- PERBARUI LAPORAN FORENSIK PER DETIK (DENGAN PENJELASAN DELTA) ---
+    // LAPORAN FORENSIK
     document.getElementById('bap-detik').innerText = currentSecond.toString().padStart(2, '0');
     document.getElementById('bap-waktu').innerText = `${now.toLocaleString('id-ID')} WIB (Sinkronisasi Detik Aktif)`;
     document.getElementById('bap-hash').innerText = liveHash;
@@ -236,7 +233,7 @@ function perSecondUpdate() {
     document.getElementById('bap-prediksi').innerText = bapPrediksi;
     document.getElementById('profile-prediksi-teks').innerText = `Fokus: ${targetName}. Pergantian Suhu: ${deltaTemp.toFixed(2)}°C/dtk. Pergantian Kelembapan: ${deltaHum.toFixed(2)}%/dtk.`;
 
-    // --- LOG INTEGRITAS ---
+    // LOG INTEGRITAS
     if (currentSecond % 3 === 0) {
         let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
         let newLog = `<tr><td>${timeStr}</td><td>${labelWilayah} - LIVE</td><td class="hash-text">${liveHash}</td></tr>`;
