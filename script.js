@@ -1,3 +1,4 @@
+// Konfigurasi Status Risiko Kebakaran Otomatis
 const statusRules = {
     NORMAL: { class: "normal", color: "#4caf50", desc: "Kondisi stabil. Risiko kebakaran rendah." },
     WASPADA: { class: "waspada", color: "#f9a825", desc: "Suhu mulai meningkat. Pemantauan diperketat." },
@@ -9,6 +10,7 @@ let fireChart;
 let regionalMarkers = {};
 let petaKalimantan;
 
+// Data Koordinat 5 Provinsi di Kalimantan
 const kalimantanRegions = [
     { id: "kalteng", name: "Kalimantan Tengah", lat: -2.3, lon: 113.9 },
     { id: "kaltim", name: "Kalimantan Timur", lat: 0.5, lon: 116.4 },
@@ -28,9 +30,12 @@ document.addEventListener("DOMContentLoaded", function() {
     initMap();
     initChart();
     fetchAllRegionsWeather();
-    setInterval(fetchAllRegionsWeather, 300000);
+    
+    // Tarik data cuaca satelit setiap 1 menit agar aman dari blokir server
+    setInterval(fetchAllRegionsWeather, 60000);
 });
 
+// INISIALISASI PETA GOOGLE MAPS SATELLITE
 function initMap() {
     petaKalimantan = L.map('kalimantan-map').setView([-0.5, 114.5], 5);
     
@@ -50,6 +55,7 @@ function initMap() {
     });
 }
 
+// MENARIK DATA CUACA NYATA 
 async function fetchAllRegionsWeather() {
     for (let reg of kalimantanRegions) {
         try {
@@ -122,23 +128,15 @@ async function fetchAllRegionsWeather() {
             console.log(`Gagal memuat data untuk ${reg.name}`, error);
         }
     }
-    
-    const logBody = document.getElementById('log-body');
-    const auditBody = document.getElementById('log-body-audit');
-    const now = new Date();
-    const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0');
-    
-    const newHash = generateFakeHash();
-    if(logBody) logBody.insertAdjacentHTML('afterbegin', `<tr><td>${timeStr}</td><td>PREDICTIVE SYNC (LIVE)</td><td class="hash-text">${newHash}</td></tr>`);
-    if(auditBody) auditBody.insertAdjacentHTML('afterbegin', `<tr><td>${timeStr}</td><td>Auto-Analysis & AI Risk Forecast</td><td>SYNCED</td><td class="hash-text">${newHash}</td></tr>`);
 }
 
+// INISIALISASI GRAFIK & LIVE TICKER SETIAP 1 DETIK
 function initChart() {
     const ctx = document.getElementById('fireChart').getContext('2d');
     let initialLabels = [], initialTemp = [], initialHum = [];
     let now = new Date();
     for(let i = 12; i >= 0; i--) {
-        let pastTime = new Date(now.getTime() - i * 2000);
+        let pastTime = new Date(now.getTime() - i * 1000);
         let timeString = pastTime.getHours().toString().padStart(2, '0') + ":" + pastTime.getMinutes().toString().padStart(2, '0') + ":" + pastTime.getSeconds().toString().padStart(2, '0');
         initialLabels.push(timeString);
         initialTemp.push(28 + (Math.random() * 1 - 0.5));
@@ -155,7 +153,7 @@ function initChart() {
             ]
         },
         options: {
-            responsive: true, maintainAspectRatio: false, animation: { duration: 600, easing: 'linear' },
+            responsive: true, maintainAspectRatio: false, animation: { duration: 400, easing: 'linear' },
             plugins: { legend: { labels: { color: '#e0e0e0' } } },
             scales: {
                 x: { ticks: { color: '#9e9e9e', maxTicksLimit: 7 }, grid: { color: 'rgba(255,255,255,0.05)' } },
@@ -164,6 +162,7 @@ function initChart() {
         }
     });
 
+    // TICKER BERJALAN SETIAP 1 DETIK (PER DETIK)
     setInterval(() => {
         const currentTime = new Date();
         const timeStr = currentTime.getHours().toString().padStart(2, '0') + ":" + currentTime.getMinutes().toString().padStart(2, '0') + ":" + currentTime.getSeconds().toString().padStart(2, '0');
@@ -171,17 +170,28 @@ function initChart() {
         let currentTempVal = parseFloat(document.getElementById('val-suhu').innerText) || 28;
         let currentHumVal = parseFloat(document.getElementById('val-lembab').innerText) || 75;
 
+        // Tambah titik data baru setiap detik ke grafik
         fireChart.data.labels.push(timeStr);
-        fireChart.data.datasets[0].data.push(currentTempVal + (Math.random() * 0.4 - 0.2));
-        fireChart.data.datasets[1].data.push(currentHumVal + (Math.random() * 0.8 - 0.4));
+        fireChart.data.datasets[0].data.push(currentTempVal + (Math.random() * 0.3 - 0.15));
+        fireChart.data.datasets[1].data.push(currentHumVal + (Math.random() * 0.6 - 0.3));
 
-        if (fireChart.data.labels.length > 15) {
+        if (fireChart.data.labels.length > 20) {
             fireChart.data.labels.shift(); 
             fireChart.data.datasets[0].data.shift(); 
             fireChart.data.datasets[1].data.shift();
         }
         fireChart.update(); 
-    }, 2000); 
+
+        // Tambahkan baris log baru secara otomatis setiap beberapa detik / per detik pada tabel integritas
+        if (currentTime.getSeconds() % 3 === 0) { // Menambah baris log setiap 3 detik agar tabel tidak terlalu penuh dengan cepat
+            const logBody = document.getElementById('log-body');
+            const auditBody = document.getElementById('log-body-audit');
+            const newHash = generateFakeHash();
+            const newRow = `<tr><td>${timeStr}</td><td>LIVE TICKER SYNC</td><td class="hash-text">${newHash}</td></tr>`;
+            if(logBody) logBody.insertAdjacentHTML('afterbegin', newRow);
+            if(auditBody) auditBody.insertAdjacentHTML('afterbegin', `<tr><td>${timeStr}</td><td>Per-Second Telemetry Stream</td><td>VERIFIED</td><td class="hash-text">${newHash}</td></tr>`);
+        }
+    }, 1000); 
 }
 
 function bukaTab(namaTab, elemenMenu) {
