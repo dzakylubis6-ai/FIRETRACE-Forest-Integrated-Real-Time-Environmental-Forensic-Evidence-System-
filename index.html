@@ -6,14 +6,14 @@
     <title>FIRETRACE - Forensic Dashboard</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css?v=999">
+    <link rel="stylesheet" href="style.css?v=23">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar Navigasi -->
+        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo-area">
                 <h2>FIRETRACE</h2>
@@ -21,7 +21,7 @@
                 <div style="margin-top: 15px; padding: 10px; background: #2a2a2a; border-radius: 6px; font-size: 12px; border-left: 3px solid #f9a825;">
                     <strong style="color: #fff;">FOKUS AREA SAAT INI:</strong><br>
                     <span style="color: #4caf50; font-weight: bold; font-size: 14px;" id="sidebar-wilayah">Seluruh Kalimantan</span><br>
-                    <span style="color: #9e9e9e; font-size: 10px;">Sensor: DS18B20 & BME280 (Live)</span>
+                    <span style="color: #9e9e9e; font-size: 10px;">Sensor: DS18B20 & BME280</span>
                 </div>
             </div>
             <ul class="nav-menu">
@@ -32,10 +32,8 @@
             </ul>
         </aside>
 
-        <!-- Konten Utama -->
         <main class="main-content">
-            
-            <!-- TAB 1: Real-Time Monitoring -->
+            <!-- TAB 1: Monitoring -->
             <div id="monitoring" class="tab-content active">
                 <header class="status-header normal" id="status-banner">
                     <div class="status-info">
@@ -51,16 +49,14 @@
 
                 <section class="sensor-grid">
                     <div class="sensor-card">
-                        <!-- INI BAGIAN YANG DIPERBAIKI -->
                         <h4 id="judul-suhu">Suhu: Seluruh Kalimantan</h4>
                         <div class="sensor-value"><span id="val-suhu">28.00</span> °C</div>
-                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Pergantian per detik: <strong id="delta-suhu" style="color: #fff;">0.00 °C/dtk</strong></div>
+                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Pergantian: <strong id="delta-suhu" style="color: #fff;">0.00 °C/dtk</strong></div>
                     </div>
                     <div class="sensor-card">
-                        <!-- INI BAGIAN YANG DIPERBAIKI -->
                         <h4 id="judul-lembab">Kelembapan: Seluruh Kalimantan</h4>
                         <div class="sensor-value"><span id="val-lembab">78.00</span> %</div>
-                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Pergantian per detik: <strong id="delta-lembab" style="color: #fff;">0.00 %/dtk</strong></div>
+                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Pergantian: <strong id="delta-lembab" style="color: #fff;">0.00 %/dtk</strong></div>
                     </div>
                     <div class="sensor-card">
                         <h4>Estimasi Asap (MQ135)</h4>
@@ -107,12 +103,12 @@
             <div id="profile" class="tab-content">
                 <div class="header-halaman">
                     <h2>Analisis Profil Kejadian & Prediktif</h2>
-                    <p>Rekonstruksi anomali lingkungan berdasarkan fluktuasi per detik.</p>
+                    <p>Rekonstruksi anomali lingkungan berdasarkan tren faktual.</p>
                 </div>
                 <div class="sensor-grid">
                     <div class="sensor-card" style="grid-column: span 2; text-align: left;">
                         <h4 style="color: #ef5350;">Pemodelan AI: Area <span id="profile-nama-wilayah">Seluruh Kalimantan</span></h4>
-                        <p style="font-size: 13px; color: #ccc; margin-top: 10px;" id="profile-prediksi-teks">Menganalisis data per detik...</p>
+                        <p style="font-size: 13px; color: #ccc; margin-top: 10px;" id="profile-prediksi-teks">Menganalisis data satelit terkini...</p>
                     </div>
                     <div class="sensor-card">
                         <h4>Tingkat Ancaman</h4>
@@ -129,13 +125,13 @@
             <div id="audit" class="tab-content">
                 <div class="header-halaman">
                     <h2>Digital Chain of Custody (Log Terkunci)</h2>
-                    <p>Catatan tak terubahkan (immutable) dari node sensor.</p>
+                    <p>Catatan forensik tervalidasi yang dienkripsi per menit.</p>
                 </div>
                 <div class="log-section">
                     <div class="table-responsive" style="max-height: 400px;">
                         <table>
                             <thead>
-                                <tr><th>Timestamp Eviden</th><th>Fokus Pantauan</th><th>Trigger</th><th>Digital Hash</th></tr>
+                                <tr><th>Timestamp Eviden</th><th>Fokus Pantauan</th><th>Sertifikasi</th><th>Digital Hash (SHA-256)</th></tr>
                             </thead>
                             <tbody id="log-body-audit"></tbody>
                         </table>
@@ -143,33 +139,33 @@
                 </div>
             </div>
 
-            <!-- TAB 4: FORENSIC REPORT -->
+            <!-- TAB 4: FORENSIC REPORT (DIUBAH MENJADI 1 MENIT) -->
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
-                    <p>Berita Acara Pemeriksaan (BAP) Lingkungan Digital (Bergerak Per Detik).</p>
+                    <p>Berita Acara Pemeriksaan (BAP) Otomatis Berdasarkan Validasi Standar (Update Per 1 Menit).</p>
                 </div>
                 <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 800px; margin: 0 auto; font-family: 'Times New Roman', serif;">
                     <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
-                        <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN (LIVE)</h2>
+                        <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN</h2>
                         <p style="margin: 5px 0 0 0; font-size: 14px;">HASIL ANALISIS PREDIKTIF (PRO-JUSTITIA)</p>
                     </div>
                     
-                    <p><strong>Nomor Registrasi:</strong> KAL-REG-<span id="bap-reg-wilayah">ALL</span>-<span id="bap-detik">00</span></p>
-                    <p><strong>Waktu Sinkronisasi:</strong> <span id="bap-waktu" style="color: red; font-weight: bold;">Memuat detik...</span></p>
-                    <p><strong>Lokasi Pemantauan:</strong> Wilayah <span id="bap-lokasi" style="font-weight: bold; text-decoration: underline;">Seluruh Kalimantan (Agregat 5 Provinsi)</span></p>
+                    <p><strong>Nomor Registrasi BAP:</strong> KAL-REG-<span id="bap-reg-wilayah">ALL</span>-<span id="bap-menit">00</span></p>
+                    <p><strong>Waktu Penerbitan Laporan:</strong> <span id="bap-waktu" style="color: #1a237e; font-weight: bold;">Menunggu siklus 1 menit...</span></p>
+                    <p><strong>Lokasi Objek Pemantauan:</strong> Wilayah <span id="bap-lokasi" style="font-weight: bold; text-decoration: underline;">Seluruh Kalimantan (Agregat 5 Provinsi)</span></p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">KONDISI FAKTUAL PER DETIK:</h4>
-                    <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">Memuat data real-time...</p>
+                    <h4 style="margin-top: 20px; text-decoration: underline;">KONDISI FAKTUAL DAN RUJUKAN STANDAR (KLHK & WMO):</h4>
+                    <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">Mengumpulkan data telemetri validasi...</p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">PROYEKSI AI PREDIKTIF:</h4>
-                    <p style="text-align: justify; line-height: 1.6;" id="bap-prediksi">Memuat proyeksi...</p>
+                    <h4 style="margin-top: 20px; text-decoration: underline;">PROYEKSI AI DAN ANALISIS RISIKO:</h4>
+                    <p style="text-align: justify; line-height: 1.6;" id="bap-prediksi">Menyusun proyeksi hukum lingkungan...</p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">STATUS DIGITAL CHAIN OF CUSTODY:</h4>
-                    <p>TERVERIFIKASI. BUKTI ELEKTRONIK SAH. Hash Saat Ini: <strong id="bap-hash" style="font-family: monospace; color: #1a237e;">-</strong></p>
+                    <h4 style="margin-top: 20px; text-decoration: underline;">STATUS DIGITAL CHAIN OF CUSTODY (DCoC):</h4>
+                    <p>Laporan ini sah secara elektronik dan dilindungi enkripsi kriptografi. <br>Hash Verifikasi: <strong id="bap-hash" style="font-family: monospace; color: #1a237e;">-</strong></p>
                     
                     <div style="margin-top: 30px; text-align: right;">
-                        <button onclick="window.print()" style="background-color: #1a237e; color: white; padding: 10px 20px; cursor: pointer; border:none; border-radius:4px;">🖨️ Cetak Laporan Faktual</button>
+                        <button onclick="window.print()" style="background-color: #1a237e; color: white; padding: 10px 20px; cursor: pointer; border:none; border-radius:4px; font-weight:bold;">🖨️ Cetak BAP Forensik (PDF)</button>
                     </div>
                 </div>
             </div>
@@ -177,6 +173,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=999"></script>
+    <script src="script.js?v=23"></script>
 </body>
 </html>
