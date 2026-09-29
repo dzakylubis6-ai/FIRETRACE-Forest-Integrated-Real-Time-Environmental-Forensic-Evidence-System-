@@ -5,29 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FIRETRACE - Forensic Dashboard</title>
     
-    <!-- CSS Leaflet untuk Peta -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
-    <!-- Link CSS dengan versi terbaru -->
-    <link rel="stylesheet" href="style.css?v=19">
-    
-    <!-- Script Chart.js & Leaflet.js -->
+    <link rel="stylesheet" href="style.css?v=99">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar Navigasi -->
         <aside class="sidebar">
             <div class="logo-area">
                 <h2>FIRETRACE</h2>
                 <p>Forensic Evidence System</p>
                 <div style="margin-top: 15px; padding: 10px; background: #2a2a2a; border-radius: 6px; font-size: 12px; border-left: 3px solid #f9a825;">
                     <strong style="color: #fff;">AREA PANTAU AKTIF:</strong><br>
-                    <span style="color: #9e9e9e;">SELURUH PULAU KALIMANTAN</span><br>
-                    <span style="color: #9e9e9e;">Cakupan: 5 Provinsi Live Satelit + AI Forensik</span>
+                    <span style="color: #9e9e9e;">PULAU KALIMANTAN (5 PROVINSI)</span><br>
+                    <span style="color: #9e9e9e;">Live Satelit + Analisis Per Detik</span>
                 </div>
             </div>
             <ul class="nav-menu">
@@ -38,19 +31,17 @@
             </ul>
         </aside>
 
-        <!-- Konten Utama -->
         <main class="main-content">
-            
-            <!-- TAB 1: Real-Time Monitoring -->
+            <!-- TAB 1 -->
             <div id="monitoring" class="tab-content active">
                 <header class="status-header normal" id="status-banner">
                     <div class="status-info">
                         <h3>STATUS REGIONAL: <span id="status-text">NORMAL (SELURUH KALIMANTAN)</span></h3>
-                        <p id="status-desc">Pemantauan mandiri lintas 5 provinsi di Pulau Kalimantan. Kondisi stabil dan terkendali.</p>
+                        <p id="status-desc">Pemantauan lintas 5 provinsi. Kondisi stabil.</p>
                     </div>
                     <div class="status-controls">
-                        <span style="background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #4caf50; border: 1px solid #4caf50; font-weight: bold;">
-                            ● LIVE PER-SECOND TICKER
+                        <span style="background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #4caf50; border: 1px solid #4caf50; font-weight: bold;" id="live-indicator">
+                            ● LIVE PER-SECOND
                         </span>
                     </div>
                 </header>
@@ -58,11 +49,11 @@
                 <section class="sensor-grid">
                     <div class="sensor-card">
                         <h4>Suhu Rata-rata Kalimantan</h4>
-                        <div class="sensor-value"><span id="val-suhu">28</span> °C</div>
+                        <div class="sensor-value"><span id="val-suhu">28.00</span> °C</div>
                     </div>
                     <div class="sensor-card">
                         <h4>Kelembapan Rata-rata</h4>
-                        <div class="sensor-value"><span id="val-lembab">78</span> %</div>
+                        <div class="sensor-value"><span id="val-lembab">78.00</span> %</div>
                     </div>
                     <div class="sensor-card">
                         <h4>Estimasi Asap (MQ135)</h4>
@@ -78,15 +69,14 @@
                     </div>
                 </section>
 
-                <!-- SECTION PETA KALIMANTAN -->
                 <section class="map-section" style="margin-bottom: 20px;">
-                    <h3 style="color: #fff; margin-bottom: 10px; font-size: 16px; border-bottom: 1px solid rgba(255, 100, 100, 0.2); padding-bottom: 10px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">Peta Mandiri 5 Provinsi Kalimantan (Live Satelit)</h3>
-                    <div id="kalimantan-map" style="height: 300px; width: 100%; border-radius: 8px; border: 1px solid rgba(255, 100, 100, 0.15); box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 1;"></div>
+                    <h3 style="color: #fff; margin-bottom: 10px; font-size: 16px; border-bottom: 1px solid rgba(255, 100, 100, 0.2); padding-bottom: 10px;">Peta Mandiri 5 Provinsi Kalimantan (Live Satelit)</h3>
+                    <div id="kalimantan-map" style="height: 300px; width: 100%; border-radius: 8px; border: 1px solid rgba(255, 100, 100, 0.15); z-index: 1;"></div>
                 </section>
 
                 <div class="bottom-grid">
                     <section class="chart-section">
-                        <h3>Environmental Fire Event Profile (Live Per-Second)</h3>
+                        <h3>Environmental Fire Event Profile (Update Per Detik)</h3>
                         <canvas id="fireChart"></canvas>
                     </section>
                     <section class="log-section">
@@ -94,32 +84,25 @@
                         <div class="table-responsive">
                             <table id="log-table">
                                 <thead>
-                                    <tr>
-                                        <th>Waktu (WIB)</th>
-                                        <th>Status Regional</th>
-                                        <th>Hash (SHA-256)</th>
-                                    </tr>
+                                    <tr><th>Waktu (WIB)</th><th>Status Regional</th><th>Hash (SHA-256)</th></tr>
                                 </thead>
-                                <tbody id="log-body">
-                                    <tr><td>19:45:00</td><td>INITIAL 5-PROV SYNC</td><td class="hash-text">e3b0c44298fc1c14...</td></tr>
-                                </tbody>
+                                <tbody id="log-body"></tbody>
                             </table>
                         </div>
                     </section>
                 </div>
             </div>
 
-            <!-- TAB 2: Fire Event Profile -->
+            <!-- TAB 2 -->
             <div id="profile" class="tab-content">
                 <div class="header-halaman">
                     <h2>Analisis Profil Kejadian & Prediktif</h2>
-                    <p>Rekonstruksi anomali lingkungan berdasarkan kondisi faktual seluruh Kalimantan serta pemodelan prediktif tren cuaca.</p>
+                    <p>Rekonstruksi anomali lingkungan berdasarkan kondisi faktual seluruh Kalimantan.</p>
                 </div>
-                
                 <div class="sensor-grid">
                     <div class="sensor-card" style="grid-column: span 2; text-align: left;">
-                        <h4 style="color: #ef5350;">Sistem Pemodelan Prediktif Kebakaran Lahan (Multi-Region)</h4>
-                        <p style="font-size: 13px; color: #ccc; margin-top: 10px;" id="profile-prediksi-teks">Analisis multi-region seluruh Kalimantan berjalan per detik. Memantau parameter mikroklimat lintas provinsi secara real-time.</p>
+                        <h4 style="color: #ef5350;">Sistem Pemodelan Prediktif (Multi-Region)</h4>
+                        <p style="font-size: 13px; color: #ccc; margin-top: 10px;" id="profile-prediksi-teks">Menganalisis data per detik...</p>
                     </div>
                     <div class="sensor-card">
                         <h4>Tingkat Ancaman</h4>
@@ -128,77 +111,55 @@
                     <div class="sensor-card">
                         <h4>Waktu Proyeksi</h4>
                         <div class="sensor-value" style="font-size: 18px; margin-top: 5px;">+3 Jam Kedepan</div>
-                        <p style="font-size: 11px; color: var(--text-muted);">Algoritma AI Faktual</p>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 3: Audit Trail & Hash -->
+            <!-- TAB 3 -->
             <div id="audit" class="tab-content">
                 <div class="header-halaman">
                     <h2>Digital Chain of Custody (Log Terkunci)</h2>
-                    <p>Catatan tak terubahkan (immutable) dari node sensor seluruh Kalimantan beserta tanda tangan kriptografi.</p>
+                    <p>Catatan tak terubahkan (immutable) dari node sensor seluruh Kalimantan.</p>
                 </div>
-                
                 <div class="log-section">
-                    <div style="margin-bottom: 15px; padding: 10px; background: #333; border-radius: 5px; font-size: 13px;">
-                        <strong style="color: #64b5f6;">Status Enkripsi:</strong> Terverifikasi & Terkunci (SHA-256) | <strong style="color: #64b5f6;">ID Jaringan:</strong> KAL-REGNET-01
-                    </div>
                     <div class="table-responsive" style="max-height: 400px;">
                         <table>
                             <thead>
-                                <tr>
-                                    <th>Timestamp Eviden (WIB)</th>
-                                    <th>Agregat Sensor Data</th>
-                                    <th>Status Regional Trigger</th>
-                                    <th>Digital Hash (SHA-256)</th>
-                                </tr>
+                                <tr><th>Timestamp Eviden</th><th>Agregat Sensor Data</th><th>Trigger</th><th>Digital Hash</th></tr>
                             </thead>
-                            <tbody id="log-body-audit">
-                                <tr>
-                                    <td>19:45:00</td>
-                                    <td>Sinkronisasi Multi-Region (5 Provinsi)</td>
-                                    <td>AUTO-SYNC</td>
-                                    <td class="hash-text">e3b0c44298fc1c149afbf4c8996...</td>
-                                </tr>
-                            </tbody>
+                            <tbody id="log-body-audit"></tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 4: Forensic Report -->
+            <!-- TAB 4: FORENSIC REPORT -->
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
-                    <p>Sistem penyusunan otomatis Berita Acara Pemeriksaan (BAP) Lingkungan Digital Berbasis Data Real-Time.</p>
+                    <p>Berita Acara Pemeriksaan (BAP) Lingkungan Digital (Berubah per detik).</p>
                 </div>
-                
-                <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); max-width: 800px; margin: 0 auto; font-family: 'Times New Roman', Times, serif;">
+                <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 800px; margin: 0 auto; font-family: 'Times New Roman', serif;">
                     <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
-                        <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN (LIVE PER-DETIK)</h2>
-                        <p style="margin: 5px 0 0 0; font-size: 14px;">HASIL ANALISIS PREDIKTIF SISTEM FIRETRACE (PRO-JUSTITIA)</p>
+                        <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN (LIVE)</h2>
+                        <p style="margin: 5px 0 0 0; font-size: 14px;">HASIL ANALISIS PREDIKTIF (PRO-JUSTITIA)</p>
                     </div>
                     
-                    <p><strong>Nomor Registrasi:</strong> <span id="bap-no">KAL-REG-2026/LIVE-01</span></p>
-                    <p><strong>Waktu Cetak Laporan:</strong> <span id="bap-waktu">Real-Time Synchronized</span></p>
-                    <p><strong>Lokasi Pemantauan Utama:</strong> Seluruh Sektor 5 Provinsi Pulau Kalimantan (Kalteng, Kaltim, Kalbar, Kalsel, Kaltara)</p>
+                    <p><strong>Nomor Registrasi:</strong> KAL-REG-LIVE-<span id="bap-detik">00</span></p>
+                    <p><strong>Waktu Sinkronisasi:</strong> <span id="bap-waktu" style="color: red; font-weight: bold;">Memuat detik...</span></p>
+                    <p><strong>Lokasi:</strong> Seluruh 5 Provinsi Pulau Kalimantan (Kalteng, Kaltim, Kalbar, Kalsel, Kaltara)</p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">RINGKASAN INVESTIGASI & KONDISI FAKTUAL:</h4>
-                    <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">
-                        Pemantauan mandiri lintas 5 provinsi di Pulau Kalimantan menunjukkan kondisi ekologis berdasarkan data satelit real-time. Parameter suhu dan kelembapan saat ini terpantau secara kontinu per detik.
-                    </p>
+                    <h4 style="margin-top: 20px; text-decoration: underline;">KONDISI FAKTUAL PER DETIK:</h4>
+                    <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">Memuat data real-time...</p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">PROYEKSI ANALISIS PREDIKTIF AI:</h4>
-                    <p style="text-align: justify; line-height: 1.6;" id="bap-prediksi">
-                        Model prediktif AI memperkirakan kestabilan cuaca regional di seluruh sektor Kalimantan dengan pembaruan metrik kriptografi tiap detik.
-                    </p>
+                    <h4 style="margin-top: 20px; text-decoration: underline;">PROYEKSI AI PREDIKTIF:</h4>
+                    <p style="text-align: justify; line-height: 1.6;" id="bap-prediksi">Memuat proyeksi...</p>
                     
                     <h4 style="margin-top: 20px; text-decoration: underline;">STATUS DIGITAL CHAIN OF CUSTODY:</h4>
-                    <p>TERVERIFIKASI. BUKTI ELEKTRONIK SAH BERBASIS SHA-256 (Sesuai UU ITE).</p>
+                    <p>TERVERIFIKASI. BUKTI ELEKTRONIK SAH. Hash Saat Ini: <span id="bap-hash" style="font-family: monospace;">-</span></p>
                     
                     <div style="margin-top: 30px; text-align: right;">
-                        <button class="btn-download" onclick="window.print()" style="background-color: #1a237e;">🖨️ Cetak Laporan Faktual (PDF)</button>
+                        <button onclick="window.print()" style="background-color: #1a237e; color: white; padding: 10px 20px; cursor: pointer; border:none; border-radius:4px;">🖨️ Cetak Laporan Faktual</button>
                     </div>
                 </div>
             </div>
@@ -206,6 +167,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=19"></script>
+    <script src="script.js?v=99"></script>
 </body>
 </html>
