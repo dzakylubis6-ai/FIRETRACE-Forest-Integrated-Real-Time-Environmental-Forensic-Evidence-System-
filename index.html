@@ -6,14 +6,14 @@
     <title>FIRETRACE - Forensic Dashboard</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css?v=24">
+    <link rel="stylesheet" href="style.css?v=25">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar Navigasi -->
+        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo-area">
                 <h2>FIRETRACE</h2>
@@ -103,12 +103,12 @@
             <div id="profile" class="tab-content">
                 <div class="header-halaman">
                     <h2>Analisis Profil Kejadian & Prediktif</h2>
-                    <p>Rekonstruksi anomali lingkungan berdasarkan tren faktual.</p>
+                    <p>Rekonstruksi anomali lingkungan berdasarkan tren faktual area pantau.</p>
                 </div>
                 <div class="sensor-grid">
                     <div class="sensor-card" style="grid-column: span 2; text-align: left;">
                         <h4 style="color: #ef5350;">Pemodelan AI: Area <span id="profile-nama-wilayah">Seluruh Kalimantan</span></h4>
-                        <p style="font-size: 13px; color: #ccc; margin-top: 10px;" id="profile-prediksi-teks">Menganalisis data satelit terkini...</p>
+                        <p style="font-size: 13px; color: #ccc; margin-top: 10px; line-height: 1.5;" id="profile-prediksi-teks">Mengambil data validasi awal...</p>
                     </div>
                     <div class="sensor-card">
                         <h4>Tingkat Ancaman</h4>
@@ -125,7 +125,7 @@
             <div id="audit" class="tab-content">
                 <div class="header-halaman">
                     <h2>Digital Chain of Custody (Log Terkunci)</h2>
-                    <p>Catatan forensik tervalidasi yang dienkripsi per siklus.</p>
+                    <p>Catatan forensik tervalidasi yang dienkripsi per menit untuk BAP.</p>
                 </div>
                 <div class="log-section">
                     <div class="table-responsive" style="max-height: 400px;">
@@ -139,30 +139,30 @@
                 </div>
             </div>
 
-            <!-- TAB 4: FORENSIC REPORT (UPDATE PER 1 MENIT) -->
+            <!-- TAB 4: FORENSIC REPORT (UPDATE 1 MENIT) -->
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
-                    <p>Berita Acara Pemeriksaan (BAP) Otomatis Berdasarkan Validasi Standar (Update Per 1 Menit).</p>
+                    <p>Berita Acara Pemeriksaan (BAP) Lingkungan Digital (Update Resmi Per 1 Menit).</p>
                 </div>
                 <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 800px; margin: 0 auto; font-family: 'Times New Roman', serif;">
                     <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
                         <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN (OFFICIAL)</h2>
-                        <p style="margin: 5px 0 0 0; font-size: 14px;">HASIL ANALISIS PREDIKTIF (PRO-JUSTITIA)</p>
+                        <p style="margin: 5px 0 0 0; font-size: 14px;">HASIL ANALISIS FAKTUAL (PRO-JUSTITIA)</p>
                     </div>
                     
                     <p><strong>Nomor Registrasi BAP:</strong> KAL-REG-<span id="bap-reg-wilayah">ALL</span>-<span id="bap-menit">00</span></p>
-                    <p><strong>Waktu Penerbitan Laporan:</strong> <span id="bap-waktu" style="color: #1a237e; font-weight: bold;">Menunggu sinkronisasi...</span></p>
+                    <p><strong>Waktu Penerbitan Laporan:</strong> <span id="bap-waktu" style="color: #1a237e; font-weight: bold;">Mengekstrak data valid...</span></p>
                     <p><strong>Lokasi Objek Pemantauan:</strong> Wilayah <span id="bap-lokasi" style="font-weight: bold; text-decoration: underline;">Seluruh Kalimantan (Agregat 5 Provinsi)</span></p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">KONDISI FAKTUAL DAN RUJUKAN STANDAR (KLHK & WMO):</h4>
-                    <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">Memuat data faktual...</p>
+                    <h4 style="margin-top: 20px; text-decoration: underline;">KONDISI FAKTUAL DAN RUJUKAN STANDAR (BMKG & KLHK):</h4>
+                    <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">Memproses data telemetri satelit...</p>
                     
                     <h4 style="margin-top: 20px; text-decoration: underline;">PROYEKSI AI DAN ANALISIS RISIKO:</h4>
                     <p style="text-align: justify; line-height: 1.6;" id="bap-prediksi">Menyusun proyeksi hukum lingkungan...</p>
                     
                     <h4 style="margin-top: 20px; text-decoration: underline;">STATUS DIGITAL CHAIN OF CUSTODY (DCoC):</h4>
-                    <p>Laporan ini sah secara elektronik dan dilindungi enkripsi kriptografi. <br>Hash Verifikasi: <strong id="bap-hash" style="font-family: monospace; color: #1a237e;">-</strong></p>
+                    <p>Laporan ini diekstrak secara otomatis, sah secara elektronik, dan dilindungi enkripsi kriptografi. <br>Hash Verifikasi: <strong id="bap-hash" style="font-family: monospace; color: #1a237e;">-</strong></p>
                     
                     <div style="margin-top: 30px; text-align: right;">
                         <button onclick="window.print()" style="background-color: #1a237e; color: white; padding: 10px 20px; cursor: pointer; border:none; border-radius:4px; font-weight:bold;">🖨️ Cetak BAP Forensik (PDF)</button>
@@ -173,6 +173,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=24"></script>
+    <script src="script.js?v=25"></script>
 </body>
 </html>
