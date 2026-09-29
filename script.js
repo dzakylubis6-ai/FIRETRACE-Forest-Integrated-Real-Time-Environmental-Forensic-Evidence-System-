@@ -11,7 +11,7 @@ let regionalMarkers = {};
 
 let activeRegionId = "all"; 
 let prevTemp = 28.0; 
-let prevHum = 75.0;
+let prevHum = 78.0;
 
 const kalimantanRegions = [
     { id: "kalteng", name: "Kalimantan Tengah", short: "KALTENG", lat: -2.3, lon: 113.9, baseTemp: 28, baseHum: 78 },
@@ -28,24 +28,23 @@ function generateFakeHash() {
     return hash.substring(0, 16) + '...';
 }
 
-// INI JANTUNG APLIKASINYA - MENJAMIN DATA LANGSUNG KELUAR
 document.addEventListener("DOMContentLoaded", async function() {
     initMap();
+    
+    // Inisialisasi awal grafik dengan data bayangan agar tidak kosong
     initChart();
     
-    // 1. Tarik Data Utama dari Satelit terlebih dahulu
+    // Tarik Data Utama dari Satelit
     await fetchWeatherAllRegions();
     
-    // 2. Tampilkan laporan secara instan (Tab 2, 3, dan 4 tidak akan kosong)
+    // Tampilkan laporan BAP secara instan
     generateForensicReport();
     
-    // 3. Atur jadwal update cuaca asli dari satelit tiap 1 Menit
+    // Jadwal pembaruan satelit & Laporan Resmi tiap 1 Menit
     setInterval(fetchWeatherAllRegions, 60000); 
-    
-    // 4. Atur jadwal CETAK LAPORAN FORENSIK (BAP) RESMI SETIAP 1 MENIT
     setInterval(generateForensicReport, 60000); 
 
-    // 5. Atur jadwal ANIMASI DASHBOARD TETAP BERGERAK SETIAP 1 DETIK
+    // Jadwal Animasi Dashboard (Bergerak tiap detik)
     setInterval(perSecondDashboardUpdate, 1000);
 });
 
@@ -84,9 +83,10 @@ function ubahFokusWilayah(id) {
     document.getElementById('bap-reg-wilayah').innerText = reg.short;
     document.getElementById('bap-lokasi').innerText = `${reg.name} (Data Sektor Terisolasi)`;
 
+    // Panggil ulang grafik agar langsung penuh untuk wilayah baru
     resetGrafik();
     
-    // Saat wilayah diklik, LANGSUNG cetak laporan baru agar tidak kosong
+    // LANGSUNG cetak laporan baru agar tidak kosong
     generateForensicReport();
 }
 
@@ -103,16 +103,75 @@ function resetKeSemuaProvinsi() {
     document.getElementById('bap-reg-wilayah').innerText = "ALL";
     document.getElementById('bap-lokasi').innerText = "Seluruh Kalimantan (Agregat 5 Provinsi)";
 
+    // Panggil ulang grafik agar langsung penuh untuk agregat
     resetGrafik();
     
     // LANGSUNG cetak laporan gabungan
     generateForensicReport();
 }
 
+// FUNGSI BARU: Mengisi grafik secara instan dengan 15 titik data historis
+function getBaselineData() {
+    let bTemp = 28.0, bHum = 78.0;
+    if (activeRegionId === "all") {
+        let totalT = 0, totalH = 0;
+        kalimantanRegions.forEach(r => { totalT += r.baseTemp; totalH += r.baseHum; });
+        bTemp = totalT / kalimantanRegions.length;
+        bHum = totalH / kalimantanRegions.length;
+    } else {
+        const reg = kalimantanRegions.find(r => r.id === activeRegionId);
+        bTemp = reg.baseTemp;
+        bHum = reg.baseHum;
+    }
+    return { bTemp, bHum };
+}
+
+function initChart() {
+    const ctx = document.getElementById('fireChart').getContext('2d');
+    
+    // Persiapkan 15 data awal agar grafik tidak terlihat "hilang"
+    let initLabels = [], initTemp = [], initHum = [];
+    let now = new Date();
+    let base = getBaselineData();
+    
+    for(let i = 15; i >= 0; i--) {
+        let pastTime = new Date(now.getTime() - (i * 1000));
+        initLabels.push(pastTime.toLocaleTimeString('id-ID'));
+        initTemp.push(base.bTemp + (Math.random() * 0.4 - 0.2));
+        initHum.push(base.bHum + (Math.random() * 2 - 1));
+    }
+
+    fireChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: initLabels, 
+            datasets: [
+                { label: 'Suhu Aktual (°C)', data: initTemp, borderColor: '#ef5350', backgroundColor: 'rgba(239, 83, 80, 0.15)', borderWidth: 2, fill: true, tension: 0.4 },
+                { label: 'Kelembapan Aktual (%)', data: initHum, borderColor: '#42a5f5', backgroundColor: 'rgba(66, 165, 245, 0.15)', borderWidth: 2, fill: true, tension: 0.4 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
+            scales: { x: { ticks: { color: '#9e9e9e' } }, y: { ticks: { color: '#9e9e9e' } } }
+        }
+    });
+}
+
 function resetGrafik() {
-    fireChart.data.labels = [];
-    fireChart.data.datasets[0].data = [];
-    fireChart.data.datasets[1].data = [];
+    let newLabels = [], newTemp = [], newHum = [];
+    let now = new Date();
+    let base = getBaselineData();
+    
+    for(let i = 15; i >= 0; i--) {
+        let pastTime = new Date(now.getTime() - (i * 1000));
+        newLabels.push(pastTime.toLocaleTimeString('id-ID'));
+        newTemp.push(base.bTemp + (Math.random() * 0.4 - 0.2));
+        newHum.push(base.bHum + (Math.random() * 2 - 1));
+    }
+    
+    fireChart.data.labels = newLabels;
+    fireChart.data.datasets[0].data = newTemp;
+    fireChart.data.datasets[1].data = newHum;
     fireChart.update();
 }
 
@@ -136,47 +195,19 @@ async function fetchWeatherAllRegions() {
     }
 }
 
-function initChart() {
-    const ctx = document.getElementById('fireChart').getContext('2d');
-    fireChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: [], datasets: [
-                { label: 'Suhu Aktual (°C)', data: [], borderColor: '#ef5350', backgroundColor: 'rgba(239, 83, 80, 0.15)', borderWidth: 2, fill: true, tension: 0.4 },
-                { label: 'Kelembapan Aktual (%)', data: [], borderColor: '#42a5f5', backgroundColor: 'rgba(66, 165, 245, 0.15)', borderWidth: 2, fill: true, tension: 0.4 }
-            ]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false, animation: { duration: 0 },
-            scales: { x: { ticks: { color: '#9e9e9e' } }, y: { ticks: { color: '#9e9e9e' } } }
-        }
-    });
-}
-
-// ==========================================
-// 1. DASHBOARD UPDATE TIAP 1 DETIK (ANIMASI & GRAFIK)
-// ==========================================
+// ----------------------------------------------------
+// FUNGSI 1: DASHBOARD UPDATE TIAP 1 DETIK (ANIMASI & GRAFIK)
+// ----------------------------------------------------
 function perSecondDashboardUpdate() {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('id-ID'); 
     const currentSecond = now.getSeconds();
 
-    let liveTemp = 0, liveHum = 0;
+    let base = getBaselineData();
     let targetName = activeRegionId === "all" ? "Seluruh Kalimantan" : kalimantanRegions.find(r => r.id === activeRegionId).name;
 
-    if (activeRegionId === "all") {
-        let totalTemp = 0, totalHum = 0;
-        kalimantanRegions.forEach(r => { totalTemp += r.baseTemp; totalHum += r.baseHum; });
-        liveTemp = totalTemp / kalimantanRegions.length;
-        liveHum = totalHum / kalimantanRegions.length;
-    } else {
-        const activeReg = kalimantanRegions.find(r => r.id === activeRegionId);
-        liveTemp = activeReg.baseTemp;
-        liveHum = activeReg.baseHum;
-    }
-
-    liveTemp += (Math.random() * 0.4 - 0.2);
-    liveHum += (Math.random() * 0.6 - 0.3);
+    let liveTemp = base.bTemp + (Math.random() * 0.4 - 0.2);
+    let liveHum = base.bHum + (Math.random() * 0.6 - 0.3);
 
     let deltaTemp = liveTemp - prevTemp;
     let deltaHum = liveHum - prevHum;
@@ -229,9 +260,9 @@ function perSecondDashboardUpdate() {
     }
 }
 
-// ==========================================
-// 2. LAPORAN FORENSIK (OTOMATIS TIAP 1 MENIT & SAAT DIKLIK)
-// ==========================================
+// ----------------------------------------------------
+// FUNGSI 2: LAPORAN FORENSIK (OTOMATIS TIAP 1 MENIT & SAAT DIKLIK)
+// ----------------------------------------------------
 function generateForensicReport() {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('id-ID');
@@ -242,18 +273,16 @@ function generateForensicReport() {
     let officialTemp = 0;
     let officialHum = 0;
 
+    let base = getBaselineData();
     if (activeRegionId === "all") {
         targetName = "Seluruh Wilayah Kalimantan (Agregat 5 Provinsi)";
-        let totalTemp = 0, totalHum = 0;
-        kalimantanRegions.forEach(r => { totalTemp += r.baseTemp; totalHum += r.baseHum; });
-        officialTemp = (totalTemp / kalimantanRegions.length).toFixed(1);
-        officialHum = (totalHum / kalimantanRegions.length).toFixed(1);
     } else {
         const activeReg = kalimantanRegions.find(r => r.id === activeRegionId);
         targetName = `Provinsi ${activeReg.name}`;
-        officialTemp = activeReg.baseTemp.toFixed(1);
-        officialHum = activeReg.baseHum.toFixed(1);
     }
+    
+    officialTemp = base.bTemp.toFixed(1);
+    officialHum = base.bHum.toFixed(1);
 
     let officialStatus = "NORMAL";
     if (officialTemp >= 31 && officialHum < 70) officialStatus = "WASPADA";
@@ -283,7 +312,6 @@ function generateForensicReport() {
     let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
     let auditLog = `<tr><td style="color:#64b5f6;">${timeStr}</td><td>${labelWilayah} - Laporan BAP (1 Menit)</td><td style="color:#4caf50; font-weight:bold;">TERVALIDASI</td><td class="hash-text">${bapHash}</td></tr>`;
     
-    // Pastikan tabel di tab audit trail terisi 
     const auditTable = document.getElementById('log-body-audit');
     if (auditTable) {
         auditTable.insertAdjacentHTML('afterbegin', auditLog);
