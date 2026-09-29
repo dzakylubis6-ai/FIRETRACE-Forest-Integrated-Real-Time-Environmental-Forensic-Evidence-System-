@@ -211,37 +211,24 @@ function perSecondDashboardUpdate() {
     if (liveTemp >= 35 || liveHum < 45) currentStatus = "BAHAYA";
     let cfg = statusRules[currentStatus];
 
-    // Kalkulasi Skor Atribusi Berdasarkan 7 Indikator Antropogenik Tertimbang (Total 100)
-    let skorAntropogenik = 25; // Skor dasar normal (faktor alami dominan)
-    let statusPemicu = "Dominasi Alami";
-    let nodeText = "1 Node Terisolasi (Normal)";
-    let petirText = "Nihil (Bobot 20)";
-
-    if(currentStatus === "BAHAYA") {
-        skorAntropogenik = 82; // Indikasi kuat manusia (multi-node, tanpa petir, laju asap cepat)
-        statusPemicu = "⚠️ Kuat Indikasi Manusia";
-        nodeText = "Multi-Node Berjajar (Bobot 20)";
-        petirText = "Tidak Ada Petir (Bobot 20)";
-    } else if(currentStatus === "SIAGA") {
-        skorAntropogenik = 58;
-        statusPemicu = "⚠️ Potensi Ulah Manusia";
-        nodeText = "2 Node Aktif (Bobot 20)";
-        petirText = "Nihil Sambaran (Bobot 20)";
-    }
-
     document.getElementById('val-suhu').innerText = liveTemp.toFixed(2);
     document.getElementById('val-lembab').innerText = liveHum.toFixed(2);
-    document.getElementById('val-skor-total').innerText = skorAntropogenik;
-    document.getElementById('val-status-pemicu').innerText = statusPemicu;
-    document.getElementById('val-petir').innerText = petirText;
-    document.getElementById('val-node').innerText = nodeText;
-    document.getElementById('profile-skor-angka').innerText = skorAntropogenik + " / 100 (" + statusPemicu + ")";
+    
+    let deltaSuhuEl = document.getElementById('delta-suhu');
+    deltaSuhuEl.innerText = (deltaTemp > 0 ? "+" : "") + deltaTemp.toFixed(2) + " °C/dtk";
+    deltaSuhuEl.style.color = deltaTemp > 0 ? "#ff5252" : "#69f0ae";
+
+    let deltaLembabEl = document.getElementById('delta-lembab');
+    deltaLembabEl.innerText = (deltaHum > 0 ? "+" : "") + deltaHum.toFixed(2) + " %/dtk";
+    deltaLembabEl.style.color = deltaHum > 0 ? "#64b5f6" : "#ffb74d";
 
     document.getElementById('status-text').innerText = currentStatus;
     document.getElementById('status-desc').innerText = `Pemantauan ${targetName}. ${cfg.desc}`;
     document.getElementById('status-banner').className = 'status-header ' + currentStatus.toLowerCase();
 
     document.getElementById('val-asap').innerText = currentStatus === 'BAHAYA' ? '5200' : (currentStatus === 'SIAGA' ? '2100' : '400');
+    document.getElementById('val-risiko').innerText = currentStatus === 'BAHAYA' ? '92% (Kritis)' : (currentStatus === 'SIAGA' ? '75% (Tinggi)' : (currentStatus === 'WASPADA' ? '45% (Sedang)' : '15% (Rendah)'));
+    document.getElementById('val-prediksi-singkat').innerText = currentStatus === 'BAHAYA' ? 'Eskalasi Cepat' : 'Stabil';
     document.getElementById('profile-tingkat-ancaman').innerText = currentStatus === 'BAHAYA' ? 'KRITIS' : 'RENDAH';
     
     document.getElementById('live-indicator').innerText = `● LIVE PER-SECOND (${timeStr})`;
@@ -294,16 +281,11 @@ function generateForensicReport() {
     document.getElementById('bap-hash').innerText = bapHash;
 
     let bapRingkasan = `Sesuai dengan protokol standar pemantauan Karhutla (BMKG & KLHK), sistem FIRETRACE mencatat suhu faktual wilayah ${targetName} sebesar ${officialTemp}°C dan kelembapan udara sebesar ${officialHum}%.`;
-    
-    let bapPrediksi = `Kesimpulan Atribusi Penyebab: Berdasarkan evaluasi 7 Indikator Atribusi Aktivitas Manusia (Antropogenik) dengan total bobot 100, sistem menetapkan bahwa pemicu kebakaran berada dalam kategori FAKTOR ALAMI / IKLIM NORMAL. Tidak terdeteksi anomali penyulutan buatan maupun pola sebaran mencurigakan.`;
-    
-    if(officialStatus !== "NORMAL") {
-        bapPrediksi = `KESIMPULAN ATRIBUSI PRO-JUSTITIA (INDIKASI ANTROPOGENIK): Evaluasi mendalam berdasarkan 7 indikator tertimbang menunjukkan skor tinggi pada indikator jumlah node berdekatan, ketiadaan sambaran petir dari BMKG sebelum waktu T0, serta laju kenaikan asap (MQ135) yang instan. Hal ini secara hukum mengindikasikan kuat adanya AKTIVITAS MANUSIA / KESENGAJAAN (ANTROPOGENIK).`;
-    }
+    let bapPrediksi = `Analisis Atribusi Kesimpulan: Parameter lingkungan terpantau stabil dan berada dalam batas wajar siklus alami ekosistem.`;
 
     document.getElementById('bap-ringkasan').innerText = bapRingkasan;
     document.getElementById('bap-prediksi').innerText = bapPrediksi;
-    document.getElementById('profile-prediksi-teks').innerText = `Analisis Atribusi Forensik: Status ${officialStatus.toUpperCase()} (${targetName}). Evaluasi 7 Indikator Atribusi Ulah Manusia vs Alami Terintegrasi Sempurna.`;
+    document.getElementById('profile-prediksi-teks').innerText = `Validasi Sistem: Status ${officialStatus.toUpperCase()} untuk wilayah ${targetName}.`;
 
     let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
     let auditLog = `<tr><td style="color:#64b5f6;">${timeStr}</td><td>${labelWilayah} - Laporan BAP (1 Menit)</td><td style="color:#4caf50; font-weight:bold;">TERVALIDASI</td><td class="hash-text">${bapHash}</td></tr>`;
