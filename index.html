@@ -3,195 +3,412 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FIRETRACE - Forensic Dashboard</title>
-    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css?v=27">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>FIRETRACE - Forest Integrated Real-Time Environmental & Forensic Evidence System</title>
+    <style>
+        :root {
+            --primary-color: #c0392b;
+            --secondary-color: #2c3e50;
+            --accent-color: #e67e22;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: #ffffff;
+            padding: 3rem 1rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            display: block;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        nav a:hover {
+            background-color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        section {
+            background: var(--card-bg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .card {
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-top: 4px solid var(--accent-color);
+            background-color: #fafafa;
+        }
+
+        .card h4 {
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--secondary-color);
+            color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .highlight-box {
+            background-color: #eef7fc;
+            border-left: 5px solid #2980b9;
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .weight-badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        footer {
+            background-color: var(--secondary-color);
+            color: #ffffff;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8rem; }
+            nav ul { flex-direction: column; text-align: center; }
+            nav a { padding: 0.75rem; }
+        }
+    </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo-area">
-                <h2>FIRETRACE</h2>
-                <p>Forensic Evidence System</p>
-                <div style="margin-top: 15px; padding: 10px; background: #2a2a2a; border-radius: 6px; font-size: 12px; border-left: 3px solid #f9a825;">
-                    <strong style="color: #fff;">FOKUS AREA SAAT INI:</strong><br>
-                    <span style="color: #4caf50; font-weight: bold; font-size: 14px;" id="sidebar-wilayah">Seluruh Kalimantan</span><br>
-                    <span style="color: #9e9e9e; font-size: 10px;">Sensor: DS18B20 & BME280</span>
+
+    <header>
+        <h1>FIRETRACE</h1>
+        <p>Forest Integrated Real-Time Environmental & Forensic Evidence System</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#pendahuluan">Pendahuluan</a></li>
+            <li><a href="#arsitektur">Sistem & Arsitektur</a></li>
+            <li><a href="#komponen">Komponen Hardware</a></li>
+            <li><a href="#indikator-manusia">Indikator Aktivitas Manusia</a></li>
+            <li><a href="#forensik">Inovasi Forensik</a></li>
+            <li><a href="#penutup">Penutup</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+
+        <!-- PENDAHULUAN -->
+        <section id="pendahuluan">
+            <h2>Pendahuluan</h2>
+            <p>Berdasarkan Pasal 1 ayat (3) UUD 1945, Indonesia adalah negara hukum yang membutuhkan proses penemuan kebenaran berbasis fakta yang dapat dipertanggungjawabkan[cite: 1]. Penegakan hukum modern memanfaatkan <i>scientific evidence</i> (bukti ilmiah) yang diperoleh melalui metode ilmiah dan dapat diuji kembali[cite: 1]. Pendekatan ini sangat krusial dalam penanganan Kebakaran Hutan dan Lahan (Karhutla)[cite: 1].</p>
+            
+            <p>Karhutla menyebabkan hilangnya tutupan vegetasi, kerusakan ekosistem, gangguan kesehatan, hingga pencemaran udara lintas batas[cite: 1]. Kebutuhan utama dalam penanganan karhutla adalah menjembatani jarak antara terjadinya peristiwa, tersedianya data, dan terbentuknya pembuktian[cite: 1].</p>
+
+            <div class="highlight-box">
+                <strong>Gagasan Utama FIRETRACE:</strong> FIRETRACE dikembangkan bukan untuk menggantikan sistem deteksi dini yang ada, melainkan memberikan fungsi rekonstruksi ilmiah[cite: 1]. Sistem ini mengubah rekaman kondisi lingkungan menjadi dasar rekonstruksi peristiwa melalui penggabungan multisensor, <i>fuzzy logic</i>, serta lapisan <i>Environmental Forensic Recording</i>[cite: 1].
+            </div>
+        </section>
+
+        <!-- ARSITEKTUR & SISTEM -->
+        <section id="arsitektur">
+            <h2>Arsitektur Lapangan & Kerja Sistem</h2>
+            <p>FIRETRACE mengusulkan arsitektur 4 lapisan utama untuk mendukung sistem inteligensi lingkungan yang berorientasi pembuktian[cite: 1]:</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>1. Detection Layer</h4>
+                    <p>Sistem multisensor & Fuzzy Logic Mamdani untuk klasifikasi kondisi (AMAN, WASPADA, BAHAYA, & ANOMALI)[cite: 1].</p>
+                </div>
+                <div class="card">
+                    <h4>2. Environmental Recording Layer</h4>
+                    <p>Perekaman data lingkungan kontinu untuk membangun <i>Fire Event Profile</i> dan <i>Environmental Forensic Record</i>[cite: 1].</p>
+                </div>
+                <div class="card">
+                    <h4>3. Data Integrity Layer</h4>
+                    <p>Menjamin keabsahan data melalui Timestamp, Metadata, Hash Kriptografi (SHA-256), dan Audit Trail[cite: 1].</p>
+                </div>
+                <div class="card">
+                    <h4>4. Investigative Support Layer</h4>
+                    <p>Mendukung proses hukum melalui <i>Digital Chain of Custody</i> dan pembuatan <i>Forensic Report</i>[cite: 1].</p>
                 </div>
             </div>
-            <ul class="nav-menu">
-                <li class="nav-item active" onclick="bukaTab('monitoring', this)">Real-Time Monitoring</li>
-                <li class="nav-item" onclick="bukaTab('profile', this)">Fire Event Profile</li>
-                <li class="nav-item" onclick="bukaTab('audit', this)">Audit Trail & Hash</li>
-                <li class="nav-item" onclick="bukaTab('report', this)">Forensic Report</li>
-            </ul>
-        </aside>
+        </section>
 
-        <main class="main-content">
-            <!-- TAB 1: Monitoring -->
-            <div id="monitoring" class="tab-content active">
-                <header class="status-header normal" id="status-banner">
-                    <div class="status-info">
-                        <h3>STATUS AREA: <span id="nama-wilayah-status" style="text-transform: uppercase; color: #fff;">SELURUH KALIMANTAN</span></h3>
-                        <p id="status-desc">Pemantauan agregat rata-rata lintas 5 provinsi. Kondisi stabil.</p>
-                    </div>
-                    <div class="status-controls">
-                        <span style="background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #4caf50; border: 1px solid #4caf50; font-weight: bold;" id="live-indicator">
-                            ● LIVE PER-SECOND
-                        </span>
-                    </div>
-                </header>
-
-                <!-- PANEL INDIKATOR ACUAN BAKU KARHUTLA (UNTUK JURI / PEMBACA) -->
-                <section style="background: rgba(30, 30, 30, 0.95); border: 1px solid rgba(255, 152, 0, 0.6); padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-                    <div style="font-size: 13px; color: #fff;">
-                        <strong style="color: #ffa726;">📌 PARAMETER ACUAN BAKU (BMKG & KLHK):</strong> 
-                        <span style="color: #ccc; margin-left: 5px;">Indikator Titik Kritis Kebakaran Hutan & Lahan (Karhutla)</span>
-                    </div>
-                    <div style="display: flex; gap: 12px; font-size: 12px; flex-wrap: wrap;">
-                        <span style="background: rgba(239, 83, 80, 0.2); border: 1px solid #ef5350; padding: 5px 10px; border-radius: 4px; color: #ff8a80; font-weight: bold;">
-                            🌡️ Suhu Kritis: &gt; 35°C
-                        </span>
-                        <span style="background: rgba(255, 152, 0, 0.2); border: 1px solid #ffa726; padding: 5px 10px; border-radius: 4px; color: #ffe0b2; font-weight: bold;">
-                            💧 Kelembapan Rawan: &le; 55% (Kritis &le; 45%)
-                        </span>
-                        <span style="background: rgba(33, 150, 243, 0.2); border: 1px solid #29b6f6; padding: 5px 10px; border-radius: 4px; color: #81d4fa; font-weight: bold;">
-                            🌫️ Asap (MQ135): &gt; 2100 ppm
-                        </span>
-                    </div>
-                </section>
-
-                <section class="sensor-grid">
-                    <div class="sensor-card">
-                        <h4 id="judul-suhu">Suhu: Seluruh Kalimantan</h4>
-                        <div class="sensor-value"><span id="val-suhu">28.00</span> °C</div>
-                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Status Acuan: <strong id="delta-suhu" style="color: #fff;">Aman</strong></div>
-                    </div>
-                    <div class="sensor-card">
-                        <h4 id="judul-lembab">Kelembapan: Seluruh Kalimantan</h4>
-                        <div class="sensor-value"><span id="val-lembab">78.00</span> %</div>
-                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Status Acuan: <strong id="delta-lembab" style="color: #fff;">Lembap</strong></div>
-                    </div>
-                    <div class="sensor-card">
-                        <h4>Estimasi Asap (MQ135)</h4>
-                        <div class="sensor-value"><span id="val-asap">400</span> ppm</div>
-                    </div>
-                    <div class="sensor-card">
-                        <h4>Indeks Risiko (AI)</h4>
-                        <div class="sensor-value" style="font-size: 15px; margin-top: 5px; color: #ffab91;" id="val-risiko">15% (Rendah)</div>
-                    </div>
-                    <div class="sensor-card">
-                        <h4>Status Prediktif</h4>
-                        <div class="sensor-value" style="font-size: 14px; margin-top: 5px; color: #64b5f6;" id="val-prediksi-singkat">Stabil / Normal</div>
-                    </div>
-                </section>
-
-                <section class="map-section" style="margin-bottom: 20px; position: relative;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255, 100, 100, 0.2); padding-bottom: 10px;">
-                        <h3 style="color: #fff; font-size: 16px;">Peta Kalimantan (Klik Titik Provinsi Untuk Detail)</h3>
-                        <button onclick="resetKeSemuaProvinsi()" style="background: #1976d2; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;">🌍 Tampilkan Seluruh Kalimantan</button>
-                    </div>
-                    <div id="kalimantan-map" style="height: 300px; width: 100%; border-radius: 8px; border: 1px solid rgba(255, 100, 100, 0.15); z-index: 1;"></div>
-                </section>
-
-                <div class="bottom-grid">
-                    <section class="chart-section">
-                        <h3>Tren Lingkungan (<span id="grafik-wilayah">Seluruh Kalimantan</span>)</h3>
-                        <canvas id="fireChart"></canvas>
-                    </section>
-                    <section class="log-section">
-                        <h3>Live Data Integrity Log</h3>
-                        <div class="table-responsive">
-                            <table id="log-table">
-                                <thead>
-                                    <tr><th>Waktu (WIB)</th><th>Fokus Area</th><th>Hash (SHA-256)</th></tr>
-                                </thead>
-                                <tbody id="log-body"></tbody>
-                            </table>
-                        </div>
-                    </section>
-                </div>
+        <!-- KOMPONEN SENSOR -->
+        <section id="komponen">
+            <h2>Spesifikasi & Komponen Sensor</h2>
+            <p>Sistem menggunakan kombinasi sensor presisi tinggi untuk mengumpulkan parameter lingkungan secara <i>real-time</i>[cite: 1]:</p>
+            
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sensor</th>
+                            <th>Parameter</th>
+                            <th>Fungsi Utama & Catatan Forensik</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>DS18B20</strong></td>
+                            <td>Suhu Udara (°C)</td>
+                            <td>Indikator tren pemanasan lingkungan sebelum kejadian[cite: 1].</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BME280</strong></td>
+                            <td>Kelembapan Udara (RH %)</td>
+                            <td>Indikator tren pengeringan vegetasi & lingkungan[cite: 1].</td>
+                        </tr>
+                        <tr>
+                            <td><strong>UVTRON R2868</strong></td>
+                            <td>Radiasi UV / Api</td>
+                            <td>Penanda waktu pasti (T0) munculnya indikasi api[cite: 1].</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MQ135</strong></td>
+                            <td>Asap & Gas (ppm)</td>
+                            <td>Indikator awal anomali sebelum status BAHAYA tercapai[cite: 1].</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Anemometer & Vane</strong></td>
+                            <td>Kecepatan & Arah Angin</td>
+                            <td>Data non-fuzzy pendukung rekonstruksi arah dan pola penyebaran api[cite: 1].</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+        </section>
 
-            <!-- TAB 2: Fire Event Profile -->
-            <div id="profile" class="tab-content">
-                <div class="header-halaman">
-                    <h2>Analisis Profil Kejadian & Prediktif</h2>
-                    <p>Rekonstruksi anomali lingkungan berdasarkan tren faktual area pantau.</p>
-                </div>
-                <div class="sensor-grid">
-                    <div class="sensor-card" style="grid-column: span 2; text-align: left;">
-                        <h4 style="color: #ef5350;">Pemodelan AI: Area <span id="profile-nama-wilayah">Seluruh Kalimantan</span></h4>
-                        <p style="font-size: 13px; color: #ccc; margin-top: 10px; line-height: 1.5;" id="profile-prediksi-teks">Mengambil data validasi awal...</p>
-                    </div>
-                    <div class="sensor-card">
-                        <h4>Tingkat Ancaman</h4>
-                        <div class="sensor-value" style="font-size: 16px; margin-top: 5px; color: #4caf50;" id="profile-tingkat-ancaman">RENDAH</div>
-                    </div>
-                    <div class="sensor-card">
-                        <h4>Waktu Proyeksi</h4>
-                        <div class="sensor-value" style="font-size: 18px; margin-top: 5px;">+3 Jam Kedepan</div>
-                    </div>
-                </div>
+        <!-- INDIKATOR AKTIVITAS MANUSIA -->
+        <section id="indikator-manusia">
+            <h2>Indikator Indikasi Aktivitas Manusia (Antropogenik)</h2>
+            <p>FIRETRACE menghitung <strong>Indeks Indikasi Aktivitas Manusia (skala 0–100)</strong>[cite: 1] berdasarkan perbandingan data parameter sensorik dengan kondisi alami, guna membedakan pemicu kebakaran antropogenik dari pemicu alami[cite: 1]:</p>
+            
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Indikator</th>
+                            <th>Sumber Data</th>
+                            <th>Mendukung Indikasi Manusia (Antropogenik)</th>
+                            <th>Menyanggah (Mengarah Alami)</th>
+                            <th>Bobot</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td><strong>Jumlah node terpicu</strong></td>
+                            <td>UVTRON, MQ135 antarnode</td>
+                            <td>Beberapa node terpicu dalam rentang waktu berdekatan, titik berjajar atau terpisah[cite: 1].</td>
+                            <td>Satu node terpicu, lalu menyebar bertahap[cite: 1].</td>
+                            <td><span class="weight-badge">20</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td><strong>Aktivitas petir sebelum T0</strong></td>
+                            <td>BMKG</td>
+                            <td>Tidak ada sambaran petir di sekitar titik awal pada rentang waktu sebelum T0[cite: 1].</td>
+                            <td>Ada sambaran petir tercatat di dekat titik awal[cite: 1].</td>
+                            <td><span class="weight-badge">20</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td><strong>Laju kenaikan asap</strong></td>
+                            <td>MQ135 (rate of change)</td>
+                            <td>Kenaikan sangat cepat dalam waktu singkat[cite: 1].</td>
+                            <td>Kenaikan lambat dan bertahap[cite: 1].</td>
+                            <td><span class="weight-badge">15</span></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td><strong>Curah hujan</strong></td>
+                            <td>BMKG</td>
+                            <td>Tidak ada hujan, sehingga vegetasi tidak lembap dan mudah terbakar oleh sulutan[cite: 1].</td>
+                            <td>Kondisi cuaca ekstrem tanpa faktor pemicu luar[cite: 1].</td>
+                            <td><span class="weight-badge">10</span></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td><strong>Kesesuaian arah sebaran dengan angin</strong></td>
+                            <td>Sensor arah & kecepatan angin, verifikasi visual</td>
+                            <td>Titik awal atau pola sebaran tidak selaras dengan angin, atau ada beberapa titik awal terpisah[cite: 1].</td>
+                            <td>Sebaran searah angin dari satu titik awal[cite: 1].</td>
+                            <td><span class="weight-badge">15</span></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td><strong>Waktu T0</strong></td>
+                            <td>UVTRON</td>
+                            <td>T0 pada jam yang khas aktivitas manusia, bukan puncak panas[cite: 1].</td>
+                            <td>T0 pada puncak suhu dan kekeringan harian[cite: 1].</td>
+                            <td><span class="weight-badge">10</span></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td><strong>Tren pengeringan dan pemanasan</strong></td>
+                            <td>DS18B20, BME280</td>
+                            <td>Tren suhu dan RH wajar, tanpa pemanasan ekstrem yang bertahap[cite: 1].</td>
+                            <td>Suhu naik dan RH turun ekstrem selama beberapa hari[cite: 1].</td>
+                            <td><span class="weight-badge">10</span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" style="text-align: right; font-weight: bold;">TOTAL BOBOT SCORE</td>
+                            <td><span class="weight-badge" style="background-color: var(--secondary-color);">100</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+        </section>
 
-            <!-- TAB 3: Audit Trail -->
-            <div id="audit" class="tab-content">
-                <div class="header-halaman">
-                    <h2>Digital Chain of Custody (Log Terkunci)</h2>
-                    <p>Catatan forensik tervalidasi yang dienkripsi per menit untuk BAP.</p>
-                </div>
-                <div class="log-section">
-                    <div class="table-responsive" style="max-height: 400px;">
-                        <table>
-                            <thead>
-                                <tr><th>Timestamp Eviden</th><th>Fokus Pantauan</th><th>Sertifikasi</th><th>Digital Hash (SHA-256)</th></tr>
-                            </thead>
-                            <tbody id="log-body-audit"></tbody>
-                        </table>
-                    </div>
-                </div>
+        <!-- INTEGRITAS DATA & FORENSIK -->
+        <section id="forensik">
+            <h2>Integritas Data & Rantai Jelajah Bukti Digital</h2>
+            <p>FIRETRACE menerapkan prinsip <i>Digital Chain of Custody</i> untuk memastikan data sensor memenuhi kriteria bukti ilmiah yang valid[cite: 1]:</p>
+            
+            <ol>
+                <li><strong>Collection:</strong> Data direkam otomatis oleh node sensor saat terjadi perubahan status[cite: 1].</li>
+                <li><strong>Authentication & Integrity:</strong> Setiap paket data diberi timestamp, Node ID, serta nilai Hash Berantai (SHA-256) & HMAC[cite: 1].</li>
+                <li><strong>Secure Storage:</strong> Penyimpanan berbasis cloud terenkripsi dengan kontrol akses terotorisasi[cite: 1].</li>
+                <li><strong>Access Logging (Audit Trail):</strong> Setiap aktivitas akses, pengunduhan, atau verifikasi data dicatat secara otomatis[cite: 1].</li>
+                <li><strong>Forensic Report:</strong> Penyusunan laporan kronologis dan Indeks Antropogenik sebagai data pendukung ilmiah bagi penyidik[cite: 1].</li>
+            </ol>
+            
+            <div class="highlight-box">
+                <small>* Catatan Hukum: Data FIRETRACE bersifat sebagai bukti/data ilmiah pendukung investigasi, bukan alat bukti otomatis yang menetapkan kelakuan atau niat tindak pidana[cite: 1]. Penetapan status hukum tetap berada di bawah kewenangan penyidik dan majelis hakim[cite: 1].</small>
             </div>
+        </section>
 
-            <!-- TAB 4: FORENSIC REPORT -->
-            <div id="report" class="tab-content">
-                <div class="header-halaman">
-                    <h2>Environmental Forensic Report Generator</h2>
-                    <p>Berita Acara Pemeriksaan (BAP) Lingkungan Digital (Update Resmi Per 1 Menit).</p>
-                </div>
-                <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 800px; margin: 0 auto; font-family: 'Times New Roman', serif;">
-                    <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
-                        <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN (OFFICIAL)</h2>
-                        <p style="margin: 5px 0 0 0; font-size: 14px;">HASIL ANALISIS FAKTUAL (PRO-JUSTITIA)</p>
-                    </div>
-                    
-                    <p><strong>Nomor Registrasi BAP:</strong> KAL-REG-<span id="bap-reg-wilayah">ALL</span>-<span id="bap-menit">00</span></p>
-                    <p><strong>Waktu Penerbitan Laporan:</strong> <span id="bap-waktu" style="color: #1a237e; font-weight: bold;">Mengekstrak data valid...</span></p>
-                    <p><strong>Lokasi Objek Pemantauan:</strong> Wilayah <span id="bap-lokasi" style="font-weight: bold; text-decoration: underline;">Seluruh Kalimantan (Agregat 5 Provinsi)</span></p>
-                    
-                    <h4 style="margin-top: 20px; text-decoration: underline;">KONDISI FAKTUAL DAN RUJUKAN STANDAR (BMKG & KLHK):</h4>
-                    <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">Memproses data telemetri satelit...</p>
-                    
-                    <h4 style="margin-top: 20px; text-decoration: underline;">PROYEKSI AI DAN ANALISIS RISIKO:</h4>
-                    <p style="text-align: justify; line-height: 1.6;" id="bap-prediksi">Menyusun proyeksi hukum lingkungan...</p>
-                    
-                    <h4 style="margin-top: 20px; text-decoration: underline;">STATUS DIGITAL CHAIN OF CUSTODY (DCoC):</h4>
-                    <p>Laporan ini diekstrak secara otomatis, sah secara elektronik, dan dilindungi enkripsi kriptografi. <br>Hash Verifikasi: <strong id="bap-hash" style="font-family: monospace; color: #1a237e;">-</strong></p>
-                    
-                    <div style="margin-top: 30px; text-align: right;">
-                        <button onclick="window.print()" style="background-color: #1a237e; color: white; padding: 10px 20px; cursor: pointer; border:none; border-radius:4px; font-weight:bold;">🖨️ Cetak BAP Forensik (PDF)</button>
-                    </div>
-                </div>
-            </div>
+        <!-- PENUTUP -->
+        <section id="penutup">
+            <h2>Kesimpulan & Penutup</h2>
+            <p>FIRETRACE menawarkan pembaruan paradigma dari sekadar peringatan dini (<i>early warning</i>) menjadi <i>evidence-oriented environmental intelligence</i>[cite: 1]. Dengan mempertahankan integritas rekaman lingkungan sejak sebelum kejadian serta menyajikan analisis korelasi pemicu alami vs manusia, sistem ini membantu merekonstruksi peristiwa Karhutla secara obyektif dan akurat guna mendukung penegakan hukum lingkungan di Indonesia[cite: 1].</p>
+        </section>
 
-        </main>
     </div>
-    
-    <script src="script.js?v=27"></script>
+
+    <footer>
+        <p>&copy; 2026 FIRETRACE Project - Forest Integrated Real-Time Environmental & Forensic Evidence System[cite: 1]</p>
+    </footer>
+
 </body>
 </html>
