@@ -111,7 +111,6 @@ function getBaselineData() {
     return { bTemp, bHum };
 }
 
-// INISIALISASI GRAFIK DENGAN PAKSAAN SKALA MIN 0 DAN MAX 100
 function initChart() {
     const ctx = document.getElementById('fireChart').getContext('2d');
     
@@ -140,15 +139,12 @@ function initChart() {
             maintainAspectRatio: false, 
             animation: { duration: 200 },
             scales: { 
-                x: { 
-                    ticks: { color: '#9e9e9e' }, 
-                    grid: { color: 'rgba(255,255,255,0.05)' } 
-                }, 
+                x: { ticks: { color: '#9e9e9e' }, grid: { color: 'rgba(255,255,255,0.05)' } }, 
                 y: { 
                     ticks: { color: '#9e9e9e' }, 
                     grid: { color: 'rgba(255,255,255,0.05)' },
-                    min: 0,   // Dipaksa mulai dari 0 agar nilai 28 dan 78 masuk dalam bingkai
-                    max: 100  // Dipaksa maksimal 100 agar pas dengan persentase kelembapan
+                    min: 0,   
+                    max: 100  
                 } 
             }
         }
@@ -218,13 +214,30 @@ function perSecondDashboardUpdate() {
     document.getElementById('val-suhu').innerText = liveTemp.toFixed(2);
     document.getElementById('val-lembab').innerText = liveHum.toFixed(2);
     
+    // TAMBAHAN INDIKATOR AMBANG BATAS KRITIS KARHUTLA DI KARTU DASHBOARD
     let deltaSuhuEl = document.getElementById('delta-suhu');
-    deltaSuhuEl.innerText = (deltaTemp > 0 ? "+" : "") + deltaTemp.toFixed(2) + " °C/dtk";
-    deltaSuhuEl.style.color = deltaTemp > 0 ? "#ff5252" : "#69f0ae";
+    if(liveTemp >= 35) {
+        deltaSuhuEl.innerHTML = "🔥 KRITIS (>35°C)";
+        deltaSuhuEl.style.color = "#ff5252";
+    } else if(liveTemp >= 33) {
+        deltaSuhuEl.innerHTML = "⚠️ TINGGI (≥33°C)";
+        deltaSuhuEl.style.color = "#ffa726";
+    } else {
+        deltaSuhuEl.innerHTML = "Aman (<33°C)";
+        deltaSuhuEl.style.color = "#69f0ae";
+    }
 
     let deltaLembabEl = document.getElementById('delta-lembab');
-    deltaLembabEl.innerText = (deltaHum > 0 ? "+" : "") + deltaHum.toFixed(2) + " %/dtk";
-    deltaLembabEl.style.color = deltaHum > 0 ? "#64b5f6" : "#ffb74d";
+    if(liveHum <= 45) {
+        deltaLembabEl.innerHTML = "🔥 KRITIS (≤45%)";
+        deltaLembabEl.style.color = "#ff5252";
+    } else if(liveHum <= 55) {
+        deltaLembabEl.innerHTML = "⚠️ RAWAN (≤55%)";
+        deltaLembabEl.style.color = "#ffa726";
+    } else {
+        deltaLembabEl.innerHTML = "Lembap (>55%)";
+        deltaLembabEl.style.color = "#64b5f6";
+    }
 
     document.getElementById('status-text').innerText = currentStatus;
     document.getElementById('status-desc').innerText = `Pemantauan ${targetName}. ${cfg.desc}`;
@@ -284,17 +297,18 @@ function generateForensicReport() {
     document.getElementById('bap-waktu').innerText = `${now.toLocaleString('id-ID')} WIB (Siklus Update 1 Menit)`;
     document.getElementById('bap-hash').innerText = bapHash;
 
-    let bapRingkasan = `Sesuai dengan protokol pemantauan lingkungan hidrometeorologis, sistem FIRETRACE pada pukul ${timeStr} WIB telah mengekstrak data satelit faktual untuk wilayah pemantauan: ${targetName}. Tercatat suhu udara rata-rata absolut berada pada angka ${officialTemp}°C dengan persentase kelembapan (Relative Humidity) sebesar ${officialHum}%. Angka ini divalidasi dan dibandingkan dengan parameter baku mutu lingkungan serta ambang batas kerawanan Karhutla menurut pedoman Kementerian Lingkungan Hidup dan Kehutanan (KLHK) dan Badan Meteorologi Klimatologi dan Geofisika (BMKG).`;
+    // NARASI FORENSIK DENGAN MENYEBUTKAN AMBANG BATAS VALID KELAYAKAN TERJADINYA KEBAKARAN
+    let bapRingkasan = `Sesuai dengan protokol standar pemantauan Karhutla (BMKG & KLHK), sistem FIRETRACE mencatat suhu faktual wilayah ${targetName} sebesar ${officialTemp}°C (Ambang batas kritis: >35°C) dan kelembapan udara sebesar ${officialHum}% (Ambang batas kritis bahan bakar kering: <45%).`;
     
-    let bapPrediksi = `Merujuk pada algoritma pemodelan prediksi cuaca, kondisi ekosistem ditetapkan pada status ${officialStatus.toUpperCase()}. Analisis prediktif terhadap laju pengeringan biomassa menunjukkan bahwa dalam siklus 3 jam ke depan, area pantauan tergolong terkendali dan fluktuasi termal terpantau stabil.`;
+    let bapPrediksi = `Status ekosistem saat ini dinilai ${officialStatus.toUpperCase()}. Parameter lingkungan berada dalam batas toleransi aman, di mana kelembapan tanah dan udara masih mampu meredam potensi titik api sporadis.`;
     
     if(officialStatus !== "NORMAL") {
-        bapPrediksi = `PERINGATAN PRO-JUSTITIA: Merujuk pada pemodelan AI tingkat kerawanan api, ekosistem di wilayah ini diklasifikasikan pada fase ${officialStatus.toUpperCase()}. Penurunan kelembapan yang drastis menjadi ${officialHum}% menciptakan kondisi bahan bakar gambut permukaan yang sangat rentan (Highly Flammable). Rekomendasi: Otoritas setempat wajib melakukan patroli darat dan udara untuk mencegah gesekan termal dalam 3 jam ke depan.`;
+        bapPrediksi = `PERINGATAN PRO-JUSTITIA: Parameter lingkungan telah melampaui ambang batas bahaya Karhutla (Suhu ≥ 33-35°C dan Kelembapan ≤ 45-55%). Kondisi ini memicu tingkat kekeringan biomassa gambut yang ekstrem, sehingga risiko eskalasi kebakaran hutan sangat tinggi dan memerlukan penanganan darurat segera.`;
     }
 
     document.getElementById('bap-ringkasan').innerText = bapRingkasan;
     document.getElementById('bap-prediksi').innerText = bapPrediksi;
-    document.getElementById('profile-prediksi-teks').innerText = `Validasi Resmi (Siklus 1 Menit): Ditetapkan status ${officialStatus.toUpperCase()} untuk wilayah ${targetName}. (Dicetak terakhir pada ${timeStr} WIB).`;
+    document.getElementById('profile-prediksi-teks').innerText = `Validasi Resmi Ambang Batas Karhutla: Status ${officialStatus.toUpperCase()} (${targetName}). Suhu Kritis >35°C | Kelembapan Kritis <45%.`;
 
     let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
     let auditLog = `<tr><td style="color:#64b5f6;">${timeStr}</td><td>${labelWilayah} - Laporan BAP (1 Menit)</td><td style="color:#4caf50; font-weight:bold;">TERVALIDASI</td><td class="hash-text">${bapHash}</td></tr>`;
