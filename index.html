@@ -6,7 +6,7 @@
     <title>FIRETRACE - Forensic Dashboard</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css?v=25">
+    <link rel="stylesheet" href="style.css?v=26">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -47,16 +47,35 @@
                     </div>
                 </header>
 
+                <!-- PANEL INDIKATOR ACUAN BAKU KARHUTLA (UNTUK JURI / PEMBACA) -->
+                <section style="background: rgba(30, 30, 30, 0.9); border: 1px solid rgba(255, 152, 0, 0.4); padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;">
+                    <div style="font-size: 13px; color: #fff;">
+                        <strong style="color: #ffa726;">📌 PARAMETER ACUAN BAKU (BMKG & KLHK):</strong> 
+                        <span style="color: #ccc; margin-left: 5px;">Indikator Titik Kritis Kebakaran Hutan & Lahan (Karhutla)</span>
+                    </div>
+                    <div style="display: flex; gap: 15px; font-size: 12px; flex-wrap: wrap;">
+                        <span style="background: rgba(239, 83, 80, 0.15); border: 1px solid #ef5350; padding: 4px 8px; border-radius: 4px; color: #ff8a80;">
+                            🌡️ Suhu Kritis: <b>&gt; 35°C</b>
+                        </span>
+                        <span style="background: rgba(255, 152, 0, 0.15); border: 1px solid #ffa726; padding: 4px 8px; border-radius: 4px; color: #ffe0b2;">
+                            💧 Kelembapan Rawan: <b>&le; 55% (Kritis &le; 45%)</b>
+                        </span>
+                        <span style="background: rgba(33, 150, 243, 0.15); border: 1px solid #29b6f6; padding: 4px 8px; border-radius: 4px; color: #81d4fa;">
+                            🌫️ Asap (MQ135): <b>&gt; 2100 ppm (Siaga)</b>
+                        </span>
+                    </div>
+                </section>
+
                 <section class="sensor-grid">
                     <div class="sensor-card">
                         <h4 id="judul-suhu">Suhu: Seluruh Kalimantan</h4>
                         <div class="sensor-value"><span id="val-suhu">28.00</span> °C</div>
-                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Pergantian: <strong id="delta-suhu" style="color: #fff;">0.00 °C/dtk</strong></div>
+                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Status Acuan: <strong id="delta-suhu" style="color: #fff;">Aman</strong></div>
                     </div>
                     <div class="sensor-card">
                         <h4 id="judul-lembab">Kelembapan: Seluruh Kalimantan</h4>
                         <div class="sensor-value"><span id="val-lembab">78.00</span> %</div>
-                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Pergantian: <strong id="delta-lembab" style="color: #fff;">0.00 %/dtk</strong></div>
+                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Status Acuan: <strong id="delta-lembab" style="color: #fff;">Lembap</strong></div>
                     </div>
                     <div class="sensor-card">
                         <h4>Estimasi Asap (MQ135)</h4>
@@ -139,7 +158,7 @@
                 </div>
             </div>
 
-            <!-- TAB 4: FORENSIC REPORT (UPDATE 1 MENIT) -->
+            <!-- TAB 4: FORENSIC REPORT -->
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
@@ -173,6 +192,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=25"></script>
+    <script src="script.js?v=26"></script>
 </body>
 </html>
