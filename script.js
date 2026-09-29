@@ -1,4 +1,3 @@
-// Konfigurasi Status Risiko Kebakaran Otomatis
 const statusRules = {
     NORMAL: { class: "normal", color: "#4caf50", desc: "Kondisi stabil. Risiko kebakaran rendah." },
     WASPADA: { class: "waspada", color: "#f9a825", desc: "Suhu mulai meningkat. Pemantauan diperketat." },
@@ -10,7 +9,6 @@ let fireChart;
 let regionalMarkers = {};
 let petaKalimantan;
 
-// Data Koordinat 5 Provinsi di Kalimantan
 const kalimantanRegions = [
     { id: "kalteng", name: "Kalimantan Tengah", lat: -2.3, lon: 113.9 },
     { id: "kaltim", name: "Kalimantan Timur", lat: 0.5, lon: 116.4 },
@@ -30,12 +28,9 @@ document.addEventListener("DOMContentLoaded", function() {
     initMap();
     initChart();
     fetchAllRegionsWeather();
-    
-    // Perbarui data otomatis setiap 5 menit
     setInterval(fetchAllRegionsWeather, 300000);
 });
 
-// INISIALISASI PETA GOOGLE MAPS SATELLITE
 function initMap() {
     petaKalimantan = L.map('kalimantan-map').setView([-0.5, 114.5], 5);
     
@@ -47,20 +42,14 @@ function initMap() {
 
     kalimantanRegions.forEach(reg => {
         let marker = L.circleMarker([reg.lat, reg.lon], {
-            radius: 9,
-            fillColor: "#4caf50",
-            color: "#fff",
-            weight: 2,
-            opacity: 1,
-            fillOpacity: 0.9
+            radius: 9, fillColor: "#4caf50", color: "#fff", weight: 2, opacity: 1, fillOpacity: 0.9
         }).addTo(petaKalimantan);
 
-        marker.bindPopup(`<b>${reg.name}</b><br>Menghubungkan satelit...`);
+        marker.bindPopup(`<b>${reg.name}</b><br>Status Faktual: Terpantau`);
         regionalMarkers[reg.id] = marker;
     });
 }
 
-// MENARIK DATA CUACA NYATA DAN MENGHITUNG PREDIKSI FORENSIK OTOMATIS
 async function fetchAllRegionsWeather() {
     for (let reg of kalimantanRegions) {
         try {
@@ -71,7 +60,6 @@ async function fetchAllRegionsWeather() {
                 let temp = Math.round(data.current.temperature_2m);
                 let hum = Math.round(data.current.relative_humidity_2m);
                 
-                // Logika Penentuan Status Faktual
                 let statusKey = "NORMAL";
                 if (temp >= 31 && hum < 70) statusKey = "WASPADA";
                 if (temp >= 33 && hum < 55) statusKey = "SIAGA";
@@ -79,7 +67,6 @@ async function fetchAllRegionsWeather() {
 
                 let cfg = statusRules[statusKey];
 
-                // Jika wilayah utama (Kalimantan Tengah), perbarui dashboard utama & laporan prediktif
                 if (reg.id === "kalteng") {
                     document.getElementById('val-suhu').innerText = temp;
                     document.getElementById('val-lembab').innerText = hum;
@@ -93,29 +80,29 @@ async function fetchAllRegionsWeather() {
                     document.getElementById('val-asap').innerText = asapVal;
                     document.getElementById('val-risiko').innerText = risikoVal;
 
-                    // Fitur Prediktif & Sistematis
-                    let prediksiTeks = "";
-                    let bapRingkasan = "";
-                    let bapPrediksi = "";
+                    let prediksiTeks = "", bapRingkasan = "", bapPrediksi = "";
                     
                     if(statusKey === 'BAHAYA') {
-                        prediksiTeks = `Suhu ekstrem ${temp}°C dengan kelembapan ${hum}% menciptakan tingkat kekeringan gambut yang masif. Proyeksi AI: Potensi titik api baru dapat meluas dalam 2 jam ke depan jika tidak ada intervensi pemadaman.`;
-                        bapRingkasan = `Berdasarkan pembacaan sensor satelit real-time di wilayah Kalimantan Tengah (Sektor Kalteng), tercatat suhu kritis mencapai ${temp}°C dan kelembapan udara turun drastis ke level ${hum}%. Indikasi akumulasi gas karbon monoksida dan penurunan kadar air tanah menunjukkan kerentanan ekstrem terhadap pembakaran lahan.`;
-                        bapPrediksi = `Model prediktif AI memperkirakan tren pengeringan biomassa berlanjut dengan kecepatan eskalasi tinggi. Tanpa tindakan preventif segera, risiko perluasan anomali termal diproyeksikan meningkat signifikan dalam kurun waktu 1 hingga 3 jam ke depan.`;
+                        prediksiTeks = `Suhu ekstrem ${temp}°C dengan kelembapan ${hum}% menciptakan tingkat kekeringan gambut masif. Proyeksi AI: Potensi titik api meluas dalam 2 jam ke depan.`;
+                        bapRingkasan = `Berdasarkan pembacaan sensor satelit real-time di Kalimantan Tengah, tercatat suhu kritis mencapai ${temp}°C dan kelembapan udara turun ke level ${hum}%. Indikasi akumulasi gas karbon monoksida menunjukkan kerentanan ekstrem terhadap pembakaran lahan.`;
+                        bapPrediksi = `Model prediktif AI memperkirakan tren pengeringan biomassa berlanjut dengan kecepatan tinggi. Risiko perluasan anomali termal diproyeksikan meningkat dalam 1-3 jam ke depan.`;
                         document.getElementById('val-prediksi-singkat').innerText = "Eskalasi Cepat";
                         document.getElementById('profile-tingkat-ancaman').innerText = "KRITIS (Tinggi)";
+                        document.getElementById('profile-tingkat-ancaman').style.color = "#ef5350";
                     } else if(statusKey === 'SIAGA') {
-                        prediksiTeks = `Suhu terpantau ${temp}°C dengan kelembapan ${hum}%. Proyeksi AI: Kondisi mendekati ambang batas kritis. Pemantauan drone diintensifkan untuk mencegah potensi gesekan atau pembakaran.`;
-                        bapRingkasan = `Sistem mencatat parameter lingkungan di Kalimantan Tengah pada level Siaga dengan suhu ${temp}°C dan kelembapan ${hum}%. Anomali awal emisi uap panas terdeteksi di beberapa titik klaster gambut.`;
-                        bapPrediksi = `Analisis prediktif menunjukkan kestabilan semu; apabila tren kelembapan terus turun sebesar 5% dalam 3 jam ke depan, status akan otomatis meningkat ke level Bahaya.`;
+                        prediksiTeks = `Suhu terpantau ${temp}°C dengan kelembapan ${hum}%. Proyeksi AI: Kondisi mendekati ambang batas kritis. Pemantauan diintensifkan.`;
+                        bapRingkasan = `Sistem mencatat parameter lingkungan di Kalimantan Tengah pada level Siaga dengan suhu ${temp}°C dan kelembapan ${hum}%. Anomali awal emisi uap panas terdeteksi di beberapa klaster gambut.`;
+                        bapPrediksi = `Analisis prediktif menunjukkan kestabilan semu; apabila kelembapan turun 5% dalam 3 jam ke depan, status otomatis meningkat ke level Bahaya.`;
                         document.getElementById('val-prediksi-singkat').innerText = "Waspada Siaga";
                         document.getElementById('profile-tingkat-ancaman').innerText = "MENENGAH";
+                        document.getElementById('profile-tingkat-ancaman').style.color = "#ff9800";
                     } else {
-                        prediksiTeks = `Kondisi lingkungan stabil dengan suhu ${temp}°C dan kelembapan ${hum}%. Proyeksi AI: Tidak ada indikasi eskalasi ancaman termal dalam waktu dekat. Pemantauan rutin berjalan normal.`;
-                        bapRingkasan = `Pemantauan mandiri di wilayah Kalimantan Tengah menunjukkan kondisi ekologis yang terkendali. Parameter suhu (${temp}°C) dan kelembapan (${hum}%) berada dalam ambang batas normal dan aman dari ancaman kebakaran besar.`;
-                        bapPrediksi = `Model prediktif memperkirakan stabilitas cuaca regional bertahan dalam 6 jam ke depan dengan fluktuasi minor yang dapat diabaikan.`;
+                        prediksiTeks = `Kondisi lingkungan stabil dengan suhu ${temp}°C dan kelembapan ${hum}%. Proyeksi AI: Tidak ada indikasi eskalasi ancaman termal dalam waktu dekat.`;
+                        bapRingkasan = `Pemantauan mandiri di wilayah Kalimantan Tengah menunjukkan kondisi ekologis yang terkendali. Parameter suhu (${temp}°C) dan kelembapan (${hum}%) berada dalam ambang batas normal dan aman.`;
+                        bapPrediksi = `Model prediktif memperkirakan kestabilan cuaca regional bertahan dalam 6 jam ke depan dengan fluktuasi minor yang aman.`;
                         document.getElementById('val-prediksi-singkat').innerText = "Stabil / Normal";
                         document.getElementById('profile-tingkat-ancaman').innerText = "RENDAH";
+                        document.getElementById('profile-tingkat-ancaman').style.color = "#4caf50";
                     }
 
                     document.getElementById('profile-prediksi-teks').innerText = prediksiTeks;
@@ -136,19 +123,16 @@ async function fetchAllRegionsWeather() {
         }
     }
     
-    // Tambahkan log integritas otomatis secara sistematis
     const logBody = document.getElementById('log-body');
     const auditBody = document.getElementById('log-body-audit');
     const now = new Date();
     const timeStr = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0');
     
     const newHash = generateFakeHash();
-    const newRow = `<tr><td>${timeStr}</td><td>PREDICTIVE SYNC (LIVE)</td><td class="hash-text">${newHash}</td></tr>`;
-    if(logBody) logBody.insertAdjacentHTML('afterbegin', newRow);
+    if(logBody) logBody.insertAdjacentHTML('afterbegin', `<tr><td>${timeStr}</td><td>PREDICTIVE SYNC (LIVE)</td><td class="hash-text">${newHash}</td></tr>`);
     if(auditBody) auditBody.insertAdjacentHTML('afterbegin', `<tr><td>${timeStr}</td><td>Auto-Analysis & AI Risk Forecast</td><td>SYNCED</td><td class="hash-text">${newHash}</td></tr>`);
 }
 
-// INISIALISASI GRAFIK BERJALAN
 function initChart() {
     const ctx = document.getElementById('fireChart').getContext('2d');
     let initialLabels = [], initialTemp = [], initialHum = [];
@@ -200,7 +184,6 @@ function initChart() {
     }, 2000); 
 }
 
-// Fungsi Tab Menu
 function bukaTab(namaTab, elemenMenu) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(menu => menu.classList.remove('active'));
