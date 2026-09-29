@@ -30,21 +30,13 @@ function generateFakeHash() {
 
 document.addEventListener("DOMContentLoaded", async function() {
     initMap();
-    
-    // Inisialisasi awal grafik dengan data bayangan agar tidak kosong
     initChart();
     
-    // Tarik Data Utama dari Satelit
     await fetchWeatherAllRegions();
-    
-    // Tampilkan laporan BAP secara instan
     generateForensicReport();
     
-    // Jadwal pembaruan satelit & Laporan Resmi tiap 1 Menit
     setInterval(fetchWeatherAllRegions, 60000); 
     setInterval(generateForensicReport, 60000); 
-
-    // Jadwal Animasi Dashboard (Bergerak tiap detik)
     setInterval(perSecondDashboardUpdate, 1000);
 });
 
@@ -59,11 +51,11 @@ function initMap() {
             radius: 8, fillColor: "#4caf50", color: "#fff", weight: 2, opacity: 1, fillOpacity: 0.9
         }).addTo(petaKalimantan);
 
-        marker.bindTooltip(`<b>${reg.name}</b><br>Klik untuk mengunci BAP Forensik di wilayah ini`, {permanent: false, direction: "top"});
+        marker.bindTooltip(`<b>${reg.name}</b><br>Klik untuk mengunci BAP Forensik`, {permanent: false, direction: "top"});
         
         marker.on('click', function() {
             ubahFokusWilayah(reg.id);
-            this.bindPopup(`<b>PEMANTAUAN TERKUNCI: ${reg.name}</b><br>Menyusun laporan pro-justitia...`).openPopup();
+            this.bindPopup(`<b>PEMANTAUAN TERKUNCI: ${reg.name}</b>`).openPopup();
         });
         regionalMarkers[reg.id] = marker;
     });
@@ -83,10 +75,7 @@ function ubahFokusWilayah(id) {
     document.getElementById('bap-reg-wilayah').innerText = reg.short;
     document.getElementById('bap-lokasi').innerText = `${reg.name} (Data Sektor Terisolasi)`;
 
-    // Panggil ulang grafik agar langsung penuh untuk wilayah baru
     resetGrafik();
-    
-    // LANGSUNG cetak laporan baru agar tidak kosong
     generateForensicReport();
 }
 
@@ -103,14 +92,10 @@ function resetKeSemuaProvinsi() {
     document.getElementById('bap-reg-wilayah').innerText = "ALL";
     document.getElementById('bap-lokasi').innerText = "Seluruh Kalimantan (Agregat 5 Provinsi)";
 
-    // Panggil ulang grafik agar langsung penuh untuk agregat
     resetGrafik();
-    
-    // LANGSUNG cetak laporan gabungan
     generateForensicReport();
 }
 
-// FUNGSI BARU: Mengisi grafik secara instan dengan 15 titik data historis
 function getBaselineData() {
     let bTemp = 28.0, bHum = 78.0;
     if (activeRegionId === "all") {
@@ -126,10 +111,10 @@ function getBaselineData() {
     return { bTemp, bHum };
 }
 
+// INISIALISASI GRAFIK DENGAN SKALA Y YANG JELAS
 function initChart() {
     const ctx = document.getElementById('fireChart').getContext('2d');
     
-    // Persiapkan 15 data awal agar grafik tidak terlihat "hilang"
     let initLabels = [], initTemp = [], initHum = [];
     let now = new Date();
     let base = getBaselineData();
@@ -151,8 +136,18 @@ function initChart() {
             ]
         },
         options: {
-            responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
-            scales: { x: { ticks: { color: '#9e9e9e' } }, y: { ticks: { color: '#9e9e9e' } } }
+            responsive: true, 
+            maintainAspectRatio: false, 
+            animation: { duration: 400 },
+            scales: { 
+                x: { ticks: { color: '#9e9e9e' }, grid: { color: 'rgba(255,255,255,0.05)' } }, 
+                y: { 
+                    ticks: { color: '#9e9e9e' }, 
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    suggestedMin: 10,  // Memastikan skala bawah tidak mulai dari 0 sempit
+                    suggestedMax: 100  // Memastikan skala atas mentok di 100
+                } 
+            }
         }
     });
 }
@@ -195,9 +190,6 @@ async function fetchWeatherAllRegions() {
     }
 }
 
-// ----------------------------------------------------
-// FUNGSI 1: DASHBOARD UPDATE TIAP 1 DETIK (ANIMASI & GRAFIK)
-// ----------------------------------------------------
 function perSecondDashboardUpdate() {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('id-ID'); 
@@ -251,7 +243,6 @@ function perSecondDashboardUpdate() {
     }
     fireChart.update();
 
-    // Log integritas untuk grafik (tiap 5 detik agar tabel tidak freeze)
     if (currentSecond % 5 === 0) {
         let liveHash = generateFakeHash();
         let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
@@ -260,9 +251,6 @@ function perSecondDashboardUpdate() {
     }
 }
 
-// ----------------------------------------------------
-// FUNGSI 2: LAPORAN FORENSIK (OTOMATIS TIAP 1 MENIT & SAAT DIKLIK)
-// ----------------------------------------------------
 function generateForensicReport() {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('id-ID');
@@ -289,7 +277,6 @@ function generateForensicReport() {
     if (officialTemp >= 33 && officialHum < 55) officialStatus = "SIAGA";
     if (officialTemp >= 35 || officialHum < 45) officialStatus = "BAHAYA";
 
-    // MENGISI DATA KE TAB 4 (FORENSIC REPORT) SECARA INSTAN
     document.getElementById('bap-menit').innerText = currentMinute;
     document.getElementById('bap-waktu').innerText = `${now.toLocaleString('id-ID')} WIB (Siklus Update 1 Menit)`;
     document.getElementById('bap-hash').innerText = bapHash;
@@ -304,11 +291,8 @@ function generateForensicReport() {
 
     document.getElementById('bap-ringkasan').innerText = bapRingkasan;
     document.getElementById('bap-prediksi').innerText = bapPrediksi;
-    
-    // MENGISI DATA KE TAB 2 (PROFILE PREDIKSI)
     document.getElementById('profile-prediksi-teks').innerText = `Validasi Resmi (Siklus 1 Menit): Ditetapkan status ${officialStatus.toUpperCase()} untuk wilayah ${targetName}. (Dicetak terakhir pada ${timeStr} WIB).`;
 
-    // MENGISI DATA KE TAB 3 (AUDIT TRAIL) AGAR TIDAK KOSONG
     let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
     let auditLog = `<tr><td style="color:#64b5f6;">${timeStr}</td><td>${labelWilayah} - Laporan BAP (1 Menit)</td><td style="color:#4caf50; font-weight:bold;">TERVALIDASI</td><td class="hash-text">${bapHash}</td></tr>`;
     
