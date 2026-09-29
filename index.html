@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <!-- Link CSS dengan versi terbaru -->
-    <link rel="stylesheet" href="style.css?v=16">
+    <link rel="stylesheet" href="style.css?v=17">
     
     <!-- Script Chart.js & Leaflet.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -70,10 +70,12 @@
                     </div>
                     <div class="sensor-card">
                         <h4>Indeks Risiko (AI)</h4>
+                        <!-- Nilai langsung dimunculkan instan tanpa menunggu loading -->
                         <div class="sensor-value" style="font-size: 15px; margin-top: 5px; color: #ffab91;" id="val-risiko">15% (Rendah)</div>
                     </div>
                     <div class="sensor-card">
                         <h4>Status Prediktif</h4>
+                        <!-- Nilai langsung dimunculkan instan tanpa menunggu loading -->
                         <div class="sensor-value" style="font-size: 14px; margin-top: 5px; color: #64b5f6;" id="val-prediksi-singkat">Stabil / Normal</div>
                     </div>
                 </section>
@@ -181,15 +183,17 @@
                     </div>
                     
                     <p><strong>Nomor Registrasi:</strong> <span id="bap-no">KAL-REG-2026/LIVE-01</span></p>
-                    <p><strong>Waktu Cetak Laporan:</strong> <span id="bap-waktu">29 September 2026 (Real-Time Synchronized)</span></p>
+                    <p><strong>Waktu Cetak Laporan:</strong> <span id="bap-waktu">Real-Time Synchronized</span></p>
                     <p><strong>Lokasi Pemantauan Utama:</strong> Sektor Jaringan Faktual Kalimantan Tengah (TN Sebangau & Sekitarnya)</p>
                     
                     <h4 style="margin-top: 20px; text-decoration: underline;">RINGKASAN INVESTIGASI & KONDISI FAKTUAL:</h4>
+                    <!-- Langsung terisi lengkap sejak awal halaman dibuka -->
                     <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">
                         Pemantauan mandiri di wilayah Kalimantan Tengah menunjukkan kondisi ekologis yang terkendali berdasarkan data satelit real-time. Parameter suhu dan kelembapan saat ini berada dalam ambang batas normal dan aman dari ancaman kebakaran besar.
                     </p>
                     
                     <h4 style="margin-top: 20px; text-decoration: underline;">PROYEKSI ANALISIS PREDIKTIF AI:</h4>
+                    <!-- Langsung terisi lengkap sejak awal halaman dibuka -->
                     <p style="text-align: justify; line-height: 1.6;" id="bap-prediksi">
                         Model prediktif memperkirakan kestabilan cuaca regional bertahan dalam kurun waktu 3 hingga 6 jam ke depan dengan fluktuasi minor yang terpantau aman.
                     </p>
@@ -206,6 +210,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=16"></script>
+    <script src="script.js?v=17"></script>
 </body>
 </html>
