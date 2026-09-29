@@ -111,7 +111,7 @@ function getBaselineData() {
     return { bTemp, bHum };
 }
 
-// INISIALISASI GRAFIK DENGAN SKALA Y YANG JELAS
+// INISIALISASI GRAFIK DENGAN PAKSAAN SKALA MIN 0 DAN MAX 100
 function initChart() {
     const ctx = document.getElementById('fireChart').getContext('2d');
     
@@ -138,14 +138,17 @@ function initChart() {
         options: {
             responsive: true, 
             maintainAspectRatio: false, 
-            animation: { duration: 400 },
+            animation: { duration: 200 },
             scales: { 
-                x: { ticks: { color: '#9e9e9e' }, grid: { color: 'rgba(255,255,255,0.05)' } }, 
+                x: { 
+                    ticks: { color: '#9e9e9e' }, 
+                    grid: { color: 'rgba(255,255,255,0.05)' } 
+                }, 
                 y: { 
                     ticks: { color: '#9e9e9e' }, 
                     grid: { color: 'rgba(255,255,255,0.05)' },
-                    suggestedMin: 10,  // Memastikan skala bawah tidak mulai dari 0 sempit
-                    suggestedMax: 100  // Memastikan skala atas mentok di 100
+                    min: 0,   // Dipaksa mulai dari 0 agar nilai 28 dan 78 masuk dalam bingkai
+                    max: 100  // Dipaksa maksimal 100 agar pas dengan persentase kelembapan
                 } 
             }
         }
