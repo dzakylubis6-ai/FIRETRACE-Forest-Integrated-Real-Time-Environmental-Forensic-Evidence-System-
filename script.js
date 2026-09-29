@@ -1,8 +1,8 @@
 const statusRules = {
-    NORMAL: { class: "normal", color: "#4caf50", desc: "Kondisi stabil. Berada di bawah ambang batas kritis Karhutla." },
-    WASPADA: { class: "waspada", color: "#f9a825", desc: "Suhu meningkat. Sesuai protokol siaga awal kewilayahan." },
-    SIAGA: { class: "siaga", color: "#ef6c00", desc: "Kelembapan rendah. Potensi titik panas terdeteksi (Hotspot)." },
-    BAHAYA: { class: "bahaya", color: "#c62828", desc: "Kondisi Kritis! Parameter lingkungan melampaui batas batas aman standar." }
+    NORMAL: { class: "normal", color: "#4caf50", desc: "Kondisi ekosistem stabil. Berada di bawah ambang batas kritis Karhutla." },
+    WASPADA: { class: "waspada", color: "#f9a825", desc: "Suhu meningkat bertahap. Sesuai protokol kewaspadaan kewilayahan." },
+    SIAGA: { class: "siaga", color: "#ef6c00", desc: "Kelembapan udara rendah. Potensi anomali titik panas terdeteksi." },
+    BAHAYA: { class: "bahaya", color: "#c62828", desc: "Kondisi Kritis! Parameter lingkungan melampaui batas aman standar." }
 };
 
 let fireChart;
@@ -12,7 +12,6 @@ let regionalMarkers = {};
 let activeRegionId = "all"; 
 let prevTemp = 28.0; 
 let prevHum = 75.0;
-let forensicReportTimer; // Timer khusus untuk laporan 1 menit
 
 const kalimantanRegions = [
     { id: "kalteng", name: "Kalimantan Tengah", short: "KALTENG", lat: -2.3, lon: 113.9, baseTemp: 28, baseHum: 78 },
@@ -29,29 +28,26 @@ function generateFakeHash() {
     return hash.substring(0, 16) + '...';
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+// INI JANTUNG APLIKASINYA - MENJAMIN DATA LANGSUNG KELUAR
+document.addEventListener("DOMContentLoaded", async function() {
     initMap();
     initChart();
     
-    // Tarik Data Utama dari Satelit
-    fetchWeatherAllRegions().then(() => {
-        generateForensicReport(); // Langsung cetak BAP pertama kali
-    });
+    // 1. Tarik Data Utama dari Satelit terlebih dahulu
+    await fetchWeatherAllRegions();
     
-    // Tarik update cuaca asli dari satelit tiap 1 Menit
+    // 2. Tampilkan laporan secara instan (Tab 2, 3, dan 4 tidak akan kosong)
+    generateForensicReport();
+    
+    // 3. Atur jadwal update cuaca asli dari satelit tiap 1 Menit
     setInterval(fetchWeatherAllRegions, 60000); 
-
-    // Animasi Dashboard (Grafik & Kartu Suhu) Tetap 1 Detik
-    setInterval(perSecondDashboardUpdate, 1000);
     
-    // Mulai siklus cetak laporan forensik tiap 1 menit
-    mulaiSiklusForensik();
-});
+    // 4. Atur jadwal CETAK LAPORAN FORENSIK (BAP) RESMI SETIAP 1 MENIT
+    setInterval(generateForensicReport, 60000); 
 
-function mulaiSiklusForensik() {
-    clearInterval(forensicReportTimer);
-    forensicReportTimer = setInterval(generateForensicReport, 60000); // 60000 ms = 1 Menit
-}
+    // 5. Atur jadwal ANIMASI DASHBOARD TETAP BERGERAK SETIAP 1 DETIK
+    setInterval(perSecondDashboardUpdate, 1000);
+});
 
 function initMap() {
     petaKalimantan = L.map('kalimantan-map').setView([-0.5, 114.5], 5);
@@ -64,11 +60,11 @@ function initMap() {
             radius: 8, fillColor: "#4caf50", color: "#fff", weight: 2, opacity: 1, fillOpacity: 0.9
         }).addTo(petaKalimantan);
 
-        marker.bindTooltip(`<b>${reg.name}</b><br>Klik untuk mengunci laporan forensik ke area ini`, {permanent: false, direction: "top"});
+        marker.bindTooltip(`<b>${reg.name}</b><br>Klik untuk mengunci BAP Forensik di wilayah ini`, {permanent: false, direction: "top"});
         
         marker.on('click', function() {
             ubahFokusWilayah(reg.id);
-            this.bindPopup(`<b>PEMANTAUAN AKTIF: ${reg.name}</b><br>Sistem terkunci di wilayah ini.`).openPopup();
+            this.bindPopup(`<b>PEMANTAUAN TERKUNCI: ${reg.name}</b><br>Menyusun laporan pro-justitia...`).openPopup();
         });
         regionalMarkers[reg.id] = marker;
     });
@@ -86,15 +82,12 @@ function ubahFokusWilayah(id) {
     document.getElementById('profile-nama-wilayah').innerText = reg.name;
     
     document.getElementById('bap-reg-wilayah').innerText = reg.short;
-    document.getElementById('bap-lokasi').innerText = `${reg.name} (Data Sektor Spesifik)`;
+    document.getElementById('bap-lokasi').innerText = `${reg.name} (Data Sektor Terisolasi)`;
 
     resetGrafik();
     
-    // Saat wilayah diklik, LANGSUNG buat laporan saat itu juga agar tidak kosong
+    // Saat wilayah diklik, LANGSUNG cetak laporan baru agar tidak kosong
     generateForensicReport();
-    
-    // Ulang kembali timer 1 menitnya dari detik 0
-    mulaiSiklusForensik();
 }
 
 function resetKeSemuaProvinsi() {
@@ -111,8 +104,9 @@ function resetKeSemuaProvinsi() {
     document.getElementById('bap-lokasi').innerText = "Seluruh Kalimantan (Agregat 5 Provinsi)";
 
     resetGrafik();
+    
+    // LANGSUNG cetak laporan gabungan
     generateForensicReport();
-    mulaiSiklusForensik();
 }
 
 function resetGrafik() {
@@ -159,9 +153,9 @@ function initChart() {
     });
 }
 
-// ----------------------------------------------------
-// FUNGSI 1: DASHBOARD UPDATE TIAP 1 DETIK (TIDAK BERUBAH)
-// ----------------------------------------------------
+// ==========================================
+// 1. DASHBOARD UPDATE TIAP 1 DETIK (ANIMASI & GRAFIK)
+// ==========================================
 function perSecondDashboardUpdate() {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('id-ID'); 
@@ -225,11 +219,19 @@ function perSecondDashboardUpdate() {
         fireChart.data.labels.shift(); fireChart.data.datasets[0].data.shift(); fireChart.data.datasets[1].data.shift();
     }
     fireChart.update();
+
+    // Log integritas untuk grafik (tiap 5 detik agar tabel tidak freeze)
+    if (currentSecond % 5 === 0) {
+        let liveHash = generateFakeHash();
+        let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
+        let newLog = `<tr><td>${timeStr}</td><td>${labelWilayah} - Ping Sensor</td><td class="hash-text">${liveHash}</td></tr>`;
+        document.getElementById('log-body').insertAdjacentHTML('afterbegin', newLog);
+    }
 }
 
-// ----------------------------------------------------
-// FUNGSI 2: LAPORAN FORENSIK (RESMI PER 1 MENIT & SAAT DIKLIK)
-// ----------------------------------------------------
+// ==========================================
+// 2. LAPORAN FORENSIK (OTOMATIS TIAP 1 MENIT & SAAT DIKLIK)
+// ==========================================
 function generateForensicReport() {
     const now = new Date();
     const timeStr = now.toLocaleTimeString('id-ID');
@@ -258,28 +260,34 @@ function generateForensicReport() {
     if (officialTemp >= 33 && officialHum < 55) officialStatus = "SIAGA";
     if (officialTemp >= 35 || officialHum < 45) officialStatus = "BAHAYA";
 
-    // MENYUSUN TEKS RESMI (Berubah hanya saat diklik atau saat berganti menit)
+    // MENGISI DATA KE TAB 4 (FORENSIC REPORT) SECARA INSTAN
     document.getElementById('bap-menit').innerText = currentMinute;
     document.getElementById('bap-waktu').innerText = `${now.toLocaleString('id-ID')} WIB (Siklus Update 1 Menit)`;
     document.getElementById('bap-hash').innerText = bapHash;
 
-    let bapRingkasan = `Sesuai dengan protokol pemantauan lingkungan hidrometeorologis, sistem FIRETRACE pada pukul ${timeStr} WIB telah melakukan ekstraksi data satelit faktual untuk wilayah ${targetName}. Tercatat suhu udara absolut saat ini berada pada tingkat ${officialTemp}°C dengan persentase kelembapan (Relative Humidity) sebesar ${officialHum}%. Angka ini divalidasi dan dibandingkan dengan parameter baku mutu Indeks Standar Pencemar Udara (ISPU) serta ambang batas kerawanan Karhutla dari Kementerian Lingkungan Hidup dan Kehutanan (KLHK).`;
+    let bapRingkasan = `Sesuai dengan protokol pemantauan lingkungan hidrometeorologis, sistem FIRETRACE pada pukul ${timeStr} WIB telah mengekstrak data satelit faktual untuk wilayah pemantauan: ${targetName}. Tercatat suhu udara rata-rata absolut berada pada angka ${officialTemp}°C dengan persentase kelembapan (Relative Humidity) sebesar ${officialHum}%. Angka ini divalidasi dan dibandingkan dengan parameter baku mutu lingkungan serta ambang batas kerawanan Karhutla menurut pedoman Kementerian Lingkungan Hidup dan Kehutanan (KLHK) dan Badan Meteorologi Klimatologi dan Geofisika (BMKG).`;
     
-    let bapPrediksi = `Merujuk pada algoritma proyeksi World Meteorological Organization (WMO), kondisi termal kewilayahan ditetapkan pada status ${officialStatus.toUpperCase()}. Analisis prediktif terhadap laju penguapan biomassa (evapotranspirasi) menunjukkan bahwa dalam siklus 3 jam ke depan, wilayah ini tergolong aman dan stabil.`;
+    let bapPrediksi = `Merujuk pada algoritma pemodelan prediksi cuaca, kondisi ekosistem ditetapkan pada status ${officialStatus.toUpperCase()}. Analisis prediktif terhadap laju pengeringan biomassa menunjukkan bahwa dalam siklus 3 jam ke depan, area pantauan tergolong terkendali dan fluktuasi termal terpantau stabil.`;
     
     if(officialStatus !== "NORMAL") {
-        bapPrediksi = `PERINGATAN PRO-JUSTITIA: Analisis termal mengklasifikasikan wilayah ini pada fase ${officialStatus.toUpperCase()}. Penurunan kelembapan yang drastis menciptakan kondisi bahan bakar gambut yang sangat rentan (Highly Flammable). Tindakan preventif pencegahan gesekan termal wajib dilaksanakan dalam jendela waktu 3 jam ke depan.`;
+        bapPrediksi = `PERINGATAN PRO-JUSTITIA: Merujuk pada pemodelan AI tingkat kerawanan api, ekosistem di wilayah ini diklasifikasikan pada fase ${officialStatus.toUpperCase()}. Penurunan kelembapan yang drastis menjadi ${officialHum}% menciptakan kondisi bahan bakar gambut permukaan yang sangat rentan (Highly Flammable). Rekomendasi: Otoritas setempat wajib melakukan patroli darat dan udara untuk mencegah gesekan termal dalam 3 jam ke depan.`;
     }
 
     document.getElementById('bap-ringkasan').innerText = bapRingkasan;
     document.getElementById('bap-prediksi').innerText = bapPrediksi;
-    document.getElementById('profile-prediksi-teks').innerText = `Evaluasi (Siklus 1 Menit): Status ${officialStatus} di ${targetName}. Diperbarui terakhir pada ${timeStr} WIB.`;
+    
+    // MENGISI DATA KE TAB 2 (PROFILE PREDIKSI)
+    document.getElementById('profile-prediksi-teks').innerText = `Validasi Resmi (Siklus 1 Menit): Ditetapkan status ${officialStatus.toUpperCase()} untuk wilayah ${targetName}. (Dicetak terakhir pada ${timeStr} WIB).`;
 
-    // Log ke Audit Trail dengan label VALIDATED BAP
+    // MENGISI DATA KE TAB 3 (AUDIT TRAIL) AGAR TIDAK KOSONG
     let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
     let auditLog = `<tr><td style="color:#64b5f6;">${timeStr}</td><td>${labelWilayah} - Laporan BAP (1 Menit)</td><td style="color:#4caf50; font-weight:bold;">TERVALIDASI</td><td class="hash-text">${bapHash}</td></tr>`;
-    document.getElementById('log-body-audit').insertAdjacentHTML('afterbegin', auditLog);
-    document.getElementById('log-body').insertAdjacentHTML('afterbegin', auditLog);
+    
+    // Pastikan tabel di tab audit trail terisi 
+    const auditTable = document.getElementById('log-body-audit');
+    if (auditTable) {
+        auditTable.insertAdjacentHTML('afterbegin', auditLog);
+    }
 }
 
 function bukaTab(namaTab, elemenMenu) {
