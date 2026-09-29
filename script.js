@@ -214,28 +214,29 @@ function perSecondDashboardUpdate() {
     document.getElementById('val-suhu').innerText = liveTemp.toFixed(2);
     document.getElementById('val-lembab').innerText = liveHum.toFixed(2);
     
-    // TAMBAHAN INDIKATOR AMBANG BATAS KRITIS KARHUTLA DI KARTU DASHBOARD
+    // Indikator Status Suhu Berdasarkan Ambang Batas Karhutla
     let deltaSuhuEl = document.getElementById('delta-suhu');
     if(liveTemp >= 35) {
-        deltaSuhuEl.innerHTML = "🔥 KRITIS (>35°C)";
+        deltaSuhuEl.innerHTML = "🔥 BAHAYA KRITIS (>35°C)";
         deltaSuhuEl.style.color = "#ff5252";
     } else if(liveTemp >= 33) {
-        deltaSuhuEl.innerHTML = "⚠️ TINGGI (≥33°C)";
+        deltaSuhuEl.innerHTML = "⚠️ SIAGA TINGGI (≥33°C)";
         deltaSuhuEl.style.color = "#ffa726";
     } else {
-        deltaSuhuEl.innerHTML = "Aman (<33°C)";
+        deltaSuhuEl.innerHTML = "Aman di Bawah 33°C";
         deltaSuhuEl.style.color = "#69f0ae";
     }
 
+    // Indikator Status Kelembapan Berdasarkan Ambang Batas Karhutla
     let deltaLembabEl = document.getElementById('delta-lembab');
     if(liveHum <= 45) {
-        deltaLembabEl.innerHTML = "🔥 KRITIS (≤45%)";
+        deltaLembabEl.innerHTML = "🔥 BAHAYA KERING (≤45%)";
         deltaLembabEl.style.color = "#ff5252";
     } else if(liveHum <= 55) {
         deltaLembabEl.innerHTML = "⚠️ RAWAN (≤55%)";
         deltaLembabEl.style.color = "#ffa726";
     } else {
-        deltaLembabEl.innerHTML = "Lembap (>55%)";
+        deltaLembabEl.innerHTML = "Lembap Normal (>55%)";
         deltaLembabEl.style.color = "#64b5f6";
     }
 
@@ -297,7 +298,6 @@ function generateForensicReport() {
     document.getElementById('bap-waktu').innerText = `${now.toLocaleString('id-ID')} WIB (Siklus Update 1 Menit)`;
     document.getElementById('bap-hash').innerText = bapHash;
 
-    // NARASI FORENSIK DENGAN MENYEBUTKAN AMBANG BATAS VALID KELAYAKAN TERJADINYA KEBAKARAN
     let bapRingkasan = `Sesuai dengan protokol standar pemantauan Karhutla (BMKG & KLHK), sistem FIRETRACE mencatat suhu faktual wilayah ${targetName} sebesar ${officialTemp}°C (Ambang batas kritis: >35°C) dan kelembapan udara sebesar ${officialHum}% (Ambang batas kritis bahan bakar kering: <45%).`;
     
     let bapPrediksi = `Status ekosistem saat ini dinilai ${officialStatus.toUpperCase()}. Parameter lingkungan berada dalam batas toleransi aman, di mana kelembapan tanah dan udara masih mampu meredam potensi titik api sporadis.`;
