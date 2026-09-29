@@ -99,7 +99,7 @@ async function fetchAllRegionsWeather() {
                     } else {
                         prediksiTeks = `Kondisi lingkungan stabil dengan suhu ${temp}°C dan kelembapan ${hum}%. Proyeksi AI: Tidak ada indikasi eskalasi ancaman termal dalam waktu dekat.`;
                         bapRingkasan = `Pemantauan mandiri di wilayah Kalimantan Tengah menunjukkan kondisi ekologis yang terkendali. Parameter suhu (${temp}°C) dan kelembapan (${hum}%) berada dalam ambang batas normal dan aman.`;
-                        bapPrediksi = `Model prediktif memperkirakan kestabilan cuaca regional bertahan dalam 6 jam ke depan dengan fluktuasi minor yang aman.`;
+                        bapPrediksi = `Model prediktif memperkirakan kestabilan cuaca regional bertahan dalam kurun waktu 3 hingga 6 jam ke depan dengan fluktuasi minor yang aman.`;
                         document.getElementById('val-prediksi-singkat').innerText = "Stabil / Normal";
                         document.getElementById('profile-tingkat-ancaman').innerText = "RENDAH";
                         document.getElementById('profile-tingkat-ancaman').style.color = "#4caf50";
