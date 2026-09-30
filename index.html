@@ -11,28 +11,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* Latar Belakang Hutan */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        
         html, body {
-            width: 100%;
-            height: 100vh;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
+            width: 100%; height: 100vh; margin: 0; padding: 0; overflow: hidden;
             background: linear-gradient(rgba(10, 20, 15, 0.5), rgba(10, 20, 15, 0.75)), 
                         url('https://images.unsplash.com/photo-1516214104703-d870798883c5?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed !important;
-            background-size: cover !important;
-            color: #e0e0e0;
+            background-size: cover !important; color: #e0e0e0;
         }
 
         .dashboard-container { display: flex; height: 100vh; width: 100vw; background: transparent !important; }
-
+        
         .sidebar { width: 280px; background-color: rgba(12, 24, 17, 0.88) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-right: 1px solid rgba(255, 255, 255, 0.15); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
         .logo-area { padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.15); }
         .logo-area h2 { color: #ef5350; font-size: 20px; font-weight: 700; letter-spacing: 1px; }
@@ -53,6 +42,7 @@
         .status-header.waspada { background: rgba(249, 168, 37, 0.25); border: 1px solid #f9a825; }
         .status-header.siaga { background: rgba(239, 108, 0, 0.25); border: 1px solid #ef6c00; }
         .status-header.bahaya { background: rgba(198, 40, 40, 0.35); border: 1px solid #c62828; animation: emergencyPulse 1.5s infinite; }
+        
         .status-info h3 { font-size: 15px; font-weight: 600; color: #fff; }
         .status-info p { font-size: 12px; color: #ddd; margin-top: 3px; }
 
@@ -73,13 +63,6 @@
         th, td { padding: 8px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: #ddd; }
         th { color: #ccc; font-weight: 600; background: rgba(10, 18, 13, 0.95); position: sticky; top: 0; }
         .hash-text { font-family: monospace; color: #64b5f6; }
-
-        @media (max-width: 900px) {
-            .dashboard-container { flex-direction: column; height: auto; overflow: auto; }
-            .sidebar { width: 100%; height: auto; }
-            .bottom-grid { grid-template-columns: 1fr; }
-            body { overflow: auto; height: auto; }
-        }
     </style>
 </head>
 <body>
@@ -106,7 +89,7 @@
             </ul>
         </aside>
 
-        <!-- PANEL KONTROL DEMO UNTUK JURI -->
+        <!-- PANEL DEMO JURI -->
         <div id="simulation-panel" style="position: fixed; bottom: 20px; right: 20px; background: rgba(20,20,20,0.95); border: 2px solid #f9a825; padding: 12px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 15px rgba(0,0,0,0.7); font-size: 11px; max-width: 220px;">
             <div style="color: #f9a825; font-weight: bold; margin-bottom: 8px;">🎮 PANEL DEMO JURI</div>
             <div style="display: flex; flex-direction: column; gap: 5px;">
@@ -127,9 +110,7 @@
                         <p id="status-desc">Pemantauan agregat rata-rata lintas 5 provinsi. Kondisi stabil.</p>
                     </div>
                     <div class="status-controls">
-                        <span style="background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #4caf50; border: 1px solid #4caf50; font-weight: bold;" id="live-indicator">
-                            ● LIVE PER-SECOND
-                        </span>
+                        <span style="background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #4caf50; border: 1px solid #4caf50; font-weight: bold;" id="live-indicator">● LIVE PER-SECOND</span>
                     </div>
                 </header>
 
@@ -193,49 +174,78 @@
                 <div class="log-section" style="height: 400px;"><div class="table-responsive"><table><tbody id="log-body-audit"></tbody></table></div></div>
             </div>
 
-            <!-- TAB REPORT BAP (Diperbaiki Tata Letak Kepala Suratnya) -->
+            <!-- TAB REPORT BAP (Diperbaiki Total Menjadi Dokumen Sangat Resmi) -->
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
-                    <p>Berita Acara Pemeriksaan (BAP) Lingkungan Digital (Update Resmi Per 1 Menit).</p>
+                    <p>Berita Acara Pemeriksaan (BAP) Lingkungan Digital (Pro-Justitia).</p>
                 </div>
                 
                 <!-- KOTAK BAP INI YANG AKAN DICETAK -->
-                <div id="area-bap" style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 850px; margin: 0 auto; font-family: 'Times New Roman', serif;">
+                <div id="area-bap" style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 850px; margin: 0 auto; font-family: 'Times New Roman', Times, serif; line-height: 1.6;">
                     
-                    <!-- HEADER BAP MENGGUNAKAN FLEXBOX AGAR TIDAK SALING BERTUMPUK -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
-                        <!-- Kolom kosong di kiri untuk menyeimbangkan posisi judul agar tetap di tengah -->
-                        <div style="width: 90px;"></div>
-                        
-                        <!-- Kolom Judul di Tengah -->
-                        <div style="text-align: center; flex: 1;">
-                            <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN (OFFICIAL)</h2>
-                            <p style="margin: 5px 0 0 0; font-size: 14px;">BERITA ACARA PEMERIKSAAN ATRIBUSI PENYEBAB (PRO-JUSTITIA)</p>
-                        </div>
-                        
-                        <!-- Kolom QR Code di Kanan -->
-                        <div style="text-align: center; border: 1px dashed #666; padding: 5px; background: #fff; width: 90px;">
-                            <div style="font-size: 30px; line-height: 1;">📱</div>
-                            <div style="font-size: 8px; font-family: monospace; margin-top: 2px;">SCAN TO VERIFY</div>
-                        </div>
+                    <!-- KOP SURAT MENGGUNAKAN TABEL (DIJAMIN TIDAK MENUMPUK SAAT DICETAK) -->
+                    <table style="width: 100%; border-bottom: 4px double #000; margin-bottom: 20px; padding-bottom: 10px;">
+                        <tr>
+                            <td style="width: 15%; text-align: center; vertical-align: middle;">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Pancasila_Coat_of_Arms_of_Indonesia.svg" alt="Garuda" style="width: 70px;">
+                            </td>
+                            <td style="width: 70%; text-align: center; vertical-align: middle;">
+                                <h3 style="margin: 0; font-size: 16px; font-weight: normal; letter-spacing: 1px;">SISTEM INVESTIGASI FORENSIK LINGKUNGAN</h3>
+                                <h1 style="margin: 3px 0; font-size: 26px; font-weight: bold; color: #000;">FIRETRACE INDONESIA</h1>
+                                <p style="margin: 0; font-size: 11px;">Otomasi Pemantauan Karhutla & Digital Chain of Custody (DCoC)</p>
+                            </td>
+                            <td style="width: 15%; text-align: center; vertical-align: middle;">
+                                <div style="border: 1px solid #000; padding: 5px; display: inline-block;">
+                                    <div style="font-size: 28px; line-height: 1;">📱</div>
+                                    <div style="font-size: 8px; font-family: monospace; margin-top: 2px; font-weight: bold;">VERIFIED</div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <h2 style="margin: 0; font-size: 18px; text-decoration: underline;">BERITA ACARA PEMERIKSAAN (BAP) DIGITAL</h2>
+                        <p style="margin: 2px 0 0 0; font-size: 14px; font-weight: bold; letter-spacing: 2px;">" PRO - JUSTITIA "</p>
                     </div>
                     
-                    <p><strong>Nomor Registrasi BAP:</strong> KAL-REG-<span id="bap-reg-wilayah">ALL</span>-<span id="bap-menit">00</span></p>
-                    <p><strong>Waktu Penerbitan Laporan:</strong> <span id="bap-waktu" style="color: #1a237e; font-weight: bold;">Mengekstrak data valid...</span></p>
-                    <p><strong>Lokasi Objek Pemantauan:</strong> Wilayah <span id="bap-lokasi" style="font-weight: bold; text-decoration: underline;">Seluruh Kalimantan (Agregat 5 Provinsi)</span></p>
+                    <table style="width: 100%; margin-bottom: 15px; font-size: 14px;">
+                        <tr><td style="width: 25%; font-weight: bold;">Nomor Registrasi</td><td style="width: 2%;">:</td><td>KAL-REG-<span id="bap-reg-wilayah">ALL</span>-<span id="bap-menit">00</span>/FT/2026</td></tr>
+                        <tr><td style="font-weight: bold;">Waktu Ekstraksi Data</td><td>:</td><td id="bap-waktu">Mengekstrak data...</td></tr>
+                        <tr><td style="font-weight: bold;">Fokus Area Pemantauan</td><td>:</td><td id="bap-lokasi" style="text-transform: uppercase;">Mengekstrak data...</td></tr>
+                        <tr><td style="font-weight: bold;">Status Kewaspadaan</td><td>:</td><td><strong id="bap-status-final" style="padding: 2px 5px; border: 1px solid #000;">MEMPROSES...</strong></td></tr>
+                    </table>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">1. Kondisi Faktual & Rujukan Parameter BMKG:</h4>
-                    <p style="text-align: justify; line-height: 1.6;" id="bap-ringkasan">Memproses data telemetri satelit...</p>
+                    <p style="text-align: justify; text-indent: 30px; margin-bottom: 15px;">
+                        Pada hari ini, sistem <i>Forest Integrated Real-Time Environmental Forensic Evidence System</i> (FIRETRACE) telah melakukan ekstraksi dan validasi data sensor IoT telemetri lapangan secara otomatis dengan rincian hasil analitik sebagai berikut:
+                    </p>
+
+                    <h4 style="margin: 15px 0 5px 0; font-size: 15px;">I. FAKTA LAPANGAN & PARAMETER KLIMATOLOGI</h4>
+                    <p style="text-align: justify; line-height: 1.6; margin-bottom: 15px;" id="bap-ringkasan">
+                        Memproses data telemetri satelit dan node sensor...
+                    </p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">2. Eviden Visual Cloud Camera & Atribusi Pro-Justitia:</h4>
-                    <p style="text-align: justify; line-height: 1.6;" id="bap-prediksi">Menyusun proyeksi hukum lingkungan...</p>
+                    <h4 style="margin: 15px 0 5px 0; font-size: 15px;">II. KESIMPULAN ATRIBUSI FORENSIK LINGKUNGAN</h4>
+                    <p style="text-align: justify; line-height: 1.6; margin-bottom: 15px; background: rgba(0,0,0,0.03); border-left: 4px solid #333; padding: 10px;" id="bap-prediksi">
+                        Menyusun proyeksi hukum lingkungan...
+                    </p>
                     
-                    <h4 style="margin-top: 20px; text-decoration: underline;">STATUS DIGITAL CHAIN OF CUSTODY (DCoC):</h4>
-                    <p>Laporan ini diekstrak secara otomatis, sah secara elektronik, dan dilindungi enkripsi kriptografi. <br>Hash Verifikasi: <strong id="bap-hash" style="font-family: monospace; color: #1a237e;">-</strong></p>
+                    <h4 style="margin: 15px 0 5px 0; font-size: 15px;">III. DIGITAL CHAIN OF CUSTODY (LEGALITAS DATA)</h4>
+                    <p style="text-align: justify; line-height: 1.6; margin-bottom: 15px;">
+                        Dokumen BAP ini diekstrak langsung dari *Cloud Server* melalui sistem isolasi *tamper-proof*. Snapshot visual dari *Cloud Camera* (jika ada) telah dilindungi menggunakan protokol enkripsi kriptografi tingkat lanjut demi menjaga integritas barang bukti elektronik.
+                        <br><br>
+                        <strong>Kunci Verifikasi Hash (SHA-256):</strong><br>
+                        <span id="bap-hash" style="font-family: monospace; font-size: 13px; background: #eee; padding: 3px 5px; border: 1px solid #ccc; display: inline-block; margin-top: 5px; width: 100%; word-break: break-all;">-</span>
+                    </p>
                     
+                    <div style="margin-top: 40px; text-align: right; font-size: 14px;">
+                        <p style="margin-bottom: 60px;">Disahkan secara otomatis oleh Sistem FIRETRACE,</p>
+                        <p style="font-weight: bold; text-decoration: underline;">OTORITAS DATA FORENSIK DIGITAL</p>
+                        <p style="font-size: 12px; color: #555;">(Dokumen ini sah tanpa tanda tangan basah)</p>
+                    </div>
+
                     <div style="margin-top: 25px; text-align: right;">
-                        <button onclick="cetakDokumenBAP()" style="background-color: #1a237e; color: white; padding: 10px 20px; cursor: pointer; border:none; border-radius:4px; font-weight:bold;">🖨 Cetak BAP Forensik (PDF)</button>
+                        <button onclick="cetakDokumenBAP()" style="background-color: #1a237e; color: white; padding: 12px 25px; cursor: pointer; border:none; border-radius:4px; font-weight:bold; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">🖨 CETAK BAP (PDF)</button>
                     </div>
                 </div>
             </div>
@@ -243,9 +253,9 @@
         </main>
     </div>
     
-    <script src="script.js?v=70"></script>
+    <script src="script.js?v=75"></script>
 
-    <!-- SKRIP CETAK (TIDAK ADA ELEMEN YANG MENUMPUK) -->
+    <!-- SKRIP CETAK ISOLASI (Iframe Cetak Murni) -->
     <script>
         function cetakDokumenBAP() {
             const isiBAP = document.getElementById('area-bap').innerHTML;
@@ -259,14 +269,10 @@
                     <title>Dokumen BAP Forensik - FIRETRACE</title>
                     <style>
                         @page { size: A4 portrait; margin: 20mm; }
-                        body { 
-                            font-family: 'Times New Roman', serif; 
-                            color: #000; 
-                            background: #fff; 
-                            padding: 0;
-                            margin: 0;
-                        }
+                        body { font-family: 'Times New Roman', Times, serif; color: #000; background: #fff; padding: 0; margin: 0; font-size: 14px; }
                         button { display: none !important; }
+                        table { width: 100%; border-collapse: collapse; }
+                        p { text-align: justify; line-height: 1.6; }
                     </style>
                 </head>
                 <body>
@@ -276,12 +282,12 @@
             `);
             
             iframe.contentWindow.document.close();
-            iframe.contentWindow.focus();
             
             setTimeout(() => {
+                iframe.contentWindow.focus();
                 iframe.contentWindow.print();
-                document.body.removeChild(iframe); 
-            }, 500);
+                setTimeout(() => document.body.removeChild(iframe), 1000); 
+            }, 1000);
         }
     </script>
 </body>
