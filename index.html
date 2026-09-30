@@ -116,23 +116,23 @@
 
                 <section class="sensor-grid">
                     <div class="sensor-card">
-                        <h4 id="judul-suhu">Suhu: Seluruh Kalimantan</h4>
+                        <h4 id="judul-suhu">Suhu Aktual (DS18B20)</h4>
                         <div class="sensor-value"><span id="val-suhu">28.00</span> °C</div>
                     </div>
                     <div class="sensor-card">
-                        <h4 id="judul-lembab">Kelembapan: Seluruh Kalimantan</h4>
+                        <h4 id="judul-lembab">Kelembapan (BME280)</h4>
                         <div class="sensor-value"><span id="val-lembab">78.00</span> %</div>
                     </div>
                     <div class="sensor-card">
-                        <h4>Estimasi Asap (MQ135)</h4>
+                        <h4>Konsentrasi Gas (MQ135)</h4>
                         <div class="sensor-value"><span id="val-asap">400</span> ppm</div>
                     </div>
                     <div class="sensor-card">
-                        <h4>Indeks Risiko (AI)</h4>
+                        <h4>Indeks Risiko Fuzzy Logic</h4>
                         <div class="sensor-value" style="font-size: 15px; margin-top: 5px; color: #ffab91;" id="val-risiko">15% (Rendah)</div>
                     </div>
                     <div class="sensor-card">
-                        <h4>Status Atribusi Pemicu</h4>
+                        <h4>Atribusi Pemicu Dominan</h4>
                         <div class="sensor-value" style="font-size: 13px; margin-top: 5px; color: #64b5f6;" id="val-prediksi-singkat">Stabil / Normal</div>
                     </div>
                 </section>
@@ -164,7 +164,6 @@
                 </div>
             </div>
 
-            <!-- TAB LAINNYA -->
             <div id="cloudCamera" class="tab-content"><h3 style="color: #fff; font-size: 16px;">Galeri Tangkapan Eviden Otomatis</h3><div id="cloud-camera-grid"></div></div>
             <div id="humanIndicator" class="tab-content"><div class="header-halaman"><h2>Matriks Atribusi Pemicu</h2></div></div>
             <div id="architecture" class="tab-content"><div class="header-halaman"><h2>Arsitektur Sistem IoT</h2></div></div>
@@ -174,75 +173,77 @@
                 <div class="log-section" style="height: 400px;"><div class="table-responsive"><table><tbody id="log-body-audit"></tbody></table></div></div>
             </div>
 
-            <!-- TAB REPORT BAP (Tanpa Ikon Scan to Verify) -->
+            <!-- TAB REPORT BAP (Rapi, Formal, Tidak Tumpang Tindih) -->
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
                     <p>Berita Acara Pemeriksaan (BAP) Lingkungan Digital (Pro-Justitia).</p>
                 </div>
                 
-                <!-- KOTAK BAP INI YANG AKAN DICETAK -->
-                <div id="area-bap" style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 850px; margin: 0 auto; font-family: 'Times New Roman', Times, serif; line-height: 1.6;">
-                    
-                    <!-- KOP SURAT MENGGUNAKAN TABEL -->
-                    <table style="width: 100%; border-bottom: 4px double #000; margin-bottom: 20px; padding-bottom: 10px;">
-                        <tr>
-                            <!-- Kolom Kiri: Logo Garuda -->
-                            <td style="width: 15%; text-align: center; vertical-align: middle;">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Pancasila_Coat_of_Arms_of_Indonesia.svg" alt="Garuda" style="width: 70px;">
-                            </td>
-                            <!-- Kolom Tengah: Judul Utama -->
-                            <td style="width: 70%; text-align: center; vertical-align: middle;">
-                                <h3 style="margin: 0; font-size: 16px; font-weight: normal; letter-spacing: 1px;">SISTEM INVESTIGASI FORENSIK LINGKUNGAN</h3>
-                                <h1 style="margin: 3px 0; font-size: 26px; font-weight: bold; color: #000;">FIRETRACE INDONESIA</h1>
-                                <p style="margin: 0; font-size: 11px;">Otomasi Pemantauan Karhutla & Digital Chain of Custody (DCoC)</p>
-                            </td>
-                            <!-- Kolom Kanan: Dikosongkan agar judul tetap di tengah -->
-                            <td style="width: 15%;"></td>
-                        </tr>
-                    </table>
-                    
-                    <div style="text-align: center; margin-bottom: 25px;">
-                        <h2 style="margin: 0; font-size: 18px; text-decoration: underline;">BERITA ACARA PEMERIKSAAN (BAP) DIGITAL</h2>
-                        <p style="margin: 2px 0 0 0; font-size: 14px; font-weight: bold; letter-spacing: 2px;">" PRO - JUSTITIA "</p>
-                    </div>
-                    
-                    <table style="width: 100%; margin-bottom: 15px; font-size: 14px;">
-                        <tr><td style="width: 25%; font-weight: bold;">Nomor Registrasi</td><td style="width: 2%;">:</td><td>KAL-REG-<span id="bap-reg-wilayah">ALL</span>-<span id="bap-menit">00</span>/FT/2026</td></tr>
-                        <tr><td style="font-weight: bold;">Waktu Ekstraksi Data</td><td>:</td><td id="bap-waktu">Mengekstrak data...</td></tr>
-                        <tr><td style="font-weight: bold;">Fokus Area Pemantauan</td><td>:</td><td id="bap-lokasi" style="text-transform: uppercase;">Mengekstrak data...</td></tr>
-                        <tr><td style="font-weight: bold;">Status Kewaspadaan</td><td>:</td><td><strong id="bap-status-final" style="padding: 2px 5px; border: 1px solid #000;">MEMPROSES...</strong></td></tr>
-                    </table>
-                    
-                    <p style="text-align: justify; text-indent: 30px; margin-bottom: 15px;">
-                        Pada hari ini, sistem <i>Forest Integrated Real-Time Environmental Forensic Evidence System</i> (FIRETRACE) telah melakukan ekstraksi dan validasi data sensor IoT telemetri lapangan secara otomatis dengan rincian hasil analitik sebagai berikut:
-                    </p>
+                <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 850px; margin: 0 auto;">
+                    <div id="area-bap" style="font-family: 'Times New Roman', Times, serif; line-height: 1.6;">
+                        
+                        <!-- KOP SURAT (DENGAN TABEL AGAR RAPIH DAN TIDAK BERTUMPUK) -->
+                        <table style="width: 100%; border-bottom: 4px double #000; margin-bottom: 25px; padding-bottom: 15px;">
+                            <tr>
+                                <td style="width: 15%; text-align: left; vertical-align: middle; padding-bottom: 10px;">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/11/Pancasila_Coat_of_Arms_of_Indonesia.svg" alt="Garuda" style="width: 70px;">
+                                </td>
+                                <td style="width: 85%; text-align: center; vertical-align: middle; padding-bottom: 10px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 15px; font-weight: normal; letter-spacing: 1px;">SISTEM INVESTIGASI FORENSIK LINGKUNGAN</h3>
+                                    <h1 style="margin: 0 0 5px 0; font-size: 24px; font-weight: bold; color: #000;">FIRETRACE INDONESIA</h1>
+                                    <p style="margin: 0; font-size: 11px;">Otomasi Pemantauan Karhutla & Digital Chain of Custody (DCoC)</p>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <h2 style="margin: 0; font-size: 18px; text-decoration: underline;">BERITA ACARA PEMERIKSAAN (BAP) DIGITAL</h2>
+                            <p style="margin: 5px 0 0 0; font-size: 13px; font-weight: bold; letter-spacing: 2px;">" PRO - JUSTITIA "</p>
+                        </div>
+                        
+                        <table style="width: 100%; margin-bottom: 25px; font-size: 14px; line-height: 1.8;">
+                            <tr><td style="width: 25%; font-weight: bold;">Nomor Registrasi</td><td style="width: 2%;">:</td><td>KAL-REG-<span id="bap-reg-wilayah">ALL</span>-<span id="bap-menit">00</span>/FT/2026</td></tr>
+                            <tr><td style="font-weight: bold;">Waktu Ekstraksi Data</td><td>:</td><td id="bap-waktu">Data tervalidasi</td></tr>
+                            <tr><td style="font-weight: bold;">Fokus Area Pemantauan</td><td>:</td><td id="bap-lokasi" style="text-transform: uppercase; font-weight: bold;">Memuat lokasi...</td></tr>
+                            <tr><td style="font-weight: bold;">Status Kewaspadaan</td><td>:</td><td><strong id="bap-status-final" style="padding: 3px 8px; border: 1px solid #000;">TERTUNDA</strong></td></tr>
+                        </table>
+                        
+                        <p style="text-align: justify; text-indent: 40px; margin-bottom: 20px; font-size: 14px;">
+                            Sesuai dengan protokol pemantauan Karhutla berdasarkan parameter BMKG, sistem <i>Forest Integrated Real-Time Environmental Forensic Evidence System</i> (FIRETRACE) telah melakukan ekstraksi dan validasi rekaman dari lapisan perekaman lingkungan (<i>environmental recording layer</i>) dengan rincian kronologi analisis (<i>Fire Event Profile</i>) sebagai berikut:
+                        </p>
 
-                    <h4 style="margin: 15px 0 5px 0; font-size: 15px;">I. FAKTA LAPANGAN & PARAMETER KLIMATOLOGI</h4>
-                    <p style="text-align: justify; line-height: 1.6; margin-bottom: 15px;" id="bap-ringkasan">
-                        Memproses data telemetri satelit dan node sensor...
-                    </p>
-                    
-                    <h4 style="margin: 15px 0 5px 0; font-size: 15px;">II. KESIMPULAN ATRIBUSI FORENSIK LINGKUNGAN</h4>
-                    <p style="text-align: justify; line-height: 1.6; margin-bottom: 15px; background: rgba(0,0,0,0.03); border-left: 4px solid #333; padding: 10px;" id="bap-prediksi">
-                        Menyusun proyeksi hukum lingkungan...
-                    </p>
-                    
-                    <h4 style="margin: 15px 0 5px 0; font-size: 15px;">III. DIGITAL CHAIN OF CUSTODY (LEGALITAS DATA)</h4>
-                    <p style="text-align: justify; line-height: 1.6; margin-bottom: 15px;">
-                        Dokumen BAP ini diekstrak langsung dari *Cloud Server* melalui sistem isolasi *tamper-proof*. Snapshot visual dari *Cloud Camera* (jika ada) telah dilindungi menggunakan protokol enkripsi kriptografi tingkat lanjut demi menjaga integritas barang bukti elektronik.
-                        <br><br>
-                        <strong>Kunci Verifikasi Hash (SHA-256):</strong><br>
-                        <span id="bap-hash" style="font-family: monospace; font-size: 13px; background: #eee; padding: 3px 5px; border: 1px solid #ccc; display: inline-block; margin-top: 5px; width: 100%; word-break: break-all;">-</span>
-                    </p>
-                    
-                    <div style="margin-top: 40px; text-align: right; font-size: 14px;">
-                        <p style="margin-bottom: 60px;">Disahkan secara otomatis oleh Sistem FIRETRACE,</p>
-                        <p style="font-weight: bold; text-decoration: underline;">OTORITAS DATA FORENSIK DIGITAL</p>
-                        <p style="font-size: 12px; color: #555;">(Dokumen ini sah tanpa tanda tangan basah)</p>
+                        <h4 style="margin: 20px 0 10px 0; font-size: 15px;">I. FAKTA LAPANGAN & HASIL PEMBACAAN MULTISENSOR</h4>
+                        <div style="text-align: justify; line-height: 1.6; margin-bottom: 20px; font-size: 14px;" id="bap-ringkasan">
+                            Menarik data telemetri lapangan...
+                        </div>
+                        
+                        <h4 style="margin: 20px 0 10px 0; font-size: 15px;">II. KESIMPULAN ATRIBUSI BERDASARKAN FUZZY LOGIC</h4>
+                        <div style="text-align: justify; line-height: 1.6; margin-bottom: 20px; font-size: 14px; background: rgba(0,0,0,0.02); border-left: 3px solid #000; padding-left: 15px;" id="bap-prediksi">
+                            Mengkalkulasi matriks atribusi penyebab...
+                        </div>
+                        
+                        <h4 style="margin: 20px 0 10px 0; font-size: 15px;">III. DIGITAL CHAIN OF CUSTODY (DCoC)</h4>
+                        <p style="text-align: justify; line-height: 1.6; margin-bottom: 20px; font-size: 14px;">
+                            Berdasarkan lapisan integritas data (<i>data integrity layer</i>), dokumen rekaman ini (<i>Environmental Forensic Record</i>) dilengkapi metadata dan jejak audit yang dikunci secara kriptografis menggunakan <i>Secure Hash Algorithm</i>. Snapshot data lapangan dinyatakan sah secara elektronik dan kebal dari modifikasi pasca-kejadian.
+                            <br><br>
+                            <strong>Kunci Verifikasi HMAC Hash (SHA-256):</strong><br>
+                            <span id="bap-hash" style="font-family: monospace; font-size: 12px; display: inline-block; margin-top: 5px; word-break: break-all;">Memproses kunci verifikasi...</span>
+                        </p>
+                        
+                        <table style="width: 100%; margin-top: 50px; font-size: 14px;">
+                            <tr>
+                                <td style="width: 50%;"></td>
+                                <td style="width: 50%; text-align: center;">
+                                    <p style="margin-bottom: 80px;">Sistem Investigasi Terpusat FIRETRACE,</p>
+                                    <p style="font-weight: bold; text-decoration: underline; margin: 0;">OTORITAS DATA FORENSIK DIGITAL</p>
+                                    <p style="font-size: 11px; color: #555; margin-top: 5px;">(Dokumen Tervalidasi Otomatis)</p>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
 
-                    <div style="margin-top: 25px; text-align: right;">
+                    <div style="margin-top: 35px; text-align: right;">
                         <button onclick="cetakDokumenBAP()" style="background-color: #1a237e; color: white; padding: 12px 25px; cursor: pointer; border:none; border-radius:4px; font-weight:bold; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">🖨 CETAK BAP (PDF)</button>
                     </div>
                 </div>
@@ -251,9 +252,8 @@
         </main>
     </div>
     
-    <script src="script.js?v=75"></script>
+    <script src="script.js?v=80"></script>
 
-    <!-- SKRIP CETAK ISOLASI (Iframe Cetak Murni) -->
     <script>
         function cetakDokumenBAP() {
             const isiBAP = document.getElementById('area-bap').innerHTML;
@@ -264,11 +264,10 @@
             iframe.contentWindow.document.write(`
                 <html>
                 <head>
-                    <title>Dokumen BAP Forensik - FIRETRACE</title>
+                    <title>BAP Forensik - FIRETRACE</title>
                     <style>
-                        @page { size: A4 portrait; margin: 20mm; }
+                        @page { size: A4 portrait; margin: 25mm 20mm; }
                         body { font-family: 'Times New Roman', Times, serif; color: #000; background: #fff; padding: 0; margin: 0; font-size: 14px; }
-                        button { display: none !important; }
                         table { width: 100%; border-collapse: collapse; }
                         p { text-align: justify; line-height: 1.6; }
                     </style>
