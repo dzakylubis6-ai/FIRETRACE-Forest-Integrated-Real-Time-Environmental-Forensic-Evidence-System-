@@ -18,6 +18,7 @@
             font-family: 'Inter', sans-serif;
         }
 
+        /* Latar Belakang Hutan */
         html, body {
             width: 100%;
             height: 100vh;
@@ -30,106 +31,28 @@
             color: #e0e0e0;
         }
 
-        .dashboard-container {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-            background: transparent !important;
-        }
+        .dashboard-container { display: flex; height: 100vh; width: 100vw; background: transparent !important; }
 
-        .sidebar {
-            width: 280px;
-            background-color: rgba(12, 24, 17, 0.88) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-right: 1px solid rgba(255, 255, 255, 0.15);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            flex-shrink: 0;
-        }
+        .sidebar { width: 280px; background-color: rgba(12, 24, 17, 0.88) !important; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-right: 1px solid rgba(255, 255, 255, 0.15); display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; }
+        .logo-area { padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.15); }
+        .logo-area h2 { color: #ef5350; font-size: 20px; font-weight: 700; letter-spacing: 1px; }
+        .logo-area p { font-size: 11px; color: #aaa; margin-top: 2px; }
 
-        .logo-area {
-            padding: 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-        }
+        .nav-menu { list-style: none; padding: 15px 0; }
+        .nav-item { padding: 12px 20px; font-size: 13px; color: #ccc; cursor: pointer; transition: all 0.2s ease; border-left: 3px solid transparent; }
+        .nav-item:hover { background-color: rgba(255, 255, 255, 0.08); color: #fff; }
+        .nav-item.active { background-color: rgba(255, 255, 255, 0.18); color: #fff; border-left-color: #ef5350; font-weight: 600; }
 
-        .logo-area h2 {
-            color: #ef5350;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
+        .main-content { flex: 1; background: transparent !important; overflow-y: auto; padding: 20px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        .logo-area p {
-            font-size: 11px;
-            color: #aaa;
-            margin-top: 2px;
-        }
-
-        .nav-menu {
-            list-style: none;
-            padding: 15px 0;
-        }
-
-        .nav-item {
-            padding: 12px 20px;
-            font-size: 13px;
-            color: #ccc;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover {
-            background-color: rgba(255, 255, 255, 0.08);
-            color: #fff;
-        }
-
-        .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.18);
-            color: #fff;
-            border-left-color: #ef5350;
-            font-weight: 600;
-        }
-
-        .main-content {
-            flex: 1;
-            background: transparent !important;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes emergencyPulse {
-            0% { box-shadow: 0 0 5px rgba(198, 40, 40, 0.4); }
-            50% { box-shadow: 0 0 25px rgba(198, 40, 40, 0.9); }
-            100% { box-shadow: 0 0 5px rgba(198, 40, 40, 0.4); }
-        }
-
-        .status-header {
-            padding: 15px 20px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            backdrop-filter: blur(8px);
-        }
-
+        @keyframes emergencyPulse { 0% { box-shadow: 0 0 5px rgba(198, 40, 40, 0.4); } 50% { box-shadow: 0 0 25px rgba(198, 40, 40, 0.9); } 100% { box-shadow: 0 0 5px rgba(198, 40, 40, 0.4); } }
+        .status-header { padding: 15px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); backdrop-filter: blur(8px); }
         .status-header.normal { background: rgba(76, 175, 80, 0.25); border: 1px solid #4caf50; }
         .status-header.waspada { background: rgba(249, 168, 37, 0.25); border: 1px solid #f9a825; }
         .status-header.siaga { background: rgba(239, 108, 0, 0.25); border: 1px solid #ef6c00; }
         .status-header.bahaya { background: rgba(198, 40, 40, 0.35); border: 1px solid #c62828; animation: emergencyPulse 1.5s infinite; }
-
         .status-info h3 { font-size: 15px; font-weight: 600; color: #fff; }
         .status-info p { font-size: 12px; color: #ddd; margin-top: 3px; }
 
@@ -157,58 +80,6 @@
             .bottom-grid { grid-template-columns: 1fr; }
             body { overflow: auto; height: auto; }
         }
-
-        /* PERBAIKAN TOTAL MODE CETAK (PRINT MEDIA) */
-        @media print {
-            @page { size: A4 portrait; margin: 20mm; }
-            
-            html, body {
-                background: #fff !important;
-                color: #000 !important;
-                height: auto !important;
-                overflow: visible !important;
-            }
-
-            /* Matikan layout flex agar BAP tidak terpotong */
-            .dashboard-container, .main-content {
-                display: block !important;
-                width: 100% !important;
-                height: auto !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                background: none !important;
-                overflow: visible !important;
-            }
-
-            /* Sembunyikan semua elemen kecuali laporan forensik */
-            .sidebar, #simulation-panel, .header-halaman, .tab-content {
-                display: none !important;
-            }
-
-            /* Tampilkan HANYA Report/BAP */
-            #report.tab-content {
-                display: block !important;
-                visibility: visible !important;
-                position: relative !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100% !important;
-            }
-
-            /* Rapikan div kotak dalam report */
-            #report > div {
-                padding: 0 !important;
-                margin: 0 !important;
-                box-shadow: none !important;
-                max-width: 100% !important;
-                background: transparent !important;
-            }
-
-            /* Sembunyikan tombol print di kertas */
-            button {
-                display: none !important;
-            }
-        }
     </style>
 </head>
 <body>
@@ -235,7 +106,7 @@
             </ul>
         </aside>
 
-        <!-- PANEL KONTROL DEMO UNTUK JURI (FLOATING) -->
+        <!-- PANEL KONTROL DEMO UNTUK JURI -->
         <div id="simulation-panel" style="position: fixed; bottom: 20px; right: 20px; background: rgba(20,20,20,0.95); border: 2px solid #f9a825; padding: 12px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 15px rgba(0,0,0,0.7); font-size: 11px; max-width: 220px;">
             <div style="color: #f9a825; font-weight: bold; margin-bottom: 8px;">🎮 PANEL DEMO JURI</div>
             <div style="display: flex; flex-direction: column; gap: 5px;">
@@ -266,12 +137,10 @@
                     <div class="sensor-card">
                         <h4 id="judul-suhu">Suhu: Seluruh Kalimantan</h4>
                         <div class="sensor-value"><span id="val-suhu">28.00</span> °C</div>
-                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Pergantian: <strong id="delta-suhu" style="color: #fff;">0.00 °C/dtk</strong></div>
                     </div>
                     <div class="sensor-card">
                         <h4 id="judul-lembab">Kelembapan: Seluruh Kalimantan</h4>
                         <div class="sensor-value"><span id="val-lembab">78.00</span> %</div>
-                        <div style="font-size: 11px; margin-top: 6px; color: #aaa;">Pergantian: <strong id="delta-lembab" style="color: #fff;">0.00 %/dtk</strong></div>
                     </div>
                     <div class="sensor-card">
                         <h4>Estimasi Asap (MQ135)</h4>
@@ -287,7 +156,7 @@
                     </div>
                 </section>
 
-                <section class="map-section" style="margin-bottom: 20px; position: relative;">
+                <section class="map-section" style="margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.2); padding-bottom: 10px;">
                         <h3 style="color: #fff; font-size: 16px;">Peta Kalimantan (Klik Titik Provinsi Untuk Detail)</h3>
                         <button onclick="resetKeSemuaProvinsi()" style="background: #1976d2; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold;">🌍 Tampilkan Seluruh Kalimantan</button>
@@ -314,147 +183,42 @@
                 </div>
             </div>
 
-            <!-- TAB: CLOUD CAMERA EVIDEN -->
-            <div id="cloudCamera" class="tab-content">
-                <div class="header-halaman">
-                    <h2>Cloud Camera & Visual Evidence Storage</h2>
-                    <p>Penyimpanan otomatis tangkapan visual (Snapshot) terenkripsi saat level ancaman mencapai SIAGA atau BAHAYA.</p>
-                </div>
-                
-                <div style="background: rgba(30,30,30,0.85); padding: 20px; border-radius: 8px; border: 1px solid rgba(239,83,80,0.4); margin-bottom: 25px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <h3 style="color: #ef5350; margin: 0;">☁️ AWS S3 / Firebase Secure Cloud Storage Node</h3>
-                        <span style="background: rgba(76,175,80,0.2); color: #4caf50; padding: 5px 12px; border-radius: 4px; font-size: 11px; font-weight: bold; border: 1px solid #4caf50;">STATUS: AKTIF & TERENKRIPSI</span>
-                    </div>
-                    <p style="font-size: 12px; color: #ccc; line-height: 1.5;">Sistem secara otomatis mengaktifkan perekaman snapshot resolusi tinggi dari kamera terdekat ketika sensor mendeteksi tingkat kerawanan **SIAGA** atau **BAHAYA** untuk keperluan investigasi Pro-Justitia.</p>
-                </div>
-
-                <h3 style="color: #fff; margin-bottom: 15px; font-size: 16px;">Galeri Tangkapan Eviden Otomatis (Cloud Feed)</h3>
-                
-                <div id="cloud-camera-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;">
-                    <div style="background: rgba(30,30,30,0.85); border: 1px solid #444; border-radius: 6px; padding: 12px; text-align: left;">
-                        <div style="background: #000; height: 150px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 11px; position: relative; overflow: hidden; border: 1px solid #333;">
-                            <span style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); color: #4caf50; padding: 2px 6px; border-radius: 3px; font-size: 9px; font-weight: bold;">CAM-01 (Kalimantan Tengah)</span>
-                            <span style="text-align: center; color: #888;">[Standby Feed — Clear Monitored]</span>
-                        </div>
-                        <div style="margin-top: 10px; font-size: 11px; color: #aaa;">
-                            <div>Status: <span style="color: #4caf50; font-weight: bold;">Normal (Aman)</span></div>
-                            <div>Waktu Cek: Sistem Ready</div>
-                            <div style="font-family: monospace; font-size: 9px; color: #666; margin-top: 4px;">Hash: e34551478f05...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB: ATRIBUSI PEMICU -->
-            <div id="humanIndicator" class="tab-content">
-                <div class="header-halaman">
-                    <h2>Matriks Atribusi Pemicu: Faktor Alamiah (BMKG) vs Aktivitas Manusia</h2>
-                    <p>Standar ilmiah dan forensik untuk membedakan sumber pemicu kebakaran hutan secara akurat.</p>
-                </div>
-                <div style="background: rgba(30,30,30,0.85); padding: 20px; border-radius: 8px; border: 1px solid rgba(76,175,80,0.4); margin-bottom: 20px;">
-                    <h3 style="color: #4caf50; margin-bottom: 10px;">🌿 Indikator Penyebab Alami (Sumber: BMKG & Parameter Klimatologi)</h3>
-                    <ul style="font-size: 12px; color: #ccc; line-height: 1.6; padding-left: 20px;">
-                        <li><b>Aktivitas Petir (Cloud-to-Ground):</b> Tercatat sambaran petir positif/negatif di koordinat titik awal dalam radius 1 km sebelum T0.</li>
-                        <li><b>Indeks Kekeringan (KBDI / FFWI):</b> Nilai Keetch-Byram Drought Index > 600 atau Hari Tanpa Hujan > 21 hari.</li>
-                        <li><b>Puncak Suhu & RH Ekstrem:</b> Suhu udara tinggi bertepatan dengan kelembapan relatif rendah.</li>
-                    </ul>
-                </div>
-                <div style="background: rgba(30,30,30,0.85); padding: 20px; border-radius: 8px; border: 1px solid rgba(255,152,0,0.4);">
-                    <h3 style="color: #ffa726; margin-bottom: 10px;">👥 Indikator Aktivitas Manusia / Kesengajaan (Antropogenik)</h3>
-                    <ul style="font-size: 12px; color: #ccc; line-height: 1.6; padding-left: 20px;">
-                        <li><b>Pola Multi-Node Berjajar:</b> Beberapa node sensor terpicu serentak dalam garis lurus/terpisah (pola pembukaan lahan).</li>
-                        <li><b>Ketiadaan Sambaran Petir BMKG:</b> Tidak ada catatan petir di sekitar lokasi sebelum waktu T0.</li>
-                        <li><b>Laju Asap Cepat (Rate of Change):</b> Konsentrasi asap MQ135 meningkat drastis secara instan.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- TAB: ARSITEKTUR IOT -->
-            <div id="architecture" class="tab-content">
-                <div class="header-halaman">
-                    <h2>Arsitektur Sistem & Perangkat Keras IoT (FIRETRACE)</h2>
-                    <p>Diagram alur end-to-end dari sensor lapangan hingga penyimpanan forensik terenkripsi.</p>
-                </div>
-                <div style="background: rgba(30,30,30,0.88); padding: 25px; border-radius: 8px; border: 1px solid rgba(100,181,246,0.4);">
-                    <h3 style="color: #64b5f6; margin-bottom: 15px;">🔄 Alur Komunikasi Data (Data Pipeline)</h3>
-                    <div style="display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #ddd;">
-                        <div style="background: rgba(20,20,20,0.6); padding: 12px; border-left: 4px solid #4caf50; border-radius: 4px;">
-                            <strong>1. Layer Sensor Lapangan (Edge Computing):</strong><br>
-                            Menggunakan ESP32 microcontroller yang membaca sensor DS18B20 (Suhu), BME280 (Kelembapan/RH), MQ135 (Gas Asap), UVTRON (Deteksi Nyala Api UV), dan Anemometer.
-                        </div>
-                        <div style="background: rgba(20,20,20,0.6); padding: 12px; border-left: 4px solid #ff9800; border-radius: 4px;">
-                            <strong>2. Layer Transmisi & Gateway:</strong><br>
-                            Data telemetri dikirimkan secara nirkabel menggunakan protokol MQTT/LoRaWAN dan backup seluler 4G/LTE langsung ke Cloud Server.
-                        </div>
-                        <div style="background: rgba(20,20,20,0.6); padding: 12px; border-left: 4px solid #2196f3; border-radius: 4px;">
-                            <strong>3. Layer Pemrosesan AI & Atribusi Pemicu:</strong><br>
-                            Sistem secara cerdas menganalisis apakah anomali berasal dari Sambaran Petir BMKG (Alami) atau Pola Multi-Node Berjajar (Ulah Manusia).
-                        </div>
-                        <div style="background: rgba(20,20,20,0.6); padding: 12px; border-left: 4px solid #e91e63; border-radius: 4px;">
-                            <strong>4. Layer Penyimpanan Eviden (Cloud Camera & DCoC):</strong><br>
-                            Snapshot kamera di-upload otomatis ke AWS S3 / Firebase Cloud Storage, lalu dikunci dengan enkripsi SHA-256 Digital Chain of Custody untuk keperluan BAP Pro-Justitia.
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB: PROFILE -->
-            <div id="profile" class="tab-content">
-                <div class="header-halaman">
-                    <h2>Analisis Profil Kejadian & Atribusi Pemicu</h2>
-                    <p>Rekonstruksi anomali lingkungan berdasarkan pembandingan parameter alami dan indikasi aktivitas manusia.</p>
-                </div>
-                <div class="sensor-grid">
-                    <div class="sensor-card" style="grid-column: span 2; text-align: left;">
-                        <h4 style="color: #ef5350;">Pemodelan AI Atribusi: Area <span id="profile-nama-wilayah">Seluruh Kalimantan</span></h4>
-                        <p style="font-size: 13px; color: #ccc; margin-top: 10px; line-height: 1.5;" id="profile-prediksi-teks">Mengambil data validasi awal...</p>
-                    </div>
-                    <div class="sensor-card">
-                        <h4>Status Pemicu Dominan</h4>
-                        <div class="sensor-value" style="font-size: 15px; margin-top: 5px; color: #4caf50;" id="profile-tingkat-ancaman">ALAMI (BMKG VALID)</div>
-                    </div>
-                    <div class="sensor-card">
-                        <h4>Cloud Camera Eviden</h4>
-                        <div class="sensor-value" style="font-size: 14px; margin-top: 5px; color: #81d4fa;">Auto-Trigger Active</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB: AUDIT -->
+            <!-- TAB LAINNYA -->
+            <div id="cloudCamera" class="tab-content"><h3 style="color: #fff; font-size: 16px;">Galeri Tangkapan Eviden Otomatis</h3><div id="cloud-camera-grid"></div></div>
+            <div id="humanIndicator" class="tab-content"><div class="header-halaman"><h2>Matriks Atribusi Pemicu</h2></div></div>
+            <div id="architecture" class="tab-content"><div class="header-halaman"><h2>Arsitektur Sistem IoT</h2></div></div>
+            <div id="profile" class="tab-content"><div class="header-halaman"><h2>Analisis Profil Kejadian</h2></div></div>
             <div id="audit" class="tab-content">
-                <div class="header-halaman">
-                    <h2>Digital Chain of Custody (Log Terkunci)</h2>
-                    <p>Catatan forensik tervalidasi yang dienkripsi per menit untuk BAP.</p>
-                </div>
-                <div class="log-section" style="height: 400px;">
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr><th>Timestamp Eviden</th><th>Fokus Pantauan</th><th>Sertifikasi</th><th>Digital Hash (SHA-256)</th></tr>
-                            </thead>
-                            <tbody id="log-body-audit"></tbody>
-                        </table>
-                    </div>
-                </div>
+                <div class="header-halaman"><h2>Digital Chain of Custody (Log Terkunci)</h2></div>
+                <div class="log-section" style="height: 400px;"><div class="table-responsive"><table><tbody id="log-body-audit"></tbody></table></div></div>
             </div>
 
-            <!-- TAB: REPORT -->
+            <!-- TAB REPORT BAP (Diperbaiki Tata Letak Kepala Suratnya) -->
             <div id="report" class="tab-content">
                 <div class="header-halaman">
                     <h2>Environmental Forensic Report Generator</h2>
                     <p>Berita Acara Pemeriksaan (BAP) Lingkungan Digital (Update Resmi Per 1 Menit).</p>
                 </div>
-                <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 850px; margin: 0 auto; font-family: 'Times New Roman', serif; position: relative;">
+                
+                <!-- KOTAK BAP INI YANG AKAN DICETAK -->
+                <div id="area-bap" style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 850px; margin: 0 auto; font-family: 'Times New Roman', serif;">
                     
-                    <div style="position: absolute; top: 30px; right: 40px; text-align: center; border: 1px dashed #666; padding: 5px; background: #fff;">
-                        <div style="font-size: 30px; line-height: 1;">📱</div>
-                        <div style="font-size: 8px; font-family: monospace; margin-top: 2px;">SCAN TO VERIFY</div>
-                    </div>
-
-                    <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
-                        <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN (OFFICIAL)</h2>
-                        <p style="margin: 5px 0 0 0; font-size: 14px;">BERITA ACARA PEMERIKSAAN ATRIBUSI PENYEBAB (PRO-JUSTITIA)</p>
+                    <!-- HEADER BAP MENGGUNAKAN FLEXBOX AGAR TIDAK SALING BERTUMPUK -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
+                        <!-- Kolom kosong di kiri untuk menyeimbangkan posisi judul agar tetap di tengah -->
+                        <div style="width: 90px;"></div>
+                        
+                        <!-- Kolom Judul di Tengah -->
+                        <div style="text-align: center; flex: 1;">
+                            <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN (OFFICIAL)</h2>
+                            <p style="margin: 5px 0 0 0; font-size: 14px;">BERITA ACARA PEMERIKSAAN ATRIBUSI PENYEBAB (PRO-JUSTITIA)</p>
+                        </div>
+                        
+                        <!-- Kolom QR Code di Kanan -->
+                        <div style="text-align: center; border: 1px dashed #666; padding: 5px; background: #fff; width: 90px;">
+                            <div style="font-size: 30px; line-height: 1;">📱</div>
+                            <div style="font-size: 8px; font-family: monospace; margin-top: 2px;">SCAN TO VERIFY</div>
+                        </div>
                     </div>
                     
                     <p><strong>Nomor Registrasi BAP:</strong> KAL-REG-<span id="bap-reg-wilayah">ALL</span>-<span id="bap-menit">00</span></p>
@@ -471,7 +235,7 @@
                     <p>Laporan ini diekstrak secara otomatis, sah secara elektronik, dan dilindungi enkripsi kriptografi. <br>Hash Verifikasi: <strong id="bap-hash" style="font-family: monospace; color: #1a237e;">-</strong></p>
                     
                     <div style="margin-top: 25px; text-align: right;">
-                        <button onclick="window.print()" style="background-color: #1a237e; color: white; padding: 10px 20px; cursor: pointer; border:none; border-radius:4px; font-weight:bold;">🖨️ Cetak BAP Forensik (PDF)</button>
+                        <button onclick="cetakDokumenBAP()" style="background-color: #1a237e; color: white; padding: 10px 20px; cursor: pointer; border:none; border-radius:4px; font-weight:bold;">🖨 Cetak BAP Forensik (PDF)</button>
                     </div>
                 </div>
             </div>
@@ -480,5 +244,45 @@
     </div>
     
     <script src="script.js?v=70"></script>
+
+    <!-- SKRIP CETAK (TIDAK ADA ELEMEN YANG MENUMPUK) -->
+    <script>
+        function cetakDokumenBAP() {
+            const isiBAP = document.getElementById('area-bap').innerHTML;
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            
+            iframe.contentWindow.document.write(`
+                <html>
+                <head>
+                    <title>Dokumen BAP Forensik - FIRETRACE</title>
+                    <style>
+                        @page { size: A4 portrait; margin: 20mm; }
+                        body { 
+                            font-family: 'Times New Roman', serif; 
+                            color: #000; 
+                            background: #fff; 
+                            padding: 0;
+                            margin: 0;
+                        }
+                        button { display: none !important; }
+                    </style>
+                </head>
+                <body>
+                    ${isiBAP}
+                </body>
+                </html>
+            `);
+            
+            iframe.contentWindow.document.close();
+            iframe.contentWindow.focus();
+            
+            setTimeout(() => {
+                iframe.contentWindow.print();
+                document.body.removeChild(iframe); 
+            }, 500);
+        }
+    </script>
 </body>
 </html>
