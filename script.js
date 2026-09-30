@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 function overrideStatus(mode) {
     manualOverrideStatus = mode;
+    cloudCameraLogged = false; // Reset log kamera agar bisa ambil snapshot baru
     perSecondDashboardUpdate();
     generateForensicReport();
 }
@@ -73,8 +74,6 @@ function ubahFokusWilayah(id) {
     activeRegionId = id;
     const reg = kalimantanRegions.find(r => r.id === id);
     
-    document.getElementById('judul-suhu').innerText = "Suhu Aktual (DS18B20)";
-    document.getElementById('judul-lembab').innerText = "Kelembapan (BME280)";
     document.getElementById('sidebar-wilayah').innerText = reg.name;
     document.getElementById('nama-wilayah-status').innerText = reg.short;
     document.getElementById('grafik-wilayah').innerText = reg.name;
@@ -90,8 +89,6 @@ function ubahFokusWilayah(id) {
 function resetKeSemuaProvinsi() {
     activeRegionId = "all";
     
-    document.getElementById('judul-suhu').innerText = "Suhu Aktual (DS18B20)";
-    document.getElementById('judul-lembab').innerText = "Kelembapan (BME280)";
     document.getElementById('sidebar-wilayah').innerText = "Seluruh Kalimantan";
     document.getElementById('nama-wilayah-status').innerText = "SELURUH KALIMANTAN";
     document.getElementById('grafik-wilayah').innerText = "Seluruh Kalimantan";
@@ -121,7 +118,6 @@ function getBaselineData() {
 
 function initChart() {
     const ctx = document.getElementById('fireChart').getContext('2d');
-    
     let initLabels = [], initTemp = [], initHum = [];
     let now = new Date();
     let base = getBaselineData();
@@ -142,20 +138,7 @@ function initChart() {
                 { label: 'Kelembapan Aktual (%)', data: initHum, borderColor: '#42a5f5', backgroundColor: 'rgba(66, 165, 245, 0.15)', borderWidth: 2, fill: true, tension: 0.4 }
             ]
         },
-        options: {
-            responsive: true, 
-            maintainAspectRatio: false, 
-            animation: { duration: 200 },
-            scales: { 
-                x: { ticks: { color: '#9e9e9e' }, grid: { color: 'rgba(255,255,255,0.05)' } }, 
-                y: { 
-                    ticks: { color: '#9e9e9e' }, 
-                    grid: { color: 'rgba(255,255,255,0.05)' },
-                    min: 0,   
-                    max: 100  
-                } 
-            }
-        }
+        options: { responsive: true, maintainAspectRatio: false, animation: { duration: 200 }, scales: { x: { ticks: { color: '#9e9e9e' }, grid: { color: 'rgba(255,255,255,0.05)' } }, y: { ticks: { color: '#9e9e9e' }, grid: { color: 'rgba(255,255,255,0.05)' }, min: 0, max: 100 } } }
     });
 }
 
@@ -163,18 +146,13 @@ function resetGrafik() {
     let newLabels = [], newTemp = [], newHum = [];
     let now = new Date();
     let base = getBaselineData();
-    
     for(let i = 15; i >= 0; i--) {
         let pastTime = new Date(now.getTime() - (i * 1000));
         newLabels.push(pastTime.toLocaleTimeString('id-ID'));
         newTemp.push(base.bTemp + (Math.random() * 0.4 - 0.2));
         newHum.push(base.bHum + (Math.random() * 2 - 1));
     }
-    
-    fireChart.data.labels = newLabels;
-    fireChart.data.datasets[0].data = newTemp;
-    fireChart.data.datasets[1].data = newHum;
-    fireChart.update();
+    fireChart.data.labels = newLabels; fireChart.data.datasets[0].data = newTemp; fireChart.data.datasets[1].data = newHum; fireChart.update();
 }
 
 async function fetchWeatherAllRegions() {
@@ -182,11 +160,8 @@ async function fetchWeatherAllRegions() {
         try {
             const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${reg.lat}&longitude=${reg.lon}&current=temperature_2m,relative_humidity_2m`);
             const data = await response.json();
-            if(data && data.current) {
-                reg.baseTemp = data.current.temperature_2m;
-                reg.baseHum = data.current.relative_humidity_2m;
-            }
-        } catch (e) { console.log(`Error API ${reg.name}`, e); }
+            if(data && data.current) { reg.baseTemp = data.current.temperature_2m; reg.baseHum = data.current.relative_humidity_2m; }
+        } catch (e) { console.log(`Error API`, e); }
     }
 }
 
@@ -210,17 +185,10 @@ function perSecondDashboardUpdate() {
         if (liveTemp >= 35 || liveHum < 45) currentStatus = "BAHAYA";
     }
 
-    let deltaTemp = liveTemp - prevTemp;
-    let deltaHum = liveHum - prevHum;
-    prevTemp = liveTemp;
-    prevHum = liveHum;
-
     let cfg = statusRules[currentStatus];
 
     document.getElementById('val-suhu').innerText = liveTemp.toFixed(2);
     document.getElementById('val-lembab').innerText = liveHum.toFixed(2);
-    
-    document.getElementById('nama-wilayah-status').innerText = activeRegionId === "all" ? "SELURUH KALIMANTAN" : kalimantanRegions.find(r => r.id === activeRegionId).short;
     document.getElementById('status-desc').innerText = `Pemantauan ${targetName}. ${cfg.desc}`;
     document.getElementById('status-banner').className = 'status-header ' + currentStatus.toLowerCase();
 
@@ -230,18 +198,29 @@ function perSecondDashboardUpdate() {
     let statusPemicuTeks = "Stabil / Normal";
     if(manualOverrideStatus === 'BAHAYA_MANUSIA') statusPemicuTeks = "🔥 KRITIS: Ulah Manusia (Sengaja)";
     else if(manualOverrideStatus === 'BAHAYA_ALAMI') statusPemicuTeks = "⚡ KRITIS: Faktor Alami (Petir BMKG)";
-    else if(currentStatus === 'BAHAYA') statusPemicuTeks = "⚠️ Siaga Darurat";
+    else if(currentStatus === 'BAHAYA') statusPemicuTeks = "⚠️️ Siaga Darurat";
     
     document.getElementById('val-prediksi-singkat').innerText = statusPemicuTeks;
-    
     document.getElementById('live-indicator').innerText = `● LIVE PER-SECOND (${timeStr})`;
     document.getElementById('live-indicator').style.color = currentSecond % 2 === 0 ? "#4caf50" : "#fff";
+
+    // Update Profil Ancaman di Tab Profile
+    const ancamanEl = document.getElementById('profile-tingkat-ancaman');
+    if (ancamanEl) {
+        ancamanEl.innerText = statusPemicuTeks.toUpperCase();
+        ancamanEl.style.color = cfg.color;
+    }
 
     if ((currentStatus === 'SIAGA' || currentStatus === 'BAHAYA') && !cloudCameraLogged) {
         cloudCameraLogged = true;
         triggerCloudCameraSnapshot(targetName, currentStatus, liveTemp, liveHum);
     } else if (currentStatus === 'NORMAL' || currentStatus === 'WASPADA') {
         cloudCameraLogged = false;
+        // Bersihkan grid kamera jika normal kembali
+        const grid = document.getElementById('cloud-camera-grid');
+        if (grid) {
+            grid.innerHTML = '<div id="empty-camera-msg" style="padding: 20px; text-align: center; color: #888; grid-column: 1 / -1; background: rgba(0,0,0,0.5); border-radius: 8px;">Menunggu pemicu event (Kondisi Lapangan Normal)...</div>';
+        }
     }
 
     fireChart.data.labels.push(timeStr);
@@ -256,13 +235,17 @@ function perSecondDashboardUpdate() {
         let liveHash = generateFakeHash().substring(0, 16) + '...';
         let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
         let newLog = `<tr><td>${timeStr}</td><td>${labelWilayah} - Ping Sensor</td><td class="hash-text">${liveHash}</td></tr>`;
-        document.getElementById('log-body').insertAdjacentHTML('afterbegin', newLog);
+        const logBody = document.getElementById('log-body');
+        if (logBody) logBody.insertAdjacentHTML('afterbegin', newLog);
     }
 }
 
 function triggerCloudCameraSnapshot(regionName, statusLevel, temp, hum) {
     const grid = document.getElementById('cloud-camera-grid');
     if (!grid) return;
+    
+    const emptyMsg = document.getElementById('empty-camera-msg');
+    if (emptyMsg) emptyMsg.remove();
 
     const timeNow = new Date().toLocaleTimeString('id-ID');
     const hashEviden = generateFakeHash().substring(0,16)+'...';
@@ -319,25 +302,20 @@ function generateForensicReport() {
         if (officialTemp >= 35 || officialHum < 45) { officialStatus = "BAHAYA"; ppmGas = "5200"; uvtronStatus = "Positif Titik Nyala UV"; }
     }
 
-    // UPDATE DATA KE BAP
-    document.getElementById('bap-menit').innerText = currentMinute;
-    document.getElementById('bap-waktu').innerText = `${fullDate} pukul ${timeStr} WIB`;
-    document.getElementById('bap-status-final').innerText = officialStatus;
-    
-    if(officialStatus === 'BAHAYA') {
-        document.getElementById('bap-status-final').style.color = '#c62828';
-        document.getElementById('bap-status-final').style.borderColor = '#c62828';
-    } else {
-        document.getElementById('bap-status-final').style.color = '#000';
-        document.getElementById('bap-status-final').style.borderColor = '#000';
+    // UPDATE BAP
+    if (document.getElementById('bap-menit')) {
+        document.getElementById('bap-menit').innerText = currentMinute;
+        document.getElementById('bap-waktu').innerText = `${fullDate} pukul ${timeStr} WIB`;
+        document.getElementById('bap-status-final').innerText = officialStatus;
+        document.getElementById('bap-status-final').style.color = officialStatus === 'BAHAYA' ? '#c62828' : '#000';
+        document.getElementById('bap-status-final').style.borderColor = officialStatus === 'BAHAYA' ? '#c62828' : '#000';
+        document.getElementById('bap-hash').innerText = bapHash;
     }
 
-    document.getElementById('bap-hash').innerText = bapHash;
-
-    // TEKS RESMI FIRETRACE BERDASARKAN KONSEP ASLI
     let bapRingkasan = `Sesuai dengan metode evaluasi <i>Fuzzy Logic Mamdani</i> pada sistem FIRETRACE, pembacaan terintegrasi multisensor lapangan (Sensor DS18B20 & BME280) pada area pengawasan menunjukkan profil lingkungan di titik <strong>Suhu ${officialTemp}°C</strong> dengan <strong>Kelembapan ${officialHum}%</strong>. Konsentrasi kepadatan partikel polutan gas terpantau di angka <strong>${ppmGas} ppm (MQ135)</strong>, dan deteksi gelombang nyala api menunjukkan status <strong>${uvtronStatus} (UVTRON)</strong>.`;
     
     let bapPrediksi = `Sistem tidak mendeteksi anomali <i>Fire Event Profile</i> yang terklasifikasi sebagai kejadian kebakaran hutan. Parameter mikroklimat dinyatakan berada dalam rentang fungsi keanggotaan (<i>membership function</i>) yang aman (Status: <strong>NORMAL</strong>).`;
+    let profTeks = "Validasi Forensik: Sistem memantau kondisi stabil. Tidak ada anomali terdeteksi pada lapisan sensor.";
     
     if (manualOverrideStatus === 'BAHAYA_MANUSIA') {
         bapPrediksi = `<strong>INDIKASI KUAT AKTIVITAS MANUSIA (ANTROPOGENIK):</strong><br>
@@ -345,15 +323,23 @@ function generateForensicReport() {
         2. Korelasi data meteorologi menunjukkan ketiadaan sambaran petir <i>Cloud-to-Ground</i> maupun curah hujan dari titik koordinat ini sebelum waktu T0.<br>
         3. Terdapat pemicuan pada <i>multiple node</i> yang berurutan secara sistematis (Pola Berjajar). <br>
         Berdasarkan Indeks Indikasi Aktivitas Manusia, anomali ini <strong>MENDUKUNG indikasi aktivitas pembukaan lahan (Kesengajaan Manusia)</strong>. Sistem telah memicu perekaman <i>Cloud Camera</i> sebagai dokumentasi lapangan.`;
+        profTeks = "🚨 KONDISI KRITIS: Atribusi AI menemukan indikasi kuat campur tangan manusia (pola geometris & gas mendadak). Cloud Camera mengambil eviden!";
     } else if (manualOverrideStatus === 'BAHAYA_ALAMI') {
         bapPrediksi = `<strong>INDIKASI KEBAKARAN FAKTOR ALAMIAH:</strong><br>
         1. Terdeteksi lonjakan suhu yang ekstrem sejalan dengan peningkatan Indeks Kekeringan.<br>
         2. Terdapat validasi data sambaran petir <i>Cloud-to-Ground</i> dari stasiun BMKG tepat pada koordinat awal kemunculan anomali suhu sebelum waktu T0.<br>
         3. Kondisi ini menjadi faktor penyanggah yang menyimpulkan bahwa kejadian kebakaran hutan dipicu oleh <strong>FAKTOR ALAMIAH (Klimatologi / Petir)</strong> tanpa temuan anomali antropogenik.`;
+        profTeks = "🚨 KONDISI KRITIS: Kebakaran terkonfirmasi akibat faktor alamiah. Sinkronisasi dengan BMKG mendeteksi aktivitas petir pada area ini.";
     }
 
-    document.getElementById('bap-ringkasan').innerHTML = bapRingkasan;
-    document.getElementById('bap-prediksi').innerHTML = bapPrediksi;
+    if (document.getElementById('bap-ringkasan')) {
+        document.getElementById('bap-ringkasan').innerHTML = bapRingkasan;
+        document.getElementById('bap-prediksi').innerHTML = bapPrediksi;
+    }
+    
+    if (document.getElementById('profile-prediksi-teks')) {
+        document.getElementById('profile-prediksi-teks').innerText = profTeks;
+    }
 
     let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
     let auditLog = `<tr><td style="color:#64b5f6;">${timeStr}</td><td>${labelWilayah} - Audit Rantai Bukti Digital</td><td style="color:#4caf50; font-weight:bold;">TERVALIDASI</td><td class="hash-text">${bapHash.substring(0,16)}...</td></tr>`;
