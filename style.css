@@ -17,13 +17,13 @@ html, body {
     color: #e0e0e0;
 }
 
-/* Memasang Background Gambar Hutan Kalimantan Lokal secara Mutlak pada Container */
+/* Memasang Background Foto Udara Hutan Tropika Berkabus Persis Seperti Keinginan Anda */
 .dashboard-container {
     display: flex;
     height: 100vh;
     width: 100vw;
-    background: linear-gradient(rgba(10, 20, 15, 0.45), rgba(10, 20, 15, 0.75)), 
-                url('./hutan-kalimantan.jpg') no-repeat center center fixed !important;
+    background: linear-gradient(rgba(10, 20, 15, 0.4), rgba(10, 20, 15, 0.65)), 
+                url('https://images.unsplash.com/photo-1511497584788-876761142197?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed !important;
     background-size: cover !important;
 }
 
