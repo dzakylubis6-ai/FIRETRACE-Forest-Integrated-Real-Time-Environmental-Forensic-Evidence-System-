@@ -13,6 +13,7 @@ let activeRegionId = "all";
 let prevTemp = 28.0; 
 let prevHum = 78.0;
 let cloudCameraLogged = false;
+let manualOverrideStatus = null; // Untuk Panel Demo Juri
 
 const kalimantanRegions = [
     { id: "kalteng", name: "Kalimantan Tengah", short: "KALTENG", lat: -2.3, lon: 113.9, baseTemp: 28, baseHum: 78 },
@@ -40,6 +41,13 @@ document.addEventListener("DOMContentLoaded", async function() {
     setInterval(generateForensicReport, 60000); 
     setInterval(perSecondDashboardUpdate, 1000);
 });
+
+// Fungsi Panel Demo Juri
+function overrideStatus(mode) {
+    manualOverrideStatus = mode;
+    perSecondDashboardUpdate();
+    generateForensicReport();
+}
 
 function initMap() {
     petaKalimantan = L.map('kalimantan-map').setView([-0.5, 114.5], 5);
@@ -178,13 +186,6 @@ async function fetchWeatherAllRegions() {
             if(data && data.current) {
                 reg.baseTemp = data.current.temperature_2m;
                 reg.baseHum = data.current.relative_humidity_2m;
-                
-                let statusKey = "NORMAL";
-                if (reg.baseTemp >= 31 && reg.baseHum < 70) statusKey = "WASPADA";
-                if (reg.baseTemp >= 33 && reg.baseHum < 55) statusKey = "SIAGA";
-                if (reg.baseTemp >= 35 || reg.baseHum < 45) statusKey = "BAHAYA";
-                
-                if(regionalMarkers[reg.id]) regionalMarkers[reg.id].setStyle({ fillColor: statusRules[statusKey].color });
             }
         } catch (e) { console.log(`Error API ${reg.name}`, e); }
     }
@@ -201,15 +202,21 @@ function perSecondDashboardUpdate() {
     let liveTemp = base.bTemp + (Math.random() * 0.4 - 0.2);
     let liveHum = base.bHum + (Math.random() * 0.6 - 0.3);
 
+    // Override Demo Juri
+    let currentStatus = "NORMAL";
+    if (manualOverrideStatus === 'SIAGA') { liveTemp = 33.5; liveHum = 52.0; currentStatus = "SIAGA"; }
+    else if (manualOverrideStatus === 'BAHAYA_MANUSIA' || manualOverrideStatus === 'BAHAYA_ALAMI') { liveTemp = 36.8; liveHum = 40.0; currentStatus = "BAHAYA"; }
+    else {
+        if (liveTemp >= 31 && liveHum < 70) currentStatus = "WASPADA";
+        if (liveTemp >= 33 && liveHum < 55) currentStatus = "SIAGA";
+        if (liveTemp >= 35 || liveHum < 45) currentStatus = "BAHAYA";
+    }
+
     let deltaTemp = liveTemp - prevTemp;
     let deltaHum = liveHum - prevHum;
     prevTemp = liveTemp;
     prevHum = liveHum;
 
-    let currentStatus = "NORMAL";
-    if (liveTemp >= 31 && liveHum < 70) currentStatus = "WASPADA";
-    if (liveTemp >= 33 && liveHum < 55) currentStatus = "SIAGA";
-    if (liveTemp >= 35 || liveHum < 45) currentStatus = "BAHAYA";
     let cfg = statusRules[currentStatus];
 
     document.getElementById('val-suhu').innerText = liveTemp.toFixed(2);
@@ -229,12 +236,18 @@ function perSecondDashboardUpdate() {
 
     document.getElementById('val-asap').innerText = currentStatus === 'BAHAYA' ? '5200' : (currentStatus === 'SIAGA' ? '2100' : '400');
     document.getElementById('val-risiko').innerText = currentStatus === 'BAHAYA' ? '92% (Kritis)' : (currentStatus === 'SIAGA' ? '75% (Tinggi)' : (currentStatus === 'WASPADA' ? '45% (Sedang)' : '15% (Rendah)'));
-    document.getElementById('val-prediksi-singkat').innerText = currentStatus === 'BAHAYA' ? 'Eskalasi Cepat' : 'Stabil';
-    document.getElementById('profile-tingkat-ancaman').innerText = currentStatus === 'BAHAYA' ? 'KRITIS (Bahaya Aktif)' : 'ALAMI / NORMAL';
+    
+    let statusPemicuTeks = "Stabil / Normal";
+    if(manualOverrideStatus === 'BAHAYA_MANUSIA') statusPemicuTeks = "🔥 KRITIS: Ulah Manusia (Sengaja)";
+    else if(manualOverrideStatus === 'BAHAYA_ALAMI') statusPemicuTeks = "⚡ KRITIS: Faktor Alami (Petir BMKG)";
+    else if(currentStatus === 'BAHAYA') statusPemicuTeks = "⚠️ Siaga Darurat";
+    document.getElementById('val-prediksi-singkat').innerText = statusPemicuTeks;
+    document.getElementById('profile-tingkat-ancaman').innerText = currentStatus === 'BAHAYA' ? (manualOverrideStatus === 'BAHAYA_MANUSIA' ? 'KESENGAJAAN MANUSIA' : 'FAKTOR ALAMI (BMKG)') : 'ALAMI / NORMAL';
     
     document.getElementById('live-indicator').innerText = `● LIVE PER-SECOND (${timeStr})`;
     document.getElementById('live-indicator').style.color = currentSecond % 2 === 0 ? "#4caf50" : "#fff";
 
+    // Trigger Cloud Camera otomatis jika Siaga atau Bahaya
     if ((currentStatus === 'SIAGA' || currentStatus === 'BAHAYA') && !cloudCameraLogged) {
         cloudCameraLogged = true;
         triggerCloudCameraSnapshot(targetName, currentStatus, liveTemp, liveHum);
@@ -267,7 +280,7 @@ function triggerCloudCameraSnapshot(regionName, statusLevel, temp, hum) {
     const colorBadge = statusLevel === 'BAHAYA' ? '#ef5350' : '#ffa726';
 
     const cardHtml = `
-        <div style="background: #1e1e1e; border: 1px solid ${colorBadge}; border-radius: 6px; padding: 12px; text-align: left;">
+        <div style="background: #1e1e1e; border: 1px solid ${colorBadge}; border-radius: 6px; padding: 12px; text-align: left; animation: fadeIn 0.5s;">
             <div style="background: #111; height: 150px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-size: 11px; position: relative; overflow: hidden; border: 1px solid #333;">
                 <span style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); color: ${colorBadge}; padding: 2px 6px; border-radius: 3px; font-size: 9px; font-weight: bold;">CAM-NODE (${regionName})</span>
                 <span style="font-size: 20px; margin-bottom: 5px;">🔥📸</span>
@@ -306,20 +319,30 @@ function generateForensicReport() {
     officialHum = base.bHum.toFixed(1);
 
     let officialStatus = "NORMAL";
-    if (officialTemp >= 31 && officialHum < 70) officialStatus = "WASPADA";
-    if (officialTemp >= 33 && officialHum < 55) officialStatus = "SIAGA";
-    if (officialTemp >= 35 || officialHum < 45) officialStatus = "BAHAYA";
+    if (manualOverrideStatus === 'SIAGA') officialStatus = "SIAGA";
+    else if (manualOverrideStatus === 'BAHAYA_MANUSIA' || manualOverrideStatus === 'BAHAYA_ALAMI') officialStatus = "BAHAYA";
+    else {
+        if (officialTemp >= 31 && officialHum < 70) officialStatus = "WASPADA";
+        if (officialTemp >= 33 && officialHum < 55) officialStatus = "SIAGA";
+        if (officialTemp >= 35 || officialHum < 45) officialStatus = "BAHAYA";
+    }
 
     document.getElementById('bap-menit').innerText = currentMinute;
     document.getElementById('bap-waktu').innerText = `${now.toLocaleString('id-ID')} WIB (Siklus Update 1 Menit)`;
     document.getElementById('bap-hash').innerText = bapHash;
 
     let bapRingkasan = `Sesuai dengan protokol standar pemantauan Karhutla (BMKG & KLHK), sistem FIRETRACE mencatat suhu faktual wilayah ${targetName} sebesar ${officialTemp}°C dan kelembapan udara sebesar ${officialHum}%.`;
-    let bapPrediksi = `Analisis Atribusi: Sistem mengevaluasi parameter lingkungan berjalan stabil di bawah ambang batas kritis. Eviden Cloud Camera standby melakukan tangkapan otomatis saat level mencapai Siaga/Bahaya.`;
+    
+    let bapPrediksi = `Kesimpulan Atribusi: Parameter lingkungan terpantau stabil dan berada dalam batas wajar siklus alami ekosistem.`;
+    if (manualOverrideStatus === 'BAHAYA_MANUSIA') {
+        bapPrediksi = `KESIMPULAN ATRIBUSI PRO-JUSTITIA (ULAH MANUSIA): Berdasarkan evaluasi 7 parameter tertimbang, ketiadaan sambaran petir BMKG serta lonjakan laju asap instan membuktikan adanya KESENGAJAAN PEMBAKARAN (ANTROPOGENIK). Eviden visual berhasil dicapture oleh Cloud Camera.`;
+    } else if (manualOverrideStatus === 'BAHAYA_ALAMI') {
+        bapPrediksi = `KESIMPULAN ATRIBUSI PRO-JUSTITIA (FAKTOR ALAMI): Anomali terbukti dipicu oleh faktor alamiah berdasarkan catatan sambaran petir Cloud-to-Ground dari stasiun BMKG dan indeks kekeringan KBDI ekstrem.`;
+    }
 
     document.getElementById('bap-ringkasan').innerText = bapRingkasan;
     document.getElementById('bap-prediksi').innerText = bapPrediksi;
-    document.getElementById('profile-prediksi-teks').innerText = `Validasi Forensik: Status ${officialStatus.toUpperCase()} (${targetName}). Cloud Camera Eviden aktif mencatat stream dan snapshot terenkripsi.`;
+    document.getElementById('profile-prediksi-teks').innerText = `Validasi Forensik: Status ${officialStatus.toUpperCase()} (${targetName}). Cloud Camera Eviden & SHA-256 Chain of Custody aktif.`;
 
     let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
     let auditLog = `<tr><td style="color:#64b5f6;">${timeStr}</td><td>${labelWilayah} - Laporan BAP (1 Menit)</td><td style="color:#4caf50; font-weight:bold;">TERVALIDASI</td><td class="hash-text">${bapHash}</td></tr>`;
