@@ -90,7 +90,13 @@ body {
     display: block;
 }
 
-/* Header Status */
+/* Header Status dengan Animasi Glow */
+@keyframes emergencyPulse {
+    0% { box-shadow: 0 0 5px rgba(198, 40, 40, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(198, 40, 40, 0.8); }
+    100% { box-shadow: 0 0 5px rgba(198, 40, 40, 0.4); }
+}
+
 .status-header {
     padding: 15px 20px;
     border-radius: 8px;
@@ -104,7 +110,7 @@ body {
 .status-header.normal { background: rgba(76, 175, 80, 0.15); border: 1px solid #4caf50; }
 .status-header.waspada { background: rgba(249, 168, 37, 0.15); border: 1px solid #f9a825; }
 .status-header.siaga { background: rgba(239, 108, 0, 0.15); border: 1px solid #ef6c00; }
-.status-header.bahaya { background: rgba(198, 40, 40, 0.15); border: 1px solid #c62828; }
+.status-header.bahaya { background: rgba(198, 40, 40, 0.25); border: 1px solid #c62828; animation: emergencyPulse 1.5s infinite; }
 
 .status-info h3 {
     font-size: 15px;
