@@ -12,7 +12,7 @@ let regionalMarkers = {};
 let activeRegionId = "all"; 
 let prevTemp = 28.0; 
 let prevHum = 78.0;
-let cloudCameraLogged = false; // Mencegah duplikasi log snapshot per siklus
+let cloudCameraLogged = false;
 
 const kalimantanRegions = [
     { id: "kalteng", name: "Kalimantan Tengah", short: "KALTENG", lat: -2.3, lon: 113.9, baseTemp: 28, baseHum: 78 },
@@ -235,12 +235,11 @@ function perSecondDashboardUpdate() {
     document.getElementById('live-indicator').innerText = `● LIVE PER-SECOND (${timeStr})`;
     document.getElementById('live-indicator').style.color = currentSecond % 2 === 0 ? "#4caf50" : "#fff";
 
-    // FITUR OTOMATIS CLOUD CAMERA SNAPSHOT JIKA LEVEL SIAGA ATAU BAHAYA
     if ((currentStatus === 'SIAGA' || currentStatus === 'BAHAYA') && !cloudCameraLogged) {
         cloudCameraLogged = true;
         triggerCloudCameraSnapshot(targetName, currentStatus, liveTemp, liveHum);
     } else if (currentStatus === 'NORMAL' || currentStatus === 'WASPADA') {
-        cloudCameraLogged = false; // Reset trigger jika status kembali aman
+        cloudCameraLogged = false;
     }
 
     fireChart.data.labels.push(timeStr);
@@ -259,7 +258,6 @@ function perSecondDashboardUpdate() {
     }
 }
 
-// FUNGSI SIMULASI CLOUD CAMERA UPLOAD EVIDEN
 function triggerCloudCameraSnapshot(regionName, statusLevel, temp, hum) {
     const grid = document.getElementById('cloud-camera-grid');
     if (!grid) return;
@@ -269,7 +267,7 @@ function triggerCloudCameraSnapshot(regionName, statusLevel, temp, hum) {
     const colorBadge = statusLevel === 'BAHAYA' ? '#ef5350' : '#ffa726';
 
     const cardHtml = `
-        <div style="background: #1e1e1e; border: 1px solid ${colorBadge}; border-radius: 6px; padding: 12px; text-align: left; animation: fadeIn 0.5s;">
+        <div style="background: #1e1e1e; border: 1px solid ${colorBadge}; border-radius: 6px; padding: 12px; text-align: left;">
             <div style="background: #111; height: 150px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-size: 11px; position: relative; overflow: hidden; border: 1px solid #333;">
                 <span style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); color: ${colorBadge}; padding: 2px 6px; border-radius: 3px; font-size: 9px; font-weight: bold;">CAM-NODE (${regionName})</span>
                 <span style="font-size: 20px; margin-bottom: 5px;">🔥📸</span>
