@@ -202,7 +202,6 @@ function perSecondDashboardUpdate() {
     let liveTemp = base.bTemp + (Math.random() * 0.4 - 0.2);
     let liveHum = base.bHum + (Math.random() * 0.6 - 0.3);
 
-    // Override Demo Juri
     let currentStatus = "NORMAL";
     if (manualOverrideStatus === 'SIAGA') { liveTemp = 33.5; liveHum = 52.0; currentStatus = "SIAGA"; }
     else if (manualOverrideStatus === 'BAHAYA_MANUSIA' || manualOverrideStatus === 'BAHAYA_ALAMI') { liveTemp = 36.8; liveHum = 40.0; currentStatus = "BAHAYA"; }
@@ -230,7 +229,7 @@ function perSecondDashboardUpdate() {
     deltaLembabEl.innerText = (deltaHum > 0 ? "+" : "") + deltaHum.toFixed(2) + " %/dtk";
     deltaLembabEl.style.color = deltaHum > 0 ? "#64b5f6" : "#ffb74d";
 
-    document.getElementById('status-text').innerText = currentStatus;
+    document.getElementById('nama-wilayah-status').innerText = activeRegionId === "all" ? "SELURUH KALIMANTAN" : kalimantanRegions.find(r => r.id === activeRegionId).short;
     document.getElementById('status-desc').innerText = `Pemantauan ${targetName}. ${cfg.desc}`;
     document.getElementById('status-banner').className = 'status-header ' + currentStatus.toLowerCase();
 
@@ -247,7 +246,6 @@ function perSecondDashboardUpdate() {
     document.getElementById('live-indicator').innerText = `● LIVE PER-SECOND (${timeStr})`;
     document.getElementById('live-indicator').style.color = currentSecond % 2 === 0 ? "#4caf50" : "#fff";
 
-    // Trigger Cloud Camera otomatis jika Siaga atau Bahaya
     if ((currentStatus === 'SIAGA' || currentStatus === 'BAHAYA') && !cloudCameraLogged) {
         cloudCameraLogged = true;
         triggerCloudCameraSnapshot(targetName, currentStatus, liveTemp, liveHum);
@@ -280,7 +278,7 @@ function triggerCloudCameraSnapshot(regionName, statusLevel, temp, hum) {
     const colorBadge = statusLevel === 'BAHAYA' ? '#ef5350' : '#ffa726';
 
     const cardHtml = `
-        <div style="background: #1e1e1e; border: 1px solid ${colorBadge}; border-radius: 6px; padding: 12px; text-align: left; animation: fadeIn 0.5s;">
+        <div style="background: rgba(30,30,30,0.9); border: 1px solid ${colorBadge}; border-radius: 6px; padding: 12px; text-align: left; animation: fadeIn 0.5s;">
             <div style="background: #111; height: 150px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-size: 11px; position: relative; overflow: hidden; border: 1px solid #333;">
                 <span style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); color: ${colorBadge}; padding: 2px 6px; border-radius: 3px; font-size: 9px; font-weight: bold;">CAM-NODE (${regionName})</span>
                 <span style="font-size: 20px; margin-bottom: 5px;">🔥📸</span>
