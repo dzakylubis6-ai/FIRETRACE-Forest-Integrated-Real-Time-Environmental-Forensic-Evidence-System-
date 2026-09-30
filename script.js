@@ -12,6 +12,7 @@ let regionalMarkers = {};
 let activeRegionId = "all"; 
 let prevTemp = 28.0; 
 let prevHum = 78.0;
+let cloudCameraLogged = false; // Mencegah duplikasi log snapshot per siklus
 
 const kalimantanRegions = [
     { id: "kalteng", name: "Kalimantan Tengah", short: "KALTENG", lat: -2.3, lon: 113.9, baseTemp: 28, baseHum: 78 },
@@ -229,10 +230,18 @@ function perSecondDashboardUpdate() {
     document.getElementById('val-asap').innerText = currentStatus === 'BAHAYA' ? '5200' : (currentStatus === 'SIAGA' ? '2100' : '400');
     document.getElementById('val-risiko').innerText = currentStatus === 'BAHAYA' ? '92% (Kritis)' : (currentStatus === 'SIAGA' ? '75% (Tinggi)' : (currentStatus === 'WASPADA' ? '45% (Sedang)' : '15% (Rendah)'));
     document.getElementById('val-prediksi-singkat').innerText = currentStatus === 'BAHAYA' ? 'Eskalasi Cepat' : 'Stabil';
-    document.getElementById('profile-tingkat-ancaman').innerText = currentStatus === 'BAHAYA' ? 'ATRIBUSI: KESENGAJAAN MANUSIA' : 'ATRIBUSI: FAKTOR ALAMI (BMKG)';
+    document.getElementById('profile-tingkat-ancaman').innerText = currentStatus === 'BAHAYA' ? 'KRITIS (Bahaya Aktif)' : 'ALAMI / NORMAL';
     
     document.getElementById('live-indicator').innerText = `● LIVE PER-SECOND (${timeStr})`;
     document.getElementById('live-indicator').style.color = currentSecond % 2 === 0 ? "#4caf50" : "#fff";
+
+    // FITUR OTOMATIS CLOUD CAMERA SNAPSHOT JIKA LEVEL SIAGA ATAU BAHAYA
+    if ((currentStatus === 'SIAGA' || currentStatus === 'BAHAYA') && !cloudCameraLogged) {
+        cloudCameraLogged = true;
+        triggerCloudCameraSnapshot(targetName, currentStatus, liveTemp, liveHum);
+    } else if (currentStatus === 'NORMAL' || currentStatus === 'WASPADA') {
+        cloudCameraLogged = false; // Reset trigger jika status kembali aman
+    }
 
     fireChart.data.labels.push(timeStr);
     fireChart.data.datasets[0].data.push(liveTemp);
@@ -248,6 +257,33 @@ function perSecondDashboardUpdate() {
         let newLog = `<tr><td>${timeStr}</td><td>${labelWilayah} - Ping Sensor</td><td class="hash-text">${liveHash}</td></tr>`;
         document.getElementById('log-body').insertAdjacentHTML('afterbegin', newLog);
     }
+}
+
+// FUNGSI SIMULASI CLOUD CAMERA UPLOAD EVIDEN
+function triggerCloudCameraSnapshot(regionName, statusLevel, temp, hum) {
+    const grid = document.getElementById('cloud-camera-grid');
+    if (!grid) return;
+
+    const timeNow = new Date().toLocaleTimeString('id-ID');
+    const hashEviden = generateFakeHash();
+    const colorBadge = statusLevel === 'BAHAYA' ? '#ef5350' : '#ffa726';
+
+    const cardHtml = `
+        <div style="background: #1e1e1e; border: 1px solid ${colorBadge}; border-radius: 6px; padding: 12px; text-align: left; animation: fadeIn 0.5s;">
+            <div style="background: #111; height: 150px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; font-size: 11px; position: relative; overflow: hidden; border: 1px solid #333;">
+                <span style="position: absolute; top: 6px; left: 6px; background: rgba(0,0,0,0.8); color: ${colorBadge}; padding: 2px 6px; border-radius: 3px; font-size: 9px; font-weight: bold;">CAM-NODE (${regionName})</span>
+                <span style="font-size: 20px; margin-bottom: 5px;">🔥📸</span>
+                <span style="color: ${colorBadge}; font-weight: bold;">SNAPSHOT EVIDEN TER-UPLOAD</span>
+                <span style="font-size: 9px; color: #aaa; margin-top: 2px;">Suhu: ${temp.toFixed(1)}°C | RH: ${hum.toFixed(1)}%</span>
+            </div>
+            <div style="margin-top: 10px; font-size: 11px; color: #ccc;">
+                <div>Level Status: <span style="color: ${colorBadge}; font-weight: bold;">${statusLevel}</span></div>
+                <div>Waktu Tangkap: ${timeNow} WIB</div>
+                <div style="font-family: monospace; font-size: 9px; color: #81d4fa; margin-top: 4px;">Hash S3/Cloud: ${hashEviden}</div>
+            </div>
+        </div>
+    `;
+    grid.insertAdjacentHTML('afterbegin', cardHtml);
 }
 
 function generateForensicReport() {
@@ -281,16 +317,11 @@ function generateForensicReport() {
     document.getElementById('bap-hash').innerText = bapHash;
 
     let bapRingkasan = `Sesuai dengan protokol standar pemantauan Karhutla (BMKG & KLHK), sistem FIRETRACE mencatat suhu faktual wilayah ${targetName} sebesar ${officialTemp}°C dan kelembapan udara sebesar ${officialHum}%.`;
-    
-    let bapPrediksi = `Kesimpulan Atribusi Dual-Matrix: Evaluasi parameter lingkungan saat ini menunjukkan validasi FAKTOR ALAMI (berdasarkan data historis sambaran petir BMKG, indeks kekeringan KBDI, serta puncak termal harian). Tidak ditemukan anomali pembukaan lahan manusia.`;
-    
-    if(officialStatus !== "NORMAL") {
-        bapPrediksi = `KESIMPULAN ATRIBUSI PRO-JUSTITIA (INDIKASI ULAH MANUSIA / ANTROPOGENIK): Evaluasi silang terhadap ketiadaan sambaran petir BMKG serta lonjakan laju asap (MQ135) yang instan membuktikan bahwa anomali dipicu oleh AKTIVITAS MANUSIA / KESENGAJAAN pembakaran.`;
-    }
+    let bapPrediksi = `Analisis Atribusi: Sistem mengevaluasi parameter lingkungan berjalan stabil di bawah ambang batas kritis. Eviden Cloud Camera standby melakukan tangkapan otomatis saat level mencapai Siaga/Bahaya.`;
 
     document.getElementById('bap-ringkasan').innerText = bapRingkasan;
     document.getElementById('bap-prediksi').innerText = bapPrediksi;
-    document.getElementById('profile-prediksi-teks').innerText = `Analisis Forensik Komparatif: Status ${officialStatus.toUpperCase()} (${targetName}). Evaluasi indikator Alami (BMKG) dan Antropogenik diverifikasi secara otomatis.`;
+    document.getElementById('profile-prediksi-teks').innerText = `Validasi Forensik: Status ${officialStatus.toUpperCase()} (${targetName}). Cloud Camera Eviden aktif mencatat stream dan snapshot terenkripsi.`;
 
     let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
     let auditLog = `<tr><td style="color:#64b5f6;">${timeStr}</td><td>${labelWilayah} - Laporan BAP (1 Menit)</td><td style="color:#4caf50; font-weight:bold;">TERVALIDASI</td><td class="hash-text">${bapHash}</td></tr>`;
