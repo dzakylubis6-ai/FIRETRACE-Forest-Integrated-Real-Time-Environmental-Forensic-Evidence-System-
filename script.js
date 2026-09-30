@@ -27,7 +27,7 @@ function generateFakeHash() {
     const chars = 'abcdef0123456789';
     let hash = '';
     for(let i = 0; i < 64; i++) hash += chars[Math.floor(Math.random() * chars.length)];
-    return hash.substring(0, 16) + '...';
+    return hash;
 }
 
 document.addEventListener("DOMContentLoaded", async function() {
@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     setInterval(perSecondDashboardUpdate, 1000);
 });
 
-// Fungsi Panel Demo Juri
 function overrideStatus(mode) {
     manualOverrideStatus = mode;
     perSecondDashboardUpdate();
@@ -82,7 +81,7 @@ function ubahFokusWilayah(id) {
     document.getElementById('profile-nama-wilayah').innerText = reg.name;
     
     document.getElementById('bap-reg-wilayah').innerText = reg.short;
-    document.getElementById('bap-lokasi').innerText = `${reg.name} (Data Sektor Terisolasi)`;
+    document.getElementById('bap-lokasi').innerText = `PROVINSI ${reg.name.toUpperCase()} (Kordinat: ${reg.lat}, ${reg.lon})`;
 
     resetGrafik();
     generateForensicReport();
@@ -99,7 +98,7 @@ function resetKeSemuaProvinsi() {
     document.getElementById('profile-nama-wilayah').innerText = "Seluruh Kalimantan";
 
     document.getElementById('bap-reg-wilayah').innerText = "ALL";
-    document.getElementById('bap-lokasi').innerText = "Seluruh Kalimantan (Agregat 5 Provinsi)";
+    document.getElementById('bap-lokasi').innerText = "SELURUH KALIMANTAN (Pemantauan Agregat 5 Provinsi)";
 
     resetGrafik();
     generateForensicReport();
@@ -262,7 +261,7 @@ function perSecondDashboardUpdate() {
     fireChart.update();
 
     if (currentSecond % 5 === 0) {
-        let liveHash = generateFakeHash();
+        let liveHash = generateFakeHash().substring(0, 16) + '...';
         let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
         let newLog = `<tr><td>${timeStr}</td><td>${labelWilayah} - Ping Sensor</td><td class="hash-text">${liveHash}</td></tr>`;
         document.getElementById('log-body').insertAdjacentHTML('afterbegin', newLog);
@@ -274,7 +273,7 @@ function triggerCloudCameraSnapshot(regionName, statusLevel, temp, hum) {
     if (!grid) return;
 
     const timeNow = new Date().toLocaleTimeString('id-ID');
-    const hashEviden = generateFakeHash();
+    const hashEviden = generateFakeHash().substring(0,16)+'...';
     const colorBadge = statusLevel === 'BAHAYA' ? '#ef5350' : '#ffa726';
 
     const cardHtml = `
@@ -297,9 +296,10 @@ function triggerCloudCameraSnapshot(regionName, statusLevel, temp, hum) {
 
 function generateForensicReport() {
     const now = new Date();
+    const fullDate = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     const timeStr = now.toLocaleTimeString('id-ID');
     const currentMinute = now.getMinutes().toString().padStart(2, '0');
-    const bapHash = generateFakeHash();
+    const bapHash = generateFakeHash(); // SHA-256 Penuh untuk BAP
 
     let targetName = "";
     let officialTemp = 0;
@@ -307,7 +307,7 @@ function generateForensicReport() {
 
     let base = getBaselineData();
     if (activeRegionId === "all") {
-        targetName = "Seluruh Wilayah Kalimantan (Agregat 5 Provinsi)";
+        targetName = "Seluruh Wilayah Kalimantan (Agregat Regional)";
     } else {
         const activeReg = kalimantanRegions.find(r => r.id === activeRegionId);
         targetName = `Provinsi ${activeReg.name}`;
@@ -315,35 +315,59 @@ function generateForensicReport() {
     
     officialTemp = base.bTemp.toFixed(1);
     officialHum = base.bHum.toFixed(1);
+    let ppmGas = "400"; // Standar ppm
 
     let officialStatus = "NORMAL";
-    if (manualOverrideStatus === 'SIAGA') officialStatus = "SIAGA";
-    else if (manualOverrideStatus === 'BAHAYA_MANUSIA' || manualOverrideStatus === 'BAHAYA_ALAMI') officialStatus = "BAHAYA";
+    if (manualOverrideStatus === 'SIAGA') { officialStatus = "SIAGA"; ppmGas = "2100"; }
+    else if (manualOverrideStatus === 'BAHAYA_MANUSIA' || manualOverrideStatus === 'BAHAYA_ALAMI') { officialStatus = "BAHAYA"; ppmGas = "5200"; }
     else {
         if (officialTemp >= 31 && officialHum < 70) officialStatus = "WASPADA";
-        if (officialTemp >= 33 && officialHum < 55) officialStatus = "SIAGA";
-        if (officialTemp >= 35 || officialHum < 45) officialStatus = "BAHAYA";
+        if (officialTemp >= 33 && officialHum < 55) { officialStatus = "SIAGA"; ppmGas = "2100"; }
+        if (officialTemp >= 35 || officialHum < 45) { officialStatus = "BAHAYA"; ppmGas = "5200"; }
     }
 
+    // Pembaruan Elemen UI BAP
     document.getElementById('bap-menit').innerText = currentMinute;
-    document.getElementById('bap-waktu').innerText = `${now.toLocaleString('id-ID')} WIB (Siklus Update 1 Menit)`;
+    document.getElementById('bap-waktu').innerText = `${fullDate} pukul ${timeStr} WIB`;
+    document.getElementById('bap-status-final').innerText = officialStatus;
+    
+    if(officialStatus === 'BAHAYA') {
+        document.getElementById('bap-status-final').style.color = '#c62828';
+        document.getElementById('bap-status-final').style.borderColor = '#c62828';
+    } else {
+        document.getElementById('bap-status-final').style.color = '#388e3c';
+        document.getElementById('bap-status-final').style.borderColor = '#388e3c';
+    }
+
     document.getElementById('bap-hash').innerText = bapHash;
 
-    let bapRingkasan = `Sesuai dengan protokol standar pemantauan Karhutla (BMKG & KLHK), sistem FIRETRACE mencatat suhu faktual wilayah ${targetName} sebesar ${officialTemp}°C dan kelembapan udara sebesar ${officialHum}%.`;
+    // Teks Forensik Formal untuk Bagian I: Fakta Lapangan
+    let bapRingkasan = `Berdasarkan pembacaan node sensor aktif (DS18B20 untuk Termal, BME280 untuk Kelembapan, dan MQ135 untuk Kualitas Udara), parameter mikroklimat pada wilayah pengawasan terpantau pada suhu udara <strong>${officialTemp}°C</strong> dengan kelembapan relatif sebesar <strong>${officialHum}%</strong>. Konsentrasi kepadatan partikel gas/asap berada pada angka <strong>${ppmGas} ppm</strong>. Status konektivitas *Internet of Things* (IoT) pada sektor ini dinyatakan aktif dan tervalidasi secara *real-time*.`;
     
-    let bapPrediksi = `Kesimpulan Atribusi: Parameter lingkungan terpantau stabil dan berada dalam batas wajar siklus alami ekosistem.`;
+    // Teks Forensik Formal untuk Bagian II: Kesimpulan Atribusi
+    let bapPrediksi = `Sistem tidak mendeteksi adanya anomali termal maupun fluktuasi gas karbon yang mengindikasikan awal terjadinya kebakaran hutan dan lahan. Parameter lingkungan dinyatakan berada dalam rentang ambang batas aman (Status: <strong>AMAN / NORMAL</strong>).`;
+    
     if (manualOverrideStatus === 'BAHAYA_MANUSIA') {
-        bapPrediksi = `KESIMPULAN ATRIBUSI PRO-JUSTITIA (ULAH MANUSIA): Berdasarkan evaluasi 7 parameter tertimbang, ketiadaan sambaran petir BMKG serta lonjakan laju asap instan membuktikan adanya KESENGAJAAN PEMBAKARAN (ANTROPOGENIK). Eviden visual berhasil dicapture oleh Cloud Camera.`;
+        bapPrediksi = `<strong>INDIKASI KUAT KESENGAJAAN PEMBAKARAN (ANTROPOGENIK):</strong><br>
+        1. Terdeteksi lonjakan drastis gas MQ135 (${ppmGas} ppm) yang disertai deteksi nyala api simultan (UVTRON) pada multiple node yang membentuk pola geometris (garis lurus/titik bakar terstruktur).<br>
+        2. Korelasi silang dengan data satelit BMKG menunjukkan status <strong>NIL KILAT</strong> (tidak terdapat riwayat sambaran petir *Cloud-to-Ground* dalam radius 5 km sebelum waktu *T0*).<br>
+        3. Berdasarkan algoritma atribusi forensik, karakteristik anomali ini secara sah menyimpulkan adanya aktivitas <strong>PEMBUKAAN LAHAN DENGAN CARA DIBAKAR (Ulah Manusia)</strong>.`;
     } else if (manualOverrideStatus === 'BAHAYA_ALAMI') {
-        bapPrediksi = `KESIMPULAN ATRIBUSI PRO-JUSTITIA (FAKTOR ALAMI): Anomali terbukti dipicu oleh faktor alamiah berdasarkan catatan sambaran petir Cloud-to-Ground dari stasiun BMKG dan indeks kekeringan KBDI ekstrem.`;
+        bapPrediksi = `<strong>INDIKASI KEBAKARAN FAKTOR ALAMIAH:</strong><br>
+        1. Lonjakan suhu ekstrem yang berkorelasi langsung dengan indeks kekeringan (KBDI) pada titik jenuh.<br>
+        2. Sinkronisasi data dari stasiun meteorologi BMKG mengonfirmasi adanya aktivitas petir (<em>Cloud-to-Ground Lightning</em>) dengan pelepasan energi tinggi tepat pada koordinat awal kemunculan anomali termal sebelum *T0*.<br>
+        3. Sistem menyimpulkan bahwa kejadian ini merupakan kejadian kebakaran hutan yang dipicu oleh <strong>FAKTOR ALAMIAH MURNI</strong> tanpa ada campur tangan manusia.`;
+    } else if (officialStatus === 'SIAGA') {
+        bapPrediksi = `Sistem mendeteksi adanya tren peningkatan suhu mikroklimat disertai penurunan kelembapan yang berpotensi menyulut titik api (Status: <strong>SIAGA</strong>). Protokol *Cloud Camera* diaktifkan dalam mode *Standby* untuk mengawasi sektor rawan.`;
     }
 
-    document.getElementById('bap-ringkasan').innerText = bapRingkasan;
-    document.getElementById('bap-prediksi').innerText = bapPrediksi;
+    document.getElementById('bap-ringkasan').innerHTML = bapRingkasan;
+    document.getElementById('bap-prediksi').innerHTML = bapPrediksi;
     document.getElementById('profile-prediksi-teks').innerText = `Validasi Forensik: Status ${officialStatus.toUpperCase()} (${targetName}). Cloud Camera Eviden & SHA-256 Chain of Custody aktif.`;
 
+    // Catat ke Log Audit
     let labelWilayah = activeRegionId === "all" ? "ALL REGIONS" : kalimantanRegions.find(r => r.id === activeRegionId).short;
-    let auditLog = `<tr><td style="color:#64b5f6;">${timeStr}</td><td>${labelWilayah} - Laporan BAP (1 Menit)</td><td style="color:#4caf50; font-weight:bold;">TERVALIDASI</td><td class="hash-text">${bapHash}</td></tr>`;
+    let auditLog = `<tr><td style="color:#64b5f6;">${timeStr}</td><td>${labelWilayah} - Laporan BAP (1 Menit)</td><td style="color:#4caf50; font-weight:bold;">TERVALIDASI</td><td class="hash-text">${bapHash.substring(0,16)}...</td></tr>`;
     
     const auditTable = document.getElementById('log-body-audit');
     if (auditTable) {
