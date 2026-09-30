@@ -6,7 +6,7 @@
     <title>FIRETRACE - Forensic Dashboard</title>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css?v=50">
+    <link rel="stylesheet" href="style.css?v=60">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -28,11 +28,26 @@
                 <li class="nav-item active" onclick="bukaTab('monitoring', this)">Real-Time Monitoring</li>
                 <li class="nav-item" onclick="bukaTab('cloudCamera', this)" style="color: #ff8a80; font-weight: bold;">📸 Cloud Camera Eviden</li>
                 <li class="nav-item" onclick="bukaTab('humanIndicator', this)">Atribusi Pemicu (Alami vs Manusia)</li>
+                <li class="nav-item" onclick="bukaTab('architecture', this)">⚙️ Arsitektur IoT & Sistem</li>
                 <li class="nav-item" onclick="bukaTab('profile', this)">Fire Event Profile</li>
                 <li class="nav-item" onclick="bukaTab('audit', this)">Audit Trail & Hash</li>
                 <li class="nav-item" onclick="bukaTab('report', this)">Forensic Report</li>
             </ul>
         </aside>
+
+        <!-- PANEL KONTROL DEMO UNTUK JURI (FLOATING) -->
+        <div id="simulation-panel" style="position: fixed; bottom: 20px; right: 20px; background: rgba(20,20,20,0.95); border: 2px solid #f9a825; padding: 12px; border-radius: 8px; z-index: 9999; box-shadow: 0 4px 15px rgba(0,0,0,0.7); font-size: 11px; max-width: 220px;">
+            <div style="color: #f9a825; font-weight: bold; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <span>🎮 PANEL DEMO JURI</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+                <button onclick="overrideStatus('NORMAL')" style="background: #2e7d32; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; text-align: left;">🟢 Paksa Status Normal</button>
+                <button onclick="overrideStatus('SIAGA')" style="background: #ef6c00; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; text-align: left;">🟡 Paksa Status Siaga</button>
+                <button onclick="overrideStatus('BAHAYA_MANUSIA')" style="background: #c62828; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; text-align: left;">🔥 Bahaya (Ulah Manusia)</button>
+                <button onclick="overrideStatus('BAHAYA_ALAMI')" style="background: #1565c0; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; text-align: left;">⚡ Bahaya (Faktor Alami)</button>
+                <button onclick="overrideStatus(null)" style="background: #424242; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; text-align: center; margin-top: 2px;">🔄 Reset Auto (Live API)</button>
+            </div>
+        </div>
 
         <main class="main-content">
             <!-- TAB 1: Monitoring -->
@@ -69,8 +84,8 @@
                         <div class="sensor-value" style="font-size: 15px; margin-top: 5px; color: #ffab91;" id="val-risiko">15% (Rendah)</div>
                     </div>
                     <div class="sensor-card">
-                        <h4>Status Prediktif</h4>
-                        <div class="sensor-value" style="font-size: 14px; margin-top: 5px; color: #64b5f6;" id="val-prediksi-singkat">Stabil / Normal</div>
+                        <h4>Status Atribusi Pemicu</h4>
+                        <div class="sensor-value" style="font-size: 13px; margin-top: 5px; color: #64b5f6;" id="val-prediksi-singkat">Stabil / Normal</div>
                     </div>
                 </section>
 
@@ -157,6 +172,35 @@
                 </div>
             </div>
 
+            <!-- TAB: ARSITEKTUR IOT -->
+            <div id="architecture" class="tab-content">
+                <div class="header-halaman">
+                    <h2>Arsitektur Sistem & Perangkat Keras IoT (FIRETRACE)</h2>
+                    <p>Diagram alur end-to-end dari sensor lapangan hingga penyimpanan forensik terenkripsi.</p>
+                </div>
+                <div style="background: rgba(30,30,30,0.95); padding: 25px; border-radius: 8px; border: 1px solid rgba(100,181,246,0.4);">
+                    <h3 style="color: #64b5f6; margin-bottom: 15px;">🔄 Alur Komunikasi Data (Data Pipeline)</h3>
+                    <div style="display: flex; flex-direction: column; gap: 15px; font-size: 13px; color: #ddd;">
+                        <div style="background: #1e1e1e; padding: 12px; border-left: 4px solid #4caf50; border-radius: 4px;">
+                            <strong>1. Layer Sensor Lapangan (Edge Computing):</strong><br>
+                            Menggunakan ESP32 microcontroller yang membaca sensor DS18B20 (Suhu), BME280 (Kelembapan/RH), MQ135 (Gas Asap), UVTRON (Deteksi Nyala Api UV), dan Anemometer.
+                        </div>
+                        <div style="background: #1e1e1e; padding: 12px; border-left: 4px solid #ff9800; border-radius: 4px;">
+                            <strong>2. Layer Transmisi & Gateway:</strong><br>
+                            Data telemetri dikirimkan secara nirkabel menggunakan protokol MQTT/LoRaWAN dan backup seluler 4G/LTE langsung ke Cloud Server.
+                        </div>
+                        <div style="background: #1e1e1e; padding: 12px; border-left: 4px solid #2196f3; border-radius: 4px;">
+                            <strong>3. Layer Pemrosesan AI & Atribusi Pemicu:</strong><br>
+                            Sistem secara cerdas menganalisis apakah anomali berasal dari Sambaran Petir BMKG (Alami) atau Pola Multi-Node Berjajar (Ulah Manusia).
+                        </div>
+                        <div style="background: #1e1e1e; padding: 12px; border-left: 4px solid #e91e63; border-radius: 4px;">
+                            <strong>4. Layer Penyimpanan Eviden (Cloud Camera & DCoC):</strong><br>
+                            Snapshot kamera di-upload otomatis ke AWS S3 / Firebase Cloud Storage, lalu dikunci dengan enkripsi SHA-256 *Digital Chain of Custody* untuk keperluan BAP Pro-Justitia.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- TAB 2: Fire Event Profile -->
             <div id="profile" class="tab-content">
                 <div class="header-halaman">
@@ -203,7 +247,14 @@
                     <h2>Environmental Forensic Report Generator</h2>
                     <p>Berita Acara Pemeriksaan (BAP) Lingkungan Digital (Update Resmi Per 1 Menit).</p>
                 </div>
-                <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 850px; margin: 0 auto; font-family: 'Times New Roman', serif;">
+                <div style="background-color: #fff; color: #000; padding: 40px; border-radius: 4px; max-width: 850px; margin: 0 auto; font-family: 'Times New Roman', serif; position: relative;">
+                    
+                    <!-- QR Code Simulasi di Pojok Kanan Atas BAP -->
+                    <div style="position: absolute; top: 30px; right: 40px; text-align: center; border: 1px dashed #666; padding: 5px; background: #fff;">
+                        <div style="font-size: 30px; line-height: 1;">📱</div>
+                        <div style="font-size: 8px; font-family: monospace; margin-top: 2px;">SCAN TO VERIFY</div>
+                    </div>
+
                     <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
                         <h2 style="margin: 0; font-size: 22px;">DOKUMEN FORENSIK LINGKUNGAN (OFFICIAL)</h2>
                         <p style="margin: 5px 0 0 0; font-size: 14px;">BERITA ACARA PEMERIKSAAN ATRIBUSI PENYEBAB (PRO-JUSTITIA)</p>
@@ -231,6 +282,6 @@
         </main>
     </div>
     
-    <script src="script.js?v=50"></script>
+    <script src="script.js?v=60"></script>
 </body>
 </html>
