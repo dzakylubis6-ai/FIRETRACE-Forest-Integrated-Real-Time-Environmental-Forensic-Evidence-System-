@@ -7,12 +7,8 @@
 }
 
 body {
-    /* Background Hutan Digital Taktis (Menggunakan perpaduan gradasi hutan malam dan pola grid forensik yang dijamin 100% tampil tanpa kendala pemuatan eksternal) */
-    background-color: #0b130f;
-    background-image: 
-        radial-gradient(circle at 20% 20%, rgba(27, 67, 50, 0.4) 0%, transparent 40%),
-        radial-gradient(circle at 80% 80%, rgba(10, 30, 20, 0.6) 0%, transparent 50%),
-        linear-gradient(135deg, #0b130f 0%, #112217 50%, #070d09 100%);
+    /* Gradasi Hijau Hutan Taktis (Jelas bernuansa hutan forensik & mudah dibaca) */
+    background: linear-gradient(135deg, #0d2818 0%, #06170f 50%, #092014 100%);
     background-size: cover;
     background-attachment: fixed;
     color: #e0e0e0;
@@ -30,8 +26,8 @@ body {
 /* Sidebar Styling */
 .sidebar {
     width: 280px;
-    background-color: rgba(18, 30, 22, 0.95);
-    border-right: 1px solid rgba(76, 175, 80, 0.2);
+    background-color: rgba(13, 33, 21, 0.95);
+    border-right: 1px solid rgba(76, 175, 80, 0.3);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -40,7 +36,7 @@ body {
 
 .logo-area {
     padding: 20px;
-    border-bottom: 1px solid rgba(76, 175, 80, 0.2);
+    border-bottom: 1px solid rgba(76, 175, 80, 0.3);
 }
 
 .logo-area h2 {
@@ -52,7 +48,7 @@ body {
 
 .logo-area p {
     font-size: 11px;
-    color: #888;
+    color: #aaa;
     margin-top: 2px;
 }
 
@@ -64,19 +60,19 @@ body {
 .nav-item {
     padding: 12px 20px;
     font-size: 13px;
-    color: #bbb;
+    color: #ccc;
     cursor: pointer;
     transition: all 0.2s ease;
     border-left: 3px solid transparent;
 }
 
 .nav-item:hover {
-    background-color: rgba(76, 175, 80, 0.1);
+    background-color: rgba(76, 175, 80, 0.15);
     color: #fff;
 }
 
 .nav-item.active {
-    background-color: rgba(76, 175, 80, 0.2);
+    background-color: rgba(76, 175, 80, 0.25);
     color: #fff;
     border-left-color: #ef5350;
     font-weight: 600;
@@ -85,7 +81,7 @@ body {
 /* Main Content Area */
 .main-content {
     flex: 1;
-    background-color: rgba(11, 19, 15, 0.8);
+    background-color: rgba(10, 24, 16, 0.75);
     overflow-y: auto;
     padding: 20px;
 }
@@ -115,10 +111,10 @@ body {
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
-.status-header.normal { background: rgba(76, 175, 80, 0.2); border: 1px solid #4caf50; }
-.status-header.waspada { background: rgba(249, 168, 37, 0.2); border: 1px solid #f9a825; }
-.status-header.siaga { background: rgba(239, 108, 0, 0.2); border: 1px solid #ef6c00; }
-.status-header.bahaya { background: rgba(198, 40, 40, 0.3); border: 1px solid #c62828; animation: emergencyPulse 1.5s infinite; }
+.status-header.normal { background: rgba(76, 175, 80, 0.25); border: 1px solid #4caf50; }
+.status-header.waspada { background: rgba(249, 168, 37, 0.25); border: 1px solid #f9a825; }
+.status-header.siaga { background: rgba(239, 108, 0, 0.25); border: 1px solid #ef6c00; }
+.status-header.bahaya { background: rgba(198, 40, 40, 0.35); border: 1px solid #c62828; animation: emergencyPulse 1.5s infinite; }
 
 .status-info h3 {
     font-size: 15px;
@@ -128,7 +124,7 @@ body {
 
 .status-info p {
     font-size: 12px;
-    color: #bbb;
+    color: #ccc;
     margin-top: 3px;
 }
 
@@ -141,8 +137,8 @@ body {
 }
 
 .sensor-card {
-    background-color: rgba(22, 38, 28, 0.85);
-    border: 1px solid rgba(76, 175, 80, 0.2);
+    background-color: rgba(18, 40, 27, 0.9);
+    border: 1px solid rgba(76, 175, 80, 0.3);
     border-radius: 8px;
     padding: 15px;
     text-align: center;
@@ -152,7 +148,7 @@ body {
 
 .sensor-card h4 {
     font-size: 12px;
-    color: #aaa;
+    color: #bbb;
     margin-bottom: 8px;
 }
 
@@ -164,8 +160,8 @@ body {
 
 /* Map & Bottom Sections */
 .map-section {
-    background-color: rgba(22, 38, 28, 0.85);
-    border: 1px solid rgba(76, 175, 80, 0.2);
+    background-color: rgba(18, 40, 27, 0.9);
+    border: 1px solid rgba(76, 175, 80, 0.3);
     border-radius: 8px;
     padding: 15px;
     backdrop-filter: blur(5px);
@@ -179,8 +175,8 @@ body {
 }
 
 .chart-section, .log-section {
-    background-color: rgba(22, 38, 28, 0.85);
-    border: 1px solid rgba(76, 175, 80, 0.2);
+    background-color: rgba(18, 40, 27, 0.9);
+    border: 1px solid rgba(76, 175, 80, 0.3);
     border-radius: 8px;
     padding: 15px;
     height: 320px;
@@ -190,6 +186,7 @@ body {
 }
 
 .chart-section h3, .log-section h3, .header-halaman h2 {
+    file-size: 14px;
     font-size: 14px;
     font-weight: 600;
     color: #fff;
@@ -198,7 +195,7 @@ body {
 
 .header-halaman p {
     font-size: 12px;
-    color: #aaa;
+    color: #ccc;
     margin-bottom: 15px;
 }
 
@@ -223,14 +220,14 @@ table {
 
 th, td {
     padding: 8px 10px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    color: #ccc;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ddd;
 }
 
 th {
-    color: #aaa;
+    color: #bbb;
     font-weight: 600;
-    background: rgba(14, 25, 18, 0.9);
+    background: rgba(11, 27, 18, 0.95);
     position: sticky;
     top: 0;
 }
