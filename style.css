@@ -6,25 +6,24 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* Memastikan HTML dan Body memenuhi layar penuh */
+/* Background Hutan Tropika Berkabus (Persis seperti yang Anda minta) */
 html, body {
     width: 100%;
     height: 100vh;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #0b1410;
+    background: linear-gradient(rgba(10, 20, 15, 0.4), rgba(10, 20, 15, 0.65)), 
+                url('https://images.unsplash.com/photo-1516214104703-d870798883c5?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed !important;
+    background-size: cover !important;
     color: #e0e0e0;
 }
 
-/* Memasang Background Foto Udara Hutan Tropika Berkabus Persis Seperti Keinginan Anda */
 .dashboard-container {
     display: flex;
     height: 100vh;
     width: 100vw;
-    background: linear-gradient(rgba(10, 20, 15, 0.4), rgba(10, 20, 15, 0.65)), 
-                url('https://images.unsplash.com/photo-1511497584788-876761142197?q=80&w=1920&auto=format&fit=crop') no-repeat center center fixed !important;
-    background-size: cover !important;
+    background: transparent !important;
 }
 
 /* Sidebar Styling (Efek Kaca Semi-Transparan) */
@@ -135,7 +134,7 @@ html, body {
     margin-top: 3px;
 }
 
-/* Sensor Grid Cards (Efek Kaca / Glassmorphism) */
+/* Sensor Grid Cards (Efek Kaca) */
 .sensor-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
